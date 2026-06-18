@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Схемы обмана — Анти-Фрод Казахстан</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--red:#D0021B;--orange:#E86C00;--yellow:#F5C518;--dark:#0a1628;--card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e8ecf4;--muted:#7a8ba3;--green:#00C853}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--dark);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased}
+.top{padding:16px 24px;max-width:1100px;margin:0 auto}
+.top a{color:var(--muted);text-decoration:none;font-size:13px}
+.top a:hover{color:var(--text)}
+.header{padding:40px 24px 20px;max-width:1100px;margin:0 auto}
+.header h1{font-size:clamp(24px,4vw,36px);font-weight:800;margin-bottom:8px}
+.header p{color:var(--muted);font-size:15px}
+.container{max-width:1100px;margin:0 auto;padding:0 24px 80px}
+
+.timeline{position:relative;padding-left:40px}
+.timeline::before{content:'';position:absolute;left:15px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--red),var(--orange),var(--yellow))}
+.step{position:relative;margin-bottom:32px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;transition:all .3s}
+.step:hover{border-color:var(--red);box-shadow:0 8px 32px rgba(208,2,27,0.1)}
+.step::before{content:attr(data-num);position:absolute;left:-40px;top:24px;width:30px;height:30px;border-radius:50%;background:var(--red);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+.step h3{font-size:18px;font-weight:700;margin-bottom:6px;color:#fff}
+.step p{font-size:14px;color:var(--muted);line-height:1.6}
+.step .signs{margin-top:12px;display:flex;gap:6px;flex-wrap:wrap}
+.sign{font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(208,2,27,0.12);color:#ff6b6b;font-weight:500}
+.quote{background:rgba(245,197,24,0.06);border-left:3px solid var(--yellow);padding:12px 16px;border-radius:0 8px 8px 0;margin-top:12px;font-size:13px;color:var(--yellow);font-style:italic}
+
+.footer-nav{display:flex;gap:12px;flex-wrap:wrap;margin-top:40px;padding-top:24px;border-top:1px solid var(--border)}
+.footer-nav a{padding:10px 18px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);text-decoration:none;font-size:13px;font-weight:600}
+.footer-nav a:hover{border-color:var(--orange)}
+footer{text-align:center;padding:32px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="top"><a href="../">← На главную</a></div>
+
+<div class="header">
+  <h1>📋 Полная карта схем обмана</h1>
+  <p>7 стадий инвестиционного мошенничества + 4 дополнительных схемы. Знание — ваша защита.</p>
+</div>
+
+<div class="container">
+
+<div class="timeline">
+
+  <div class="step" data-num="1">
+    <h3>Первый контакт — «случайное» знакомство</h3>
+    <p>Мошенники ищут жертв в соцсетях. Создают красивые профили: фото из путешествий, дорогие машины. Пишут первыми — «ошибочно» или «просто познакомиться». Общаются 3–14 дней, не упоминая деньги. Цель — вызвать симпатию и доверие.</p>
+    <div class="signs">
+      <span class="sign">Незнакомец пишет первым</span>
+      <span class="sign">Красивый профиль</span>
+      <span class="sign">«Ошибочное» сообщение</span>
+      <span class="sign">Настойчивое общение</span>
+    </div>
+    <div class="quote">«Ой, извините, не туда написала! А вы случайно не из Алматы?»</div>
+  </div>
+
+  <div class="step" data-num="2">
+    <h3>Вброс идеи — «я сам зарабатываю на инвестициях»</h3>
+    <p>Через несколько дней «случайно» упоминают, что зарабатывают на платформе. Показывают скриншоты баланса и выплат. Всё выглядит натурально. Если вы интересуетесь — предлагают зарегистрироваться. Если нет — возвращаются к теме через пару дней.</p>
+    <div class="signs">
+      <span class="sign">Скриншоты «прибыли»</span>
+      <span class="sign">«Я тоже боялся сначала»</span>
+      <span class="sign">Пробный депозит 50 000 ₸</span>
+      <span class="sign">Ссылка на «платформу»</span>
+    </div>
+    <div class="quote">«Посмотри, я за неделю вывел 340 000 ₸. Хочешь, покажу как?»</div>
+  </div>
+
+  <div class="step" data-num="3">
+    <h3>Увеличение депозита — «рынок сейчас горячий»</h3>
+    <p>После пробного депозита показывают «прибыль». Баланс растёт. Убеждают вложить больше: «сейчас окно возможностей», «акция для новых клиентов», «хочешь как я?». Суммы от 500 000 до 5 000 000 ₸. Каждый раз новая причина вложить ещё.</p>
+    <div class="signs">
+      <span class="sign">Давление: «сейчас или никогда»</span>
+      <span class="sign">Фейковый рост баланса</span>
+      <span class="sign">«Акция заканчивается»</span>
+      <span class="sign">Крупные суммы</span>
+    </div>
+  </div>
+
+  <div class="step" data-num="4">
+    <h3>Блокировка вывода — «нужна верификация»</h3>
+    <p>При попытке вывести деньги начинается квест. Сначала — верификация KYC. Потом — комиссия. Потом — «страховка по CySEC». Каждый новый платёж открывает новое «условие». Деньги на экране есть, но вывести их невозможно.</p>
+    <div class="signs">
+      <span class="sign">«Оплатите комиссию для вывода»</span>
+      <span class="sign">«Нужна страховка CySEC»</span>
+      <span class="sign">«AML-проверка»</span>
+      <span class="sign">Каждый раз новое условие</span>
+    </div>
+    <div class="quote">«Для вывода 2 078 644 ₸ нужно оплатить страховку 62 359 ₸. Это требование регулятора CySEC.»</div>
+  </div>
+
+  <div class="step" data-num="5">
+    <h3>Спектакль инстанций — «ваше дело на рассмотрении»</h3>
+    <p>Звонят разные «специалисты»: менеджер платформы, сотрудник «регулятора», AML-офицер, «юрист». Каждый подтверждает легальность и говорит: заплатите ещё — и деньги вернутся. Все эти люди — одна мошенническая группа.</p>
+    <div class="signs">
+      <span class="sign">«Звонок от регулятора»</span>
+      <span class="sign">«AML-отдел заблокировал»</span>
+      <span class="sign">«Ваш юрист нашёл решение»</span>
+      <span class="sign">Разные голоса — одна цель</span>
+    </div>
+  </div>
+
+  <div class="step" data-num="6">
+    <h3>Бесконечный «последний платёж»</h3>
+    <p>Каждый раз — новый «последний» платёж. Налог 13%. Судебная пошлина. Комиссия ЦБ. Страховка. Штраф. Сначала 100 000 ₸, потом 500 000 ₸, потом миллионы. Всё это — ложь. Никаких денег нет.</p>
+    <div class="signs">
+      <span class="sign">«Это последний платёж, клянусь»</span>
+      <span class="sign">«Налог 13% от суммы»</span>
+      <span class="sign">«Пошлина суда»</span>
+      <span class="sign">«Комиссия Центрального банка»</span>
+    </div>
+    <div class="quote">«Осталось только оплатить налог 13% — 270 000 ₸ — и деньги поступят в течение 24 часов.»</div>
+  </div>
+
+  <div class="step" data-num="7">
+    <h3>Исчезновение и Recovery — повторный обман</h3>
+    <p>Когда жертва понимает обман и перестаёт платить — мошенники исчезают. Платформа «на техработах», менеджер «уволен». Через недели/месяцы звонят «новые специалисты»: «Мы из антимошеннического отдела, мы можем вернуть ваши деньги за 10% предоплаты». Это повторный обман — Recovery Scam.</p>
+    <div class="signs">
+      <span class="sign">«Мы из антимошеннического отдела»</span>
+      <span class="sign">«Предоплата 10% для возврата»</span>
+      <span class="sign">«Платформа обанкротилась»</span>
+      <span class="sign">Новый сайт, те же мошенники</span>
+    </div>
+  </div>
+
+</div>
+
+<h2 style="font-size:24px;font-weight:800;margin:40px 0 16px;">Дополнительные схемы</h2>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
+
+  <div class="step" data-num="★" style="margin-bottom:0">
+    <h3>Крипто-мошенничество</h3>
+    <p>Фейковые криптобиржи. «Переведите USDT на мой кошелёк, я за вас торгуем». Скриншоты «прибыли» из Photoshop. Кошелёк опустеет навсегда.</p>
+  </div>
+
+  <div class="step" data-num="★" style="margin-bottom:0">
+    <h3>Финансовые пирамиды</h3>
+    <p>«Вложи 100 000 ₸, приведи 3 друзей, получай 300 000 ₸». Работает пока приток новых «инвесторов». Когда поток кончается — все теряют деньги.</p>
+  </div>
+
+  <div class="step" data-num="★" style="margin-bottom:0">
+    <h3>Фейковые кредиты</h3>
+    <p>«Одобряем кредит за 5 минут. Оплатите страховку/комиссию заранее.» После оплаты — «кредит не одобрен», деньги не возвращают.</p>
+  </div>
+
+  <div class="step" data-num="★" style="margin-bottom:0">
+    <h3>Спуфинг — подмена номера</h3>
+    <p>Звонок с номера вашего банка. «Ваш счёт взломали, срочно переведите деньги на безопасный счёт». Номер подделан (спуфинг). Банк никогда не просит перевести деньги.</p>
+  </div>
+
+</div>
+
+<div class="footer-nav">
+  <a href="../documents/">📄 Фейковые документы</a>
+  <a href="../organizations/">🏢 Фейковые организации</a>
+  <a href="../guides/">📚 Полные пособия</a>
+  <a href="../">← На главную</a>
+</div>
+
+</div>
+
+<footer><p>© 2026 Анти-Фрод Казахстан · Знание — ваша защита</p></footer>
+
+</body>
+</html>

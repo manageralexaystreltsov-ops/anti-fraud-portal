@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Фейковые организации — Анти-Фрод Казахстан</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--red:#D0021B;--orange:#E86C00;--yellow:#F5C518;--dark:#0a1628;--card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#e8ecf4;--muted:#7a8ba3;--green:#00C853;--blue:#2979FF}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--dark);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased}
+.top{padding:16px 24px;max-width:1100px;margin:0 auto}.top a{color:var(--muted);text-decoration:none;font-size:13px}.top a:hover{color:var(--text)}
+.header{padding:40px 24px 20px;max-width:1100px;margin:0 auto}
+.header h1{font-size:clamp(24px,4vw,36px);font-weight:800;margin-bottom:8px}
+.header p{color:var(--muted);font-size:15px;max-width:700px}
+.container{max-width:1100px;margin:0 auto;padding:0 24px 80px}
+
+.org-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:20px;transition:all .3s}
+.org-card:hover{border-color:var(--red);box-shadow:0 8px 32px rgba(208,2,27,0.1)}
+.org-header{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.org-avatar{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;background:rgba(208,2,27,0.12)}
+.org-title{font-size:20px;font-weight:700}
+.org-type{font-size:12px;color:var(--red);font-weight:600;text-transform:uppercase;letter-spacing:1px}
+
+.org-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:640px){.org-grid{grid-template-columns:1fr}}
+.org-block{padding:16px;border-radius:10px}
+.org-block--bad{background:rgba(208,2,27,0.06);border:1px solid rgba(208,2,27,0.12)}
+.org-block--good{background:rgba(0,200,83,0.06);border:1px solid rgba(0,200,83,0.12)}
+.org-block h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.org-block--bad h4{color:var(--red)}
+.org-block--good h4{color:var(--green)}
+.org-block p{font-size:13px;color:var(--muted);margin-bottom:6px}
+.org-block code{background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;font-size:12px;color:var(--yellow)}
+
+.check-method{background:rgba(41,121,255,0.06);border:1px solid rgba(41,121,255,0.15);border-radius:10px;padding:16px;margin-top:12px}
+.check-method h4{color:var(--blue);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.check-method p{font-size:13px;color:var(--muted)}
+.check-method a{color:var(--blue);text-decoration:none;font-weight:600}
+.check-method a:hover{text-decoration:underline}
+
+.warning-strip{background:linear-gradient(135deg,rgba(208,2,27,0.1),rgba(232,108,0,0.1));border:1px solid rgba(208,2,27,0.2);border-radius:10px;padding:16px;margin-top:20px;display:flex;gap:12px;align-items:flex-start}
+.warning-strip .icon{font-size:20px;flex-shrink:0}
+.warning-strip p{font-size:13px;color:#ff8a80}
+
+.footer-nav{display:flex;gap:12px;flex-wrap:wrap;margin-top:40px;padding-top:24px;border-top:1px solid var(--border)}
+.footer-nav a{padding:10px 18px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);text-decoration:none;font-size:13px;font-weight:600}
+.footer-nav a:hover{border-color:var(--orange)}
+footer{text-align:center;padding:32px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="top"><a href="../">← На главную</a></div>
+
+<div class="header">
+  <h1>🏢 Фейковые организации</h1>
+  <p>Мошенники создают фейковые «брокерские компании», «регуляторов» и «юридические фирмы». Вот как они устроены и как отличить от настоящих.</p>
+</div>
+
+<div class="container">
+
+  <!-- 1. Фейковая брокерская платформа -->
+  <div class="org-card">
+    <div class="org-header">
+      <div class="org-avatar">💹</div>
+      <div><div class="org-title">Фейковая брокерская платформа</div><div class="org-type">Тип: Инвестиционный мошенник</div></div>
+    </div>
+    <div class="org-grid">
+      <div class="org-block org-block--bad"><h4>🚩 Как выглядит фейк</h4>
+        <p>Красивый сайт с графиками, «торговый терминал», «личный кабинет» с растущим балансом.</p>
+        <p>Домен: <code>globaltrade-fx.com</code>, <code>invest-platform24.net</code></p>
+        <p>Создан 2 месяца назад. Нет лицензии. Все отзывы — фейковые.</p>
+      </div>
+      <div class="org-block org-block--good"><h4>✅ Как выглядит настоящий брокер</h4>
+        <p>Лицензия АРРФР (Казахстан) или CySEC/FCA (международный).</p>
+        <p>Домен существует 5+ лет. Реальный офис. Телефон отвечает.</p>
+        <p>Отзывы на независимых площадках (не только на сайте).</p>
+      </div>
+    </div>
+    <div class="check-method">
+      <h4>✅ Как проверить</h4>
+      <p>1. Зайдите на <a href="https://www.finreg.kz" target="_blank">finreg.kz</a> → Реестр участников рынка → Поиск по названию<br>
+      2. Проверьте возраст домена: <a href="https://www.whois.com" target="_blank">whois.com</a><br>
+      3. Если домену меньше 1 года — вероятность мошенничества 99%</p>
+    </div>
+  </div>
+
+  <!-- 2. Фейковый регулятор -->
+  <div class="org-card">
+    <div class="org-header">
+      <div class="org-avatar">🏛️</div>
+      <div><div class="org-title">Фейковый «регулятор»</div><div class="org-type">Тип: Спектакль инстанций</div></div>
+    </div>
+    <div class="org-grid">
+      <div class="org-block org-block--bad"><h4>🚩 Схема</h4>
+        <p>Звонит «сотрудник финансового регулятора». Говорит: «Ваше дело передано нам, деньги заморожены, нужно оплатить штраф/комиссию для разблокировки.»</p>
+        <p>Предоставляет «номер дела», «постановление», ссылку на фейковый сайт.</p>
+      </div>
+      <div class="org-block org-block--good"><h4>✅ Реальный АРРФР</h4>
+        <p>АРРФР НИКОГДА не звонит гражданам с требованием заплатить.</p>
+        <p>Реальный сайт: <code>finreg.kz</code></p>
+        <p>Горячая линия: <code>1434</code></p>
+        <p>АРРФР регулирует брокеров, а не «разблокирует счета граждан».</p>
+      </div>
+    </div>
+    <div class="warning-strip">
+      <div class="icon">⚠️</div>
+      <p>АРРФР, НБК, полиция — НИКОГДА не просят перевести деньги по телефону. Любой такой звонок — мошенничество.</p>
+    </div>
+  </div>
+
+  <!-- 3. Фейковый AML-отдел -->
+  <div class="org-card">
+    <div class="org-header">
+      <div class="org-avatar">🔒</div>
+      <div><div class="org-title">Фейковый «AML-отдел»</div><div class="org-type">Тип: Отмывание денег — ложь</div></div>
+    </div>
+    <div class="org-grid">
+      <div class="org-block org-block--bad"><h4>🚩 Схема</h4>
+        <p>«Ваш счёт заблокирован по AML-проверке. Для разблокировки предоставьте документы и оплатите комиссию 5% от суммы.»</p>
+        <p>Это НЕ реальный AML-контроль. Это давление, чтобы вы заплатили ещё.</p>
+      </div>
+      <div class="org-block org-block--good"><h4>✅ Реальный AML</h4>
+        <p>Настоящий AML-контроль работает СИШКОМ: банк просто блокирует подозрительную операцию и уведомляет КФМ.</p>
+        <p>Банк НИКОГДА не просит «оплатить разблокировку». Блокировка снимается после предоставления документов — бесплатно.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Фейковый юрист -->
+  <div class="org-card">
+    <div class="org-header">
+      <div class="org-avatar">⚖️</div>
+      <div><div class="org-title">Фейковый «юрист» внутри схемы</div><div class="org-type">Тип: Участник мошеннической группы</div></div>
+    </div>
+    <div class="org-grid">
+      <div class="org-block org-block--bad"><h4>🚩 Схема</h4>
+        <p>«Ваш юрист» звонит от имени «юридической фирмы». Говорит: «Мы нашли законный способ вернуть ваши деньги. Нужно только оплатить пошлину/госсбор/нотариальное заверение.»</p>
+        <p>Это ТОТ ЖЕ мошенник, что и «менеджер платформы». Просто другая роль.</p>
+      </div>
+      <div class="org-block org-block--good"><h4>✅ Настоящий юрист</h4>
+        <p>Реальный юрист имеет номер в реестре Адвокатской палаты РК.</p>
+        <p>Проверка: <a href="https://advokat-palata.kz" target="_blank" style="color:var(--blue)">advokat-palata.kz</a></p>
+        <p>Реальный юрист не требует 100% предоплату и не обещает 100% результат.</p>
+      </div>
+    </div>
+    <div class="check-method">
+      <h4>✅ Как проверить юриста</h4>
+      <p>1. Спросите номер лицензии и проверьте на <a href="https://advokat-palata.kz" target="_blank">advokat-palata.kz</a><br>
+      2. Проверьте офис на Google Maps<br>
+      3. Реальный юрист даёт договор с печатью, реквизитами и конкретными сроками<br>
+      4. Никогда не переводите деньги «юристу» без личной встречи</p>
+    </div>
+  </div>
+
+  <!-- 5. Фейковая страховая -->
+  <div class="org-card">
+    <div class="org-header">
+      <div class="org-avatar">🛡️</div>
+      <div><div class="org-title">Фейковая «страховая компания»</div><div class="org-type">Тип: Ложная страховка</div></div>
+    </div>
+    <div class="org-grid">
+      <div class="org-block org-block--bad"><h4>🚩 Схема</h4>
+        <p>«Для вывода нужна страховка по CySEC — 5% от суммы. Деньги вернутся вместе с выводом.»</p>
+        <p>Показывают PDF «страхового полиса» с фейковыми печатями.</p>
+        <p>Ни одна настоящая страховая не работает через брокера.</p>
+      </div>
+      <div class="org-block org-block--good"><h4>✅ Реальная страховка</h4>
+        <p>Лицензированные страховые компании РК: <a href="https://www.finreg.kz" target="_blank" style="color:var(--blue)">Реестр на finreg.kz</a></p>
+        <p>Страховка оформляется НАПРЯМУЮ со страховой компанией, а не через «брокера».</p>
+      </div>
+    </div>
+    <div class="warning-strip">
+      <div class="icon">⚠️</div>
+      <p>CySEC — кипрский регулятор. Он не страхует деньги граждан Казахстана. Это миф, который используют мошенники.</p>
+    </div>
+  </div>
+
+  <div class="footer-nav">
+    <a href="../schemes/">📋 Схемы обмана</a>
+    <a href="../documents/">📄 Фейковые документы</a>
+    <a href="../guides/">📚 Полные пособия</a>
+    <a href="../">← На главную</a>
+  </div>
+
+</div>
+
+<footer><p>© 2026 Анти-Фрод Казахстан · Знание — ваша защита</p></footer>
+
+</body>
+</html>
