@@ -1,8 +1,9 @@
 // Unified navigation for all pages
+const BASE = '/anti-fraud-portal';
 const NAV_HTML = `
 <nav class="topnav" id="topnav">
   <div class="topnav-inner">
-    <a href="/" class="topnav-logo">
+    <a href="${BASE}/" class="topnav-logo">
       <span class="topnav-logo-icon">🛡️</span>
       <span class="topnav-logo-text">AntiFrog</span>
     </a>
@@ -10,21 +11,21 @@ const NAV_HTML = `
       <span></span><span></span><span></span>
     </button>
     <div class="topnav-links" id="navLinks">
-      <a href="/">Главная</a>
-      <a href="/quiz.html">Тест на мошенника</a>
-      <a href="/services.html">Услуги</a>
-      <a href="/check.html">Проверить дело</a>
-      <a href="/apply.html" class="topnav-cta">Обратиться</a>
+      <a href="${BASE}/">Главная</a>
+      <a href="${BASE}/quiz.html">Тест</a>
+      <a href="${BASE}/services.html">Услуги</a>
+      <a href="${BASE}/check.html">Проверить дело</a>
+      <a href="${BASE}/apply.html" class="topnav-cta">Обратиться</a>
     </div>
   </div>
 </nav>
 <!-- Bottom mobile bar -->
 <div class="bottombar" id="bottomBar">
-  <a href="/" class="bottombar-item"><span class="bottombar-icon">🏠</span><span>Главная</span></a>
-  <a href="/quiz.html" class="bottombar-item"><span class="bottombar-icon">🧪</span><span>Тест</span></a>
-  <a href="/apply.html" class="bottombar-item bottombar-cta"><span class="bottombar-icon">📝</span><span>Заявка</span></a>
-  <a href="/check.html" class="bottombar-item"><span class="bottombar-icon">📋</span><span>Дело</span></a>
-  <a href="/services.html" class="bottombar-item"><span class="bottombar-icon">💼</span><span>Услуги</span></a>
+  <a href="${BASE}/" class="bottombar-item"><span class="bottombar-icon">🏠</span><span>Главная</span></a>
+  <a href="${BASE}/quiz.html" class="bottombar-item"><span class="bottombar-icon">🧪</span><span>Тест</span></a>
+  <a href="${BASE}/apply.html" class="bottombar-item bottombar-cta"><span class="bottombar-icon">📝</span><span>Заявка</span></a>
+  <a href="${BASE}/check.html" class="bottombar-item"><span class="bottombar-icon">📋</span><span>Дело</span></a>
+  <a href="${BASE}/services.html" class="bottombar-item"><span class="bottombar-icon">💼</span><span>Услуги</span></a>
 </div>
 `;
 
