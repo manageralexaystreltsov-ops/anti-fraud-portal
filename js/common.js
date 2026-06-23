@@ -12,7 +12,6 @@ const NAV_HTML = `
     </button>
     <div class="topnav-links" id="navLinks">
       <a href="${BASE}/">Главная</a>
-      <a href="${BASE}/quiz.html">Тест</a>
       <a href="${BASE}/services.html">Услуги</a>
       <a href="${BASE}/check.html">Проверить дело</a>
       <a href="${BASE}/apply.html" class="topnav-cta">Обратиться</a>
@@ -22,10 +21,10 @@ const NAV_HTML = `
 <!-- Bottom mobile bar -->
 <div class="bottombar" id="bottomBar">
   <a href="${BASE}/" class="bottombar-item"><span class="bottombar-icon">🏠</span><span>Главная</span></a>
-  <a href="${BASE}/quiz.html" class="bottombar-item"><span class="bottombar-icon">🧪</span><span>Тест</span></a>
+  <a href="${BASE}/services.html" class="bottombar-item"><span class="bottombar-icon">💼</span><span>Услуги</span></a>
   <a href="${BASE}/apply.html" class="bottombar-item bottombar-cta"><span class="bottombar-icon">📝</span><span>Заявка</span></a>
   <a href="${BASE}/check.html" class="bottombar-item"><span class="bottombar-icon">📋</span><span>Дело</span></a>
-  <a href="${BASE}/services.html" class="bottombar-item"><span class="bottombar-icon">💼</span><span>Услуги</span></a>
+  <a href="${BASE}/admin.html" class="bottombar-item"><span class="bottombar-icon">⚙️</span><span>Admin</span></a>
 </div>
 `;
 

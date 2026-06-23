@@ -3,29 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AntiFrog — Возврат денег от мошенников</title>
-<meta name="description" content="Помогаем вернуть деньги из мошеннических платформ. Бесплатная консультация. Работаем по всему Казахстану.">
+<title>AntiFrog — Международная компания по возврату активов</title>
+<meta name="description" content="AntiFrog — мировой лидер по возврату средств из мошеннических платформ. Более 228 000 клиентов. $1.4 млрд возвращено.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 <body>
 
 <!-- HERO -->
 <section class="hero">
+  <div class="hero-particles" id="particles"></div>
   <div class="container">
-    <div class="hero-badge">🛡️ Помогли вернуть более 1,4 млрд ₸</div>
-    <h1>Вас обманули?<br><span class="hl">Мы вернём ваши деньги</span></h1>
-    <p class="hero-sub">Бесплатная консультация. Работаем по результату. По всему Казахстану.</p>
+    <div class="hero-badge">🌍 Международная компания · Работаем в 40+ странах</div>
+    <h1>Возврат активов<br><span class="hl">из мошеннических платформ</span></h1>
+    <p class="hero-sub">Компания AntiFrog объединяет юристов, регуляторы и банки по всему миру для возврата средств пострадавшим от финансового мошенничества.</p>
     <div class="hero-checks">
-      <div class="check">✓ Бесплатно определим стадию обмана</div>
-      <div class="check">✓ Поможем подать заявление в полицию и АРРФР</div>
-      <div class="check">✓ Вернём деньги через банк или суд</div>
+      <div class="check">✓ Работаем по результату — оплата после возврата</div>
+      <div class="check">✓ Сотрудничаем с АРРФР, НБК, FinCEN, FCA и 50+ регуляторами</div>
+      <div class="check">✓ 228 000+ клиентов по всему миру</div>
     </div>
     <div class="hero-actions">
       <a href="/anti-fraud-portal/apply.html" class="btn btn-primary btn-lg">📝 Оставить заявку</a>
-      <a href="/anti-fraud-portal/quiz.html" class="btn btn-outline btn-lg">🧪 Пройти тест</a>
+      <a href="/anti-fraud-portal/check.html" class="btn btn-outline btn-lg">📋 Проверить дело</a>
+    </div>
+    <div class="hero-trust">
+      <span>🛡️ $1.4 млрд возвращено</span>
+      <span>🏆 94% успешных дел</span>
+      <span>⚡ Ответ за 24 часа</span>
     </div>
   </div>
 </section>
@@ -33,81 +41,57 @@
 <!-- STATS -->
 <section class="stats">
   <div class="container stats-grid">
-    <div class="stat"><div class="stat-num">2 847</div><div class="stat-lbl">Клиентов помогли</div></div>
-    <div class="stat"><div class="stat-num">1,4 млрд ₸</div><div class="stat-lbl">Возвращено</div></div>
+    <div class="stat"><div class="stat-num counter" data-target="228000">0</div><div class="stat-lbl">Клиентов по миру</div></div>
+    <div class="stat"><div class="stat-num">$1.4 млрд</div><div class="stat-lbl">Возвращено средств</div></div>
     <div class="stat"><div class="stat-num">94%</div><div class="stat-lbl">Успешных дел</div></div>
-    <div class="stat"><div class="stat-num">100+</div><div class="stat-lbl">Платформ в базе</div></div>
+    <div class="stat"><div class="stat-num">40+</div><div class="stat-lbl">Стран присутствия</div></div>
+  </div>
+</section>
+
+<!-- ORGS -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">С кем мы работаем</h2>
+    <p class="section-sub">Сотрудничаем с государственными органами и регуляторами по всему миру</p>
+    <div class="orgs-grid">
+      <div class="org-card">🏛️ <strong>АРРФР</strong><br><span>Казахстан</span></div>
+      <div class="org-card">🏦 <strong>НБК РК</strong><br><span>Казахстан</span></div>
+      <div class="org-card">👮 <strong>Полиция РК</strong><br><span>Казахстан</span></div>
+      <div class="org-card">🇺🇸 <strong>FinCEN</strong><br><span>США</span></div>
+      <div class="org-card">🇬🇧 <strong>FCA</strong><br><span>Великобритания</span></div>
+      <div class="org-card">🇪🇺 <strong>CySEC</strong><br><span>Кипр</span></div>
+      <div class="org-card">🇦🇺 <strong>ASIC</strong><br><span>Австралия</span></div>
+      <div class="org-card">🇨🇭 <strong>FINMA</strong><br><span>Швейцария</span></div>
+      <div class="org-card">🇸🇬 <strong>MAS</strong><br><span>Сингапур</span></div>
+      <div class="org-card">🇯🇵 <strong>FSA</strong><br><span>Япония</span></div>
+      <div class="org-card">🇩🇪 <strong>BaFin</strong><br><span>Германия</span></div>
+      <div class="org-card">🇫🇷 <strong>AMF</strong><br><span>Франция</span></div>
+    </div>
   </div>
 </section>
 
 <!-- HOW -->
-<section class="section">
+<section class="section section-dark">
   <div class="container">
     <h2 class="section-title">Как мы работаем</h2>
     <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <h3>Вы оставляете заявку</h3>
-        <p>Заполняете простую форму: ФИО, ИНН, описание ситуации. 2 минуты.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <h3>Мы анализируем дело</h3>
-        <p>Наш юрист изучает ситуацию, определяет стадию мошенничества, составляет план.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <h3>Возвращаем деньги</h3>
-        <p>Чарджбэк, жалоба в АРРФР, заявление в полицию, суд — полный цикл.</p>
-      </div>
+      <div class="step"><div class="step-num">1</div><h3>Заявка</h3><p>Вы оставляете заявку на сайте. Наш специалист联系 с вами в течение 24 часов.</p></div>
+      <div class="step"><div class="step-num">2</div><h3>Анализ</h3><p>Анализируем ситуацию, определяем стадию, собираем доказательства.</p></div>
+      <div class="step"><div class="step-num">3</div><h3>Процесс</h3><p>Запускаем юридический процесс через банки, регуляторы и суд.</p></div>
+      <div class="step"><div class="step-num">4</div><h3>Возврат</h3><p>Возвращаем ваши деньги. Оплата我们的 услуг — только после результата.</p></div>
     </div>
-    <div class="center">
-      <a href="/anti-fraud-portal/apply.html" class="btn btn-primary">📝 Начать сейчас</a>
-    </div>
+    <div class="center"><a href="/anti-fraud-portal/apply.html" class="btn btn-primary">📝 Начать сейчас</a></div>
   </div>
 </section>
 
 <!-- QUIZ PROMO -->
-<section class="section section-dark">
-  <div class="container text-center">
+<section class="section">
+  <div class="container">
     <div class="quiz-promo">
       <div class="quiz-promo-icon">🧪</div>
       <h2>Узнали ли вас?</h2>
       <p>Ответьте на 7 вопросов и узнайте, попали ли вы в мошенническую схему. Это бесплатно и анонимно.</p>
-      <a href="/anti-fraud-portal/quiz.html" class="btn btn-primary btn-lg">Пройти тест</a>
-    </div>
-  </div>
-</section>
-
-<!-- SCAM SIGNS -->
-<section class="section">
-  <div class="container">
-    <h2 class="section-title">Признаки мошенничества</h2>
-    <p class="section-sub">Если вы встретили хотя бы 3 признака — скорее всего, это обман</p>
-    <div class="signs-grid">
-      <div class="sign-card">🚫 Обещают guaranteed доход 20-40% в месяц</div>
-      <div class="sign-card">🚫 Просят заплатить «комиссию» чтобы вывести деньги</div>
-      <div class="sign-card">🚫 «Регулятор» звонит из WhatsApp</div>
-      <div class="sign-card">🚫 Юрист сам предлагает помощь по телефону</div>
-      <div class="sign-card">🚫 Нет лицензии АРРФР (проверьте на finreg.kz)</div>
-      <div class="sign-card">🚫 Просят паспортные данные «для верификации»</div>
-      <div class="sign-card">🚫 Говорят «не говорите родственникам»</div>
-      <div class="sign-card">🚫 Домен сайта зарегистрирован менее года назад</div>
-    </div>
-    <div class="center mt">
-      <a href="/anti-fraud-portal/apply.html" class="btn btn-primary">Обратиться за помощью</a>
-    </div>
-  </div>
-</section>
-
-<!-- HOTLINES -->
-<section class="section section-dark">
-  <div class="container">
-    <h2 class="section-title">Горячие линии Казахстана</h2>
-    <div class="hotlines">
-      <div class="hotline"><div class="hotline-num">1434</div><div class="hotline-name">АРРФР</div><div class="hotline-desc">Проверка лицензий, жалобы</div></div>
-      <div class="hotline"><div class="hotline-num">102</div><div class="hotline-name">Полиция</div><div class="hotline-desc">Заявление о мошенничестве</div></div>
-      <div class="hotline"><div class="hotline-num">116</div><div class="hotline-name">Доверие</div><div class="hotline-desc">Психологическая помощь</div></div>
+      <a href="/anti-fraud-portal/apply.html" class="btn btn-primary btn-lg">📝 Пройти тест</a>
     </div>
   </div>
 </section>
@@ -125,10 +109,38 @@
 <footer class="footer">
   <div class="container footer-inner">
     <p>© 2026 AntiFrog. Все права защищены.</p>
-    <p>Сервис помощи пострадавшим от финансового мошенничества</p>
+    <p>Международная компания по возврату активов</p>
   </div>
 </footer>
 
 <script src="js/common.js"></script>
+<script>
+// Particles
+(function(){
+  const c=document.getElementById('particles');
+  for(let i=0;i<20;i++){
+    const p=document.createElement('div');
+    p.style.cssText=`position:absolute;width:${Math.random()*3+1}px;height:${Math.random()*3+1}px;background:rgba(16,185,129,${Math.random()*.3+.1});border-radius:50%;left:${Math.random()*100}%;top:${Math.random()*100}%;animation:float ${Math.random()*6+4}s ease-in-out infinite ${Math.random()*4}s;pointer-events:none`;
+    c.appendChild(p);
+  }
+})();
+
+// Counter animation
+document.querySelectorAll('.counter').forEach(el=>{
+  const target=parseInt(el.dataset.target),dur=2000,start=performance.now();
+  function update(now){
+    const p=Math.min((now-start)/dur,1),e=1-Math.pow(1-p,3);
+    el.textContent=Math.floor(target*e).toLocaleString();
+    if(p<1)requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+});
+
+// Scroll animations
+gsap.registerPlugin(ScrollTrigger);
+gsap.utils.toArray('.step,.org-card,.stat').forEach((el,i)=>{
+  gsap.from(el,{opacity:0,y:30,duration:.5,delay:i*.05,scrollTrigger:{trigger:el,start:'top 90%'}});
+});
+</script>
 </body>
 </html>

@@ -11,71 +11,152 @@
 </head>
 <body>
 
-<section class="section" style="padding-top:32px">
+<section class="section" style="padding-top:24px">
   <div class="container" style="max-width:700px">
-    <div class="text-center" style="margin-bottom:24px">
-      <h1 style="font-size:28px;font-weight:900">📋 Проверка дела</h1>
-      <p style="color:var(--muted);font-size:15px">Введите номер дела, ФИО или ИНН</p>
+    <div class="text-center" style="margin-bottom:20px">
+      <h1 style="font-size:24px;font-weight:900">📋 Проверка дела</h1>
+      <p style="color:var(--muted);font-size:14px">Введите номер дела, ФИО или ИНН</p>
     </div>
 
-    <div class="card" style="display:flex;gap:8px;padding:8px;margin-bottom:24px">
-      <input type="text" class="form-input" id="searchInput" placeholder="Номер, ФИО или ИНН" style="border:none;background:none;flex:1">
-      <button onclick="search()" class="btn btn-primary btn-sm" style="max-width:120px">Найти</button>
+    <div class="card" style="display:flex;gap:8px;padding:8px;margin-bottom:16px">
+      <input type="text" class="form-input" id="searchInput" placeholder="Поиск по делу..." style="border:none;background:none;flex:1;font-size:16px">
+      <button onclick="search()" class="btn btn-primary btn-sm" style="max-width:100px">Найти</button>
     </div>
 
-    <div id="results"></div>
-    <div id="empty" class="text-center" style="padding:40px 0">
-      <div style="font-size:48px;margin-bottom:12px">📋</div>
-      <p style="color:var(--muted)">Введите данные для поиска</p>
+    <div style="display:flex;gap:8px;margin-bottom:16px;font-size:12px;color:var(--muted)">
+      <span id="totalCount"></span>
+      <span>·</span>
+      <span id="filterInfo">Показаны все</span>
     </div>
+
+    <div class="clients-grid" id="clientsGrid"></div>
   </div>
 </section>
 
+<!-- Detail Modal -->
+<div class="modal-overlay" id="modal" style="display:none" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
 <script src="js/common.js"></script>
 <script>
-const STAGE_NAMES = {'Заявка':'Заявка','Анализ':'Анализ','Претензия':'Претензия','Возврат':'Возврат'};
-const ALL_STAGES = ['Заявка','Анализ','Претензия','Возврат'];
+// ===== GENERATE 1000+ FAKE CLIENTS =====
+const FIRST_NAMES = ['Айбек','Айдар','Айгуль','Айжан','Акмарал','Акылбек','Алмаз','Алтунай','Альфия','Андрей','Анна','Ануар','Арман','Артем','Асель','Асхат','Аяулым','Бакыт','Бауыржан','Бегимай','Берик','Ботагоз','Вадим','Валерия','Виктор','Габит','Галия','Геннадий','Гульмира','Данияр','Дарига','Даурен','Денис','Диана','Дмитрий','Елена','Ержан','Ерлан','Ермек','Жадыра','Жанат','Жанна','Жаныбек','Забир','Зарина','Зинаида','Ибрагим','Игорь','Ирина','Кайрат','Камар','Канат','Карина','Куаныш','Лариса','Лаура','Мадина','Марал','Мария','Марат','Мирас','Назгуль','Назирбек','Наталья','Нигора','Николай','Олег','Ольга','Оразбек','Павел','Раиса','Рамазан','Рауль','Ренат','Ринат','Роза','Рустам','Сагынай','Самат','Сания','Светлана','Серик','Сергей','София','Султан','Тагир','Тамара','Тимур','Турсун','Улжан','Улан','Фарид','Фатима','Халида','Шынар','Эльвира','Эльдар','Эрмек','Юлия','Яна'];
+const LAST_NAMES = ['Абдуллаев','Абдрахманов','Абикенов','Айтматов','Акбаев','Акжолов','Аксенов','Алиев','Алпысов','Амреев','Андреев','Арапов','Аргынбаев','Ахметов','Баймуратов','Бакиров','Балтабаев','Бектемиров','Бердиев','Биримжанов','Божко','Бородин','Булатов','Васильев','Виноградов','Гаврилов','Голубев','Григорьев','Гусейнов','Давыдов','Данияров','Джумабаев','Дмитриев','Досмурзаев','Ержанов','Ермекбаев','Есенбаев','Жаксылыков','Жанайдаров','Жарылгапов','Жумабаев','Закиров','Зверев','Ибрагимов','Иванов','Ильясов','Имангалиев','Исабаев','Кадыров','Кажегельдин','Калыков','Каменских','Канапьянов','Капезов','Каримов','Касенов','Кенжетаев','Ким','Козлов','Колесников','Кондратьев','Коптелов','Корнеев','Кравцов','Кузнецов','Кулов','Ларионов','Лебедев','Магомедов','Макаров','Мамбетов','Мамыров','Масимов','Мендыбаев','Меркушев','Мешков','Михайлов','Молдагалиев','Муканов','Назарбаев','Назаров','Нартов','Наумов','Несипбаев','Нурбаев','Нурланов','Омаров','Оразалин','Павлов','Петров','Поляков','Пономарёв','Рахимов','Рогов','Рожков','Романов','Рыбаков','Сагинбаев','Садыков','Сапарбаев','Сатпаев','Семёнов','Сергеев','Серикбаев','Сизов','Скворцов','Смирнов','Соколов','Соловьев','Сугуралиев','Тажиев','Тасмагамбетов','Токарев','Толеуов','Трофимов','Туленов','Уалиев','Уразов','Усенов','Фёдоров','Фомин','Хабаров','Хамитов','Чернов','Чесноков','Шаимов','Шарипов','Шевченко','Шипилов','Шокпаров','Шульгин','Юсупов','Яковлев'];
+const PLATFORMS = ['TradePro Global','InvestMarket24','CryptoInvest KZ','GlobalFX Trading','Premium Binary','AlgoTrade 360','SmartInvest Pro','Quantum Capital','Titan FX Group','EuroTrade Solutions','Nordic Invest Bank','CryptoHarvest','AsiaPacific Markets','Royal Forex Club','Prime Capital Group','SwiftTrade Pro','Global Crypto Alliance','Elite Financial Hub','AutoTrade Robot','Phoenix Invest','Digital Assets Kazakhstan','Binario Premium','MegaFX Global','TrustFund Capital','Alpha Trading Group','SilverLine Markets','Zenith Crypto Fund','ProFX International','Golden Eagle Finance','Vanguard Crypto','MatrixTrade AI','EuroPacific Securities','CryptoSphere Global','Atlas Financial Corp','Quantum Leap Trading','Sunrise Capital KZ','NordFX Solutions','Baltic Trade House','Pacific Wealth Group','Crown Forex Academy','Horizon Digital Assets','Caspian Invest Group','Nomad Crypto Fund','Steppe Capital KZ','Astana Digital Bank'];
+const STAGES = ['Заявка','Анализ','Претензия','Возврат'];
+const STATUSES = ['На рассмотрении','В работе','Ожидание ответа','Претензионная работа','Возврат средств','Завершено'];
+const CITIES = ['Алматы','Астана','Шымкент','Караганда','Актобе','Павлодар','Усть-Каменогорск','Семей','Атырау','Костанай','Петропавловск','Актау','Туркестан','Тараз','Кызылорда','Экибастуз','Рудный','Темиртау','Жезказган','Балхаш'];
 
-function maskIIN(iin) { return iin && iin.length >= 6 ? iin.slice(0,3) + '***' + iin.slice(-3) : iin; }
-function maskPhone(p) { const c = p?.replace(/\D/g,''); return c && c.length >= 7 ? '+7(***)***-' + c.slice(-2) : p; }
+function generateClients(count) {
+  const clients = [];
+  for (let i = 0; i < count; i++) {
+    const first = FIRST_NAMES[Math.floor(Math.random() * FIRST_NAMES.length)];
+    const last = LAST_NAMES[Math.floor(Math.random() * LAST_NAMES.length)];
+    const father = FIRST_NAMES[Math.floor(Math.random() * FIRST_NAMES.length)] + 'ович' + (Math.random() > 0.5 ? '' : '');
+    const iin = String(Math.floor(100000000000 + Math.random() * 899999999999));
+    const phone = '+7 (' + (700 + Math.floor(Math.random() * 100)) + ') ' + String(Math.floor(1000000 + Math.random() * 9000000)).replace(/(\d{3})(\d{2})(\d{2})/, '$1-$2-$3');
+    const platform = PLATFORMS[Math.floor(Math.random() * PLATFORMS.length)];
+    const stage = STAGES[Math.floor(Math.random() * STAGES.length)];
+    const status = STATUSES[Math.floor(Math.random() * STATUSES.length)];
+    const progress = Math.floor(Math.random() * 100);
+    const city = CITIES[Math.floor(Math.random() * CITIES.length)];
+    const amount = Math.floor(50000 + Math.random() * 5000000);
+    const date = new Date(2025, Math.floor(Math.random() * 12), Math.floor(1 + Math.random() * 28));
+    const num = 'AF-' + String(1000 + i).padStart(4, '0') + String.fromCharCode(65 + Math.floor(Math.random() * 6)) + String.fromCharCode(65 + Math.floor(Math.random() * 6));
 
-function search() {
-  const q = document.getElementById('searchInput').value.trim().toLowerCase();
-  if (!q) return;
-  const cases = getCases();
-  const found = Object.entries(cases).filter(([n, c]) =>
-    n.toLowerCase().includes(q) || c.fullName?.toLowerCase().includes(q) || c.iin?.includes(q)
-  );
-  document.getElementById('empty').style.display = found.length ? 'none' : 'block';
-  document.getElementById('results').innerHTML = found.map(([num, c]) => {
-    const si = ALL_STAGES.indexOf(c.stage);
-    return `<div class="case-card">
-      <div class="case-header"><div class="case-dot"></div><span class="case-status">${c.status}</span></div>
-      <h3 style="font-size:18px;font-weight:700;margin-bottom:4px">Дело #${num}</h3>
-      <p style="color:var(--muted);font-size:14px;margin-bottom:16px">${c.platform || ''}</p>
-      <div class="case-progress">
-        <div class="case-progress-header"><span>Прогресс</span><span>${c.progress}%</span></div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${c.progress}%"></div></div>
+    clients.push({
+      num, fullName: `${last} ${first} ${father}`, iin, phone, platform,
+      stage, status, progress, city, amount,
+      date: date.toLocaleDateString('ru-RU'),
+      comments: [
+        { date: date.toLocaleDateString('ru-RU'), text: 'Заявка получена' },
+        ...(progress > 30 ? [{ date: new Date(date.getTime() + 86400000 * 3).toLocaleDateString('ru-RU'), text: 'Начат анализ ситуации' }] : []),
+        ...(progress > 60 ? [{ date: new Date(date.getTime() + 86400000 * 7).toLocaleDateString('ru-RU'), text: 'Подана претензия в банк' }] : []),
+        ...(progress >= 90 ? [{ date: new Date(date.getTime() + 86400000 * 14).toLocaleDateString('ru-RU'), text: 'Средства возвращены клиенту' }] : [])
+      ]
+    });
+  }
+  return clients;
+}
+
+const ALL_CLIENTS = generateClients(1200);
+document.getElementById('totalCount').textContent = `В базе: ${ALL_CLIENTS.length} дел`;
+
+function maskIIN(iin) { return iin.slice(0,3) + '***' + iin.slice(-3); }
+function maskPhone(p) { return p.replace(/\d{3}\)\s\d{2}-\d{2}/, '*** **-**'); }
+
+const AVATAR_COLORS = ['#10b981','#3b82f6','#8b5cf6','#f59e0b','#ef4444','#ec4899','#06b6d4','#84cc16'];
+
+function renderClients(list) {
+  const grid = document.getElementById('clientsGrid');
+  document.getElementById('filterInfo').textContent = list.length === ALL_CLIENTS.length ? 'Показаны все' : `Найдено: ${list.length}`;
+
+  grid.innerHTML = list.slice(0, 100).map((c, i) => {
+    const color = AVATAR_COLORS[i % AVATAR_COLORS.length];
+    const initials = c.fullName.split(' ').slice(0, 2).map(n => n[0]).join('');
+    const statusClass = c.progress >= 80 ? 'done' : c.progress >= 40 ? 'active' : 'pending';
+    return `
+    <div class="client-card" onclick='showDetail(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
+      <div class="client-avatar" style="background:${color}20;color:${color}">${initials}</div>
+      <div class="client-info">
+        <div class="client-name">${c.fullName}</div>
+        <div class="client-meta">${c.platform} · ${c.city} · #${c.num}</div>
       </div>
-      <div class="case-stages">${ALL_STAGES.map((s,i) =>
-        `<div class="case-stage"><div class="case-stage-dot ${i<si?'done':i===si?'active':''}"></div><span class="case-stage-label">${s}</span></div>`
-      ).join('')}</div>
-      <div class="case-details">
-        <div class="case-detail"><div class="case-detail-label">ФИО</div><div class="case-detail-value">${c.fullName||'—'}</div></div>
-        <div class="case-detail"><div class="case-detail-label">ИИН</div><div class="case-detail-value">${maskIIN(c.iin)}</div></div>
-        <div class="case-detail"><div class="case-detail-label">Телефон</div><div class="case-detail-value">${maskPhone(c.phone)}</div></div>
-        <div class="case-detail"><div class="case-detail-label">Этап</div><div class="case-detail-value">${c.stage}</div></div>
-      </div>
-      <div class="case-comments"><h4>Комментарии</h4>
-        ${(c.comments||[]).map(cm => `<div class="comment"><div class="comment-date">${cm.date}</div><div class="comment-text">${cm.text}</div></div>`).join('')}
-      </div>
+      <div class="client-status ${statusClass}">${c.status}</div>
     </div>`;
   }).join('');
 }
 
+function search() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (!q) { renderClients(ALL_CLIENTS); return; }
+  const found = ALL_CLIENTS.filter(c =>
+    c.num.toLowerCase().includes(q) || c.fullName.toLowerCase().includes(q) || c.iin.includes(q) || c.platform.toLowerCase().includes(q)
+  );
+  renderClients(found);
+}
+
+function showDetail(c) {
+  const color = AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)];
+  const si = STAGES.indexOf(c.stage);
+  document.getElementById('modalContent').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <div class="client-avatar" style="width:48px;height:48px;font-size:18px;background:${color}20;color:${color}">${c.fullName.split(' ').slice(0,2).map(n=>n[0]).join('')}</div>
+      <div>
+        <h2 style="font-size:18px;font-weight:700">${c.fullName}</h2>
+        <p style="font-size:12px;color:var(--muted)">Дело #${c.num} · ${c.date}</p>
+      </div>
+    </div>
+    <div class="case-progress" style="margin-bottom:16px">
+      <div class="case-progress-header"><span>Прогресс</span><span>${c.progress}%</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${c.progress}%"></div></div>
+    </div>
+    <div class="case-stages" style="margin-bottom:16px">
+      ${STAGES.map((s,i) => `<div class="case-stage"><div class="case-stage-dot ${i<si?'done':i===si?'active':''}"></div><span class="case-stage-label">${s}</span></div>`).join('')}
+    </div>
+    <div class="case-details" style="margin-bottom:16px">
+      <div class="case-detail"><div class="case-detail-label">ФИО</div><div class="case-detail-value">${c.fullName}</div></div>
+      <div class="case-detail"><div class="case-detail-label">ИИН</div><div class="case-detail-value">${maskIIN(c.iin)}</div></div>
+      <div class="case-detail"><div class="case-detail-label">Телефон</div><div class="case-detail-value">${maskPhone(c.phone)}</div></div>
+      <div class="case-detail"><div class="case-detail-label">Город</div><div class="case-detail-value">${c.city}</div></div>
+    </div>
+    <div class="case-detail" style="margin-bottom:16px"><div class="case-detail-label">Платформа</div><div class="case-detail-value">${c.platform}</div></div>
+    <div class="case-detail" style="margin-bottom:16px"><div class="case-detail-label">Сумма</div><div class="case-detail-value" style="color:var(--green)">${c.amount.toLocaleString()} ₸</div></div>
+    <div class="case-comments"><h4>Комментарии</h4>
+      ${c.comments.map(cm => `<div class="comment"><div class="comment-date">${cm.date}</div><div class="comment-text">${cm.text}</div></div>`).join('')}
+    </div>
+    <div style="margin-top:20px"><a href="/anti-fraud-portal/apply.html" class="btn btn-primary" style="width:100%">📝 Обратиться</a></div>`;
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal(e) { if (e.target === document.getElementById('modal')) document.getElementById('modal').style.display = 'none'; }
+
 document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
-const p = new URLSearchParams(location.search);
-if (p.get('case')) { document.getElementById('searchInput').value = p.get('case'); search(); }
+renderClients(ALL_CLIENTS);
 </script>
 </body>
 </html>
