@@ -24,7 +24,7 @@ const NAV_HTML = `
   <a href="${BASE}/services.html" class="bottombar-item"><span class="bottombar-icon">💼</span><span>Услуги</span></a>
   <a href="${BASE}/apply.html" class="bottombar-item bottombar-cta"><span class="bottombar-icon">📝</span><span>Заявка</span></a>
   <a href="${BASE}/check.html" class="bottombar-item"><span class="bottombar-icon">📋</span><span>Дело</span></a>
-  <a href="${BASE}/admin.html" class="bottombar-item"><span class="bottombar-icon">⚙️</span><span>Admin</span></a>
+  <a href="${BASE}/admin.html" class="bottombar-item" style="opacity:0.4"><span class="bottombar-icon">⚙️</span><span></span></a>
 </div>
 `;
 

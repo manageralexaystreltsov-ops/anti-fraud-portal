@@ -11,118 +11,329 @@
 </head>
 <body>
 
-<section class="section" style="padding-top:32px">
+<!-- PASSWORD GATE -->
+<div id="gate" class="section" style="padding-top:60px">
+  <div class="container" style="max-width:400px;text-align:center">
+    <div style="font-size:48px;margin-bottom:16px">⚙️</div>
+    <h1 style="font-size:22px;font-weight:900;margin-bottom:8px">Админ-панель</h1>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:24px">Введите пароль для доступа</p>
+    <div class="card" style="padding:20px">
+      <input type="password" id="pwdInput" class="form-input" placeholder="Пароль" style="text-align:center;font-size:18px;letter-spacing:4px" autofocus>
+      <button onclick="checkPwd()" class="btn btn-primary" style="width:100%;margin-top:12px">Войти</button>
+      <p id="pwdError" style="color:var(--red);font-size:13px;margin-top:8px;display:none">Неверный пароль</p>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="panel" class="hidden" style="padding-bottom:80px">
   <div class="container" style="max-width:800px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
-      <h1 style="font-size:24px;font-weight:900">⚙️ Админ-панель</h1>
-      <a href="/anti-fraud-portal/" style="font-size:13px;color:var(--muted)">← Сайт</a>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-top:12px">
+      <h1 style="font-size:20px;font-weight:900">⚙️ Управление клиентами</h1>
+      <div style="display:flex;gap:8px">
+        <button onclick="exportData()" class="btn btn-outline btn-sm" style="max-width:120px">📥 Экспорт</button>
+        <button onclick="showTab('add')" class="btn btn-primary btn-sm" style="max-width:120px">➕ Добавить</button>
+      </div>
     </div>
 
-    <div class="admin-tabs">
-      <div class="admin-tab active" onclick="showTab('list')">📋 Заявки</div>
-      <div class="admin-tab" onclick="showTab('add')">➕ Добавить</div>
-      <div class="admin-tab" onclick="showTab('info')">🤖 Бот</div>
+    <!-- TABS -->
+    <div class="admin-tabs" style="margin-bottom:16px">
+      <div class="admin-tab active" onclick="showTab('list')">📋 Клиенты (<span id="clientCount">0</span>)</div>
+      <div class="admin-tab" onclick="showTab('add')">➕ Новый</div>
+      <div class="admin-tab" onclick="showTab('import')">📥 Импорт</div>
     </div>
 
-    <div id="tabList">
-      <div id="casesList"></div>
+    <!-- SEARCH -->
+    <div class="card" style="display:flex;gap:8px;padding:8px;margin-bottom:16px" id="searchBlock">
+      <input type="text" class="form-input" id="searchInput" placeholder="Поиск по ФИО, номеру, платформе..." style="border:none;background:none;flex:1" oninput="filterClients()">
     </div>
 
-    <div id="tabAdd" class="hidden">
+    <!-- CLIENT LIST -->
+    <div id="listTab">
+      <div id="clientsList"></div>
+    </div>
+
+    <!-- ADD CLIENT -->
+    <div id="addTab" class="hidden">
       <div class="card card-lg">
-        <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">Добавить дело</h2>
+        <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">Новый клиент</h2>
+        <div class="form-group"><label class="form-label">ФИО *</label><input class="form-input" id="a_name"></div>
         <div class="form-row">
-          <div class="form-group"><label class="form-label">ФИО</label><input class="form-input" id="aName"></div>
-          <div class="form-group"><label class="form-label">ИИН</label><input class="form-input" id="aIin" maxlength="12"></div>
+          <div class="form-group"><label class="form-label">Телефон</label><input class="form-input" id="a_phone"></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="a_email"></div>
         </div>
+        <div class="form-group"><label class="form-label">Платформа *</label><input class="form-input" id="a_platform"></div>
         <div class="form-row">
-          <div class="form-group"><label class="form-label">Телефон</label><input class="form-input" id="aPhone"></div>
-          <div class="form-group"><label class="form-label">Платформа</label><input class="form-input" id="aPlatform"></div>
+          <div class="form-group"><label class="form-label">Сумма потерь (₸)</label><input class="form-input" id="a_amount" type="number"></div>
+          <div class="form-group"><label class="form-label">Сумма возврата (₸)</label><input class="form-input" id="a_recovered" type="number" value="0"></div>
         </div>
         <div class="form-row">
           <div class="form-group"><label class="form-label">Этап</label>
-            <select class="form-input" id="aStage"><option>Заявка</option><option>Анализ</option><option>Претензия</option><option>Возврат</option></select>
+            <select class="form-input" id="a_stage"><option>Заявка</option><option>Анализ</option><option>Претензия</option><option>Чарджбэк</option><option>Суд</option><option>Возврат</option><option>Завершено</option></select>
           </div>
-          <div class="form-group"><label class="form-label">Прогресс %</label><input type="number" class="form-input" id="aProgress" value="10"></div>
+          <div class="form-group"><label class="form-label">Прогресс %</label><input class="form-input" id="a_progress" type="number" value="10" min="0" max="100"></div>
         </div>
-        <button onclick="addCase()" class="btn btn-primary">+ Добавить</button>
+        <div class="form-group"><label class="form-label">Первый комментарий</label><textarea class="form-input" id="a_comment" rows="2"></textarea></div>
+        <div style="display:flex;gap:8px">
+          <button onclick="showTab('list')" class="btn btn-outline" style="flex:1">Отмена</button>
+          <button onclick="addClient()" class="btn btn-primary" style="flex:2">Добавить клиента</button>
+        </div>
       </div>
     </div>
 
-    <div id="tabInfo" class="hidden">
+    <!-- IMPORT -->
+    <div id="importTab" class="hidden">
       <div class="card card-lg">
-        <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">Telegram бот</h2>
-        <div style="background:var(--card);border-radius:12px;padding:16px;margin-bottom:12px">
-          <p style="font-size:12px;color:var(--muted)">Бот</p>
-          <p style="font-family:monospace">@finmanager_check_bot</p>
-        </div>
-        <div style="background:var(--card);border-radius:12px;padding:16px;margin-bottom:12px">
-          <p style="font-size:12px;color:var(--muted)">Chat ID</p>
-          <p style="font-family:monospace">8471070560</p>
-        </div>
-        <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:12px;padding:16px">
-          <p style="font-size:13px;color:var(--green)">✅ Заявки с сайта приходят в Telegram автоматически</p>
-        </div>
+        <h2 style="font-size:18px;font-weight:700;margin-bottom:12px">Импорт данных</h2>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:16px">Вставьте JSON-данные для импорта клиентов</p>
+        <textarea class="form-input" id="importData" rows="10" placeholder='[{"num":"AF-2606-1234","fullName":"Иванов Иван",...}]' style="font-family:monospace;font-size:12px"></textarea>
+        <button onclick="importData()" class="btn btn-primary" style="width:100%;margin-top:12px">Импортировать</button>
       </div>
     </div>
+
   </div>
-</section>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal" style="display:none" onclick="closeEdit(event)">
+  <div class="modal" onclick="event.stopPropagation()" style="max-height:90vh">
+    <div class="modal-handle"></div>
+    <div id="editContent"></div>
+  </div>
+</div>
 
 <script src="js/common.js"></script>
 <script>
-function showTab(t) {
-  ['List','Add','Info'].forEach(id => document.getElementById('tab'+id).classList.add('hidden'));
-  document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.remove('hidden');
-  document.querySelectorAll('.admin-tab').forEach(el => el.classList.remove('active'));
-  event.target.classList.add('active');
-  if (t === 'list') renderCases();
-}
+const PASSWORD = '1304';
+const STAGES = ['Заявка','Анализ','Претензия','Чарджбэк','Суд','Возврат','Завершено'];
 
-function renderCases() {
-  const cases = getCases();
-  const el = document.getElementById('casesList');
-  const entries = Object.entries(cases);
-  if (!entries.length) { el.innerHTML = '<div class="card text-center" style="padding:32px;color:var(--muted)">Нет заявок</div>'; return; }
-  el.innerHTML = entries.map(([n, c]) => `
-    <div class="card" style="padding:16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="editCase('${n}')">
-      <div>
-        <p style="font-weight:700">${c.fullName||'Без имени'}</p>
-        <p style="font-size:12px;color:var(--muted)">${c.platform||'?'} · ${c.stage} · ${c.progress}%</p>
-      </div>
-      <span style="font-size:11px;padding:4px 10px;background:${c.progress>=50?'rgba(16,185,129,0.1)':'rgba(245,158,11,0.1)'};color:${c.progress>=50?'var(--green)':'var(--gold)'};border-radius:8px;font-weight:600">${c.status}</span>
-    </div>
-  `).join('');
-}
-
-function editCase(num) {
-  const cases = getCases();
-  const c = cases[num];
-  const s = prompt(`Статус для #${num}:\nТекущий: ${c.status}`, c.status);
-  if (s && s !== c.status) {
-    c.status = s;
-    if (!c.comments) c.comments = [];
-    c.comments.push({ date: new Date().toLocaleString('ru-RU'), text: 'Статус: ' + s });
-    cases[num] = c; saveCases(cases); renderCases(); showToast('Обновлено');
+function checkPwd() {
+  if (document.getElementById('pwdInput').value === PASSWORD) {
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('panel').classList.remove('hidden');
+    renderList();
+  } else {
+    document.getElementById('pwdError').style.display = 'block';
+    setTimeout(() => document.getElementById('pwdError').style.display = 'none', 2000);
   }
 }
+document.getElementById('pwdInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPwd(); });
 
-function addCase() {
-  const num = 'AF-' + Date.now().toString(36).toUpperCase().slice(-6);
-  const cases = getCases();
-  cases[num] = {
-    fullName: document.getElementById('aName').value.trim(),
-    iin: document.getElementById('aIin').value.trim(),
-    phone: document.getElementById('aPhone').value.trim(),
-    platform: document.getElementById('aPlatform').value.trim(),
-    stage: document.getElementById('aStage').value,
-    progress: parseInt(document.getElementById('aProgress').value)||10,
-    status: 'На рассмотрении',
-    comments: [{ date: new Date().toLocaleString('ru-RU'), text: 'Создано администратором' }]
-  };
-  saveCases(cases); showToast('Добавлено: ' + num); showTab('list');
+function showTab(t) {
+  ['list','add','import'].forEach(id => document.getElementById(id+'Tab').classList.add('hidden'));
+  document.getElementById(t+'Tab').classList.remove('hidden');
+  document.querySelectorAll('.admin-tab').forEach(el => el.classList.remove('active'));
+  event?.target?.classList?.add('active');
 }
 
-renderCases();
+function renderList(filter) {
+  const cases = getCases();
+  let entries = Object.entries(cases);
+  if (filter) {
+    const q = filter.toLowerCase();
+    entries = entries.filter(([n,c]) => c.fullName?.toLowerCase().includes(q) || n.toLowerCase().includes(q) || c.platform?.toLowerCase().includes(q));
+  }
+  document.getElementById('clientCount').textContent = entries.length;
+  const list = document.getElementById('clientsList');
+
+  if (!entries.length) {
+    list.innerHTML = '<div class="card text-center" style="padding:32px;color:var(--muted)">Нет клиентов. Нажмите «Добавить».</div>';
+    return;
+  }
+
+  list.innerHTML = entries.map(([num, c]) => {
+    const si = STAGES.indexOf(c.stage);
+    const pct = c.progress || 0;
+    const color = pct >= 80 ? 'var(--green)' : pct >= 40 ? 'var(--blue)' : 'var(--gold)';
+    return `
+    <div class="card" style="padding:14px;margin-bottom:8px;cursor:pointer" onclick="editClient('${num}')">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:42px;height:42px;border-radius:12px;background:${color}15;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:${color};flex-shrink:0">${num.slice(-4)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.fullName || 'Без имени'}</div>
+          <div style="font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.platform || '?'} · ${c.stage || '?'} · ${pct}%</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:11px;padding:3px 8px;border-radius:6px;background:${color}15;color:${color};font-weight:600">${c.status || 'На рассмотрении'}</div>
+          ${c.amount ? `<div style="font-size:11px;color:var(--muted);margin-top:4px">${Number(c.amount).toLocaleString()} ₸</div>` : ''}
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <div class="progress-bar" style="height:3px"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterClients() { renderList(document.getElementById('searchInput').value); }
+
+function editClient(num) {
+  const c = getCases()[num];
+  if (!c) return;
+
+  const si = STAGES.indexOf(c.stage);
+  document.getElementById('editContent').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="font-size:18px;font-weight:800">Дело #${num}</h2>
+      <button onclick="document.getElementById('editModal').style.display='none'" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer">✕</button>
+    </div>
+
+    <!-- STATUS & STAGE -->
+    <div class="card" style="padding:14px;margin-bottom:12px">
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <select class="form-input" id="e_stage" style="flex:1;font-size:13px;padding:10px">
+          ${STAGES.map(s => `<option ${s===c.stage?'selected':''}>${s}</option>`).join('')}
+        </select>
+        <input type="number" class="form-input" id="e_progress" value="${c.progress||0}" min="0" max="100" style="width:70px;font-size:13px;padding:10px">
+        <span style="color:var(--muted);font-size:13px;align-self:center">%</span>
+      </div>
+      <div class="case-stages" style="margin-bottom:0">
+        ${STAGES.map((s,i) => `<div class="case-stage"><div class="case-stage-dot ${i<si?'done':i===si?'active':''}"></div><span class="case-stage-label" style="font-size:9px">${s}</span></div>`).join('')}
+      </div>
+    </div>
+
+    <!-- CLIENT INFO -->
+    <div class="card" style="padding:14px;margin-bottom:12px">
+      <h3 style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--muted)">Данные клиента</h3>
+      <div class="form-group"><label class="form-label">ФИО</label><input class="form-input" id="e_name" value="${c.fullName||''}" style="font-size:14px;padding:10px"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Телефон</label><input class="form-input" id="e_phone" value="${c.phone||''}" style="font-size:14px;padding:10px"></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="e_email" value="${c.email||''}" style="font-size:14px;padding:10px"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Платформа</label><input class="form-input" id="e_platform" value="${c.platform||''}" style="font-size:14px;padding:10px"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Потери (₸)</label><input class="form-input" id="e_amount" type="number" value="${c.amount||0}" style="font-size:14px;padding:10px"></div>
+        <div class="form-group"><label class="form-label">Возврат (₸)</label><input class="form-input" id="e_recovered" type="number" value="${c.recovered||0}" style="font-size:14px;padding:10px"></div>
+      </div>
+    </div>
+
+    <!-- COMMENTS -->
+    <div class="card" style="padding:14px;margin-bottom:12px">
+      <h3 style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--muted)">Комментарии и история</h3>
+      <div id="e_comments" style="max-height:200px;overflow-y:auto;margin-bottom:12px">
+        ${(c.comments||[]).map(cm => `
+          <div class="comment" style="margin-bottom:8px">
+            <div class="comment-date">${cm.date}</div>
+            <div class="comment-text">${cm.text}</div>
+          </div>
+        `).join('') || '<p style="color:var(--muted);font-size:13px">Нет комментариев</p>'}
+      </div>
+      <div style="display:flex;gap:8px">
+        <input class="form-input" id="e_newComment" placeholder="Новый комментарий..." style="flex:1;font-size:13px;padding:10px">
+        <button onclick="addComment('${num}')" class="btn btn-primary btn-sm" style="max-width:80px">+</button>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <a href="/anti-fraud-portal/check.html?case=${num}" target="_blank" class="btn btn-outline" style="flex:1;font-size:13px">👁 Клиенту</a>
+      <button onclick="saveEdit('${num}')" class="btn btn-primary" style="flex:2;font-size:13px">💾 Сохранить</button>
+    </div>
+    <button onclick="deleteClient('${num}')" style="width:100%;background:none;border:1px solid rgba(239,68,68,0.3);color:var(--red);padding:10px;border-radius:10px;font-size:13px;cursor:pointer">🗑 Удалить клиента</button>
+  `;
+  document.getElementById('editModal').style.display = 'flex';
+}
+
+function closeEdit(e) { if (e.target === document.getElementById('editModal')) document.getElementById('editModal').style.display = 'none'; }
+
+function addComment(num) {
+  const input = document.getElementById('e_newComment');
+  const text = input.value.trim();
+  if (!text) return;
+  const cases = getCases();
+  if (!cases[num].comments) cases[num].comments = [];
+  cases[num].comments.push({ date: new Date().toLocaleString('ru-RU'), text });
+  saveCases(cases);
+  input.value = '';
+  editClient(num);
+}
+
+function saveEdit(num) {
+  const cases = getCases();
+  const c = cases[num];
+  c.fullName = document.getElementById('e_name').value.trim();
+  c.phone = document.getElementById('e_phone').value.trim();
+  c.email = document.getElementById('e_email').value.trim();
+  c.platform = document.getElementById('e_platform').value.trim();
+  c.stage = document.getElementById('e_stage').value;
+  c.progress = parseInt(document.getElementById('e_progress').value) || 0;
+  c.amount = parseInt(document.getElementById('e_amount').value) || 0;
+  c.recovered = parseInt(document.getElementById('e_recovered').value) || 0;
+  c.status = c.progress >= 80 ? 'Завершено' : c.progress >= 40 ? 'В работе' : 'На рассмотрении';
+  saveCases(cases);
+  document.getElementById('editModal').style.display = 'none';
+  renderList();
+  showToast('Сохранено');
+}
+
+function deleteClient(num) {
+  if (!confirm('Удалить клиента ' + num + '?')) return;
+  const cases = getCases();
+  delete cases[num];
+  saveCases(cases);
+  document.getElementById('editModal').style.display = 'none';
+  renderList();
+  showToast('Удалено');
+}
+
+function addClient() {
+  const name = document.getElementById('a_name').value.trim();
+  const platform = document.getElementById('a_platform').value.trim();
+  if (!name || !platform) { showToast('Заполните ФИО и платформу', 'error'); return; }
+
+  const now = new Date();
+  const y = now.getFullYear().toString().slice(-2);
+  const m = String(now.getMonth()+1).padStart(2,'0');
+  const seq = String(Math.floor(Math.random()*9000)+1000);
+  const num = `AF-${y}${m}-${seq}`;
+
+  const cases = getCases();
+  cases[num] = {
+    fullName: name,
+    phone: document.getElementById('a_phone').value.trim(),
+    email: document.getElementById('a_email').value.trim(),
+    platform,
+    amount: parseInt(document.getElementById('a_amount').value) || 0,
+    recovered: parseInt(document.getElementById('a_recovered').value) || 0,
+    stage: document.getElementById('a_stage').value,
+    progress: parseInt(document.getElementById('a_progress').value) || 10,
+    status: 'На рассмотрении',
+    source: '',
+    contact: '',
+    comments: [{
+      date: now.toLocaleString('ru-RU'),
+      text: document.getElementById('a_comment').value.trim() || 'Клиент добавлен в систему'
+    }],
+    time: now.toISOString()
+  };
+  saveCases(cases);
+  showToast('Клиент добавлен: ' + num);
+  ['a_name','a_phone','a_email','a_platform','a_amount','a_recovered','a_comment'].forEach(id => document.getElementById(id).value = '');
+  showTab('list');
+  renderList();
+}
+
+function exportData() {
+  const data = JSON.stringify(getCases(), null, 2);
+  const blob = new Blob([data], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'antifrog-clients.json'; a.click();
+  showToast('Данные экспортированы');
+}
+
+function importData() {
+  try {
+    const data = JSON.parse(document.getElementById('importData').value);
+    const cases = getCases();
+    Object.assign(cases, data);
+    saveCases(cases);
+    showToast('Импортировано: ' + Object.keys(data).length + ' клиентов');
+    showTab('list');
+    renderList();
+  } catch(e) { showToast('Ошибка JSON: ' + e.message, 'error'); }
+}
 </script>
 </body>
 </html>
