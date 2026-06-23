@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Заявка — AntiFrog</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:#050505;color:#e5e7eb}
+.glass{background:rgba(17,17,17,0.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06)}
+.gradient-text{background:linear-gradient(135deg,#10b981,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.glow-card:hover{box-shadow:0 0 30px rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.3)}
+input:focus,select:focus,textarea:focus{border-color:#10b981!important}
+.step{display:none}.step.active{display:block}
+@keyframes checkmark{0%{transform:scale(0)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+.check-anim{animation:checkmark .5s ease-out}
+</style>
+</head>
+<body>
+
+<nav class="fixed top-0 left-0 right-0 z-50 glass">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center font-black text-white text-lg">A</div>
+      <span class="text-xl font-black tracking-tight">AntiFrog</span>
+    </a>
+    <a href="/" class="text-sm text-gray-400 hover:text-white transition">← На главную</a>
+  </div>
+</nav>
+
+<section class="pt-28 pb-16 px-6">
+  <div class="max-w-2xl mx-auto text-center mb-12">
+    <h1 class="text-4xl md:text-5xl font-black mb-4">
+      <span class="gradient-text">Заявка</span> на консультацию
+    </h1>
+    <p class="text-gray-400 text-lg">Заполните форму — наш специалист свяжется с вами в ближайшее время</p>
+  </div>
+
+  <div class="max-w-2xl mx-auto">
+    <!-- Progress -->
+    <div class="flex items-center gap-3 mb-8">
+      <div class="flex-1 h-1 rounded-full bg-white/10 overflow-hidden"><div id="progressBar" class="h-full bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full transition-all duration-500" style="width:0%"></div></div>
+      <span id="stepLabel" class="text-sm text-gray-500 font-medium">1 / 3</span>
+    </div>
+
+    <div class="glass rounded-3xl p-8 md:p-10">
+
+      <!-- Step 1: Personal -->
+      <div class="step active" id="step1">
+        <h2 class="text-2xl font-bold mb-6">Личные данные</h2>
+        <div class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium text-gray-400 mb-2">Фамилия, имя, отчество *</label>
+            <input type="text" id="fullName" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none transition" placeholder="Иванов Иван Иванович">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-400 mb-2">ИИН / Идентификационный код *</label>
+              <input type="text" id="iin" required maxlength="12" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none transition" placeholder="123456789012">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-400 mb-2">Дата рождения</label>
+              <input type="date" id="birthDate" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none transition">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-400 mb-2">Телефон для связи *</label>
+            <input type="tel" id="phone" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none transition" placeholder="+7 (7__) ___-__-__">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-400 mb-2">Предпочтительный способ связи</label>
+            <div class="flex gap-3">
+              <label class="flex-1 glass rounded-xl px-4 py-3 cursor-pointer hover:border-emerald-500 border border-transparent transition-all text-center text-sm">
+                <input type="radio" name="contactMethod" value="phone" checked class="hidden"> 📞 Звонок
+              </label>
+              <label class="flex-1 glass rounded-xl px-4 py-3 cursor-pointer hover:border-emerald-500 border border-transparent transition-all text-center text-sm">
+                <input type="radio" name="contactMethod" value="whatsapp" class="hidden"> 💬 WhatsApp
+              </label>
+              <label class="flex-1 glass rounded-xl px-4 py-3 cursor-pointer hover:border-emerald-500 border border-transparent transition-all text-center text-sm">
+                <input type="radio" name="contactMethod" value="telegram" class="hidden"> ✈️ Telegram
+              </label>
+            </div>
+          </div>
+        </div>
+        <button onclick="goStep(2)" class="w-full mt-8 bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-xl font-bold text-lg transition-all hover:scale-[1.01]">Далее</button>
+      </div>
+
+      <!-- Step 2: Case -->
+      <div class="step" id="step2">
+        <h2 class="text-2xl font-bold mb-6">О вашей ситуации</h2>
+        <div class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium text-gray-400 mb-2">Название платформы / компании *</label>
+            <input type="text" id="platform" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none transition" placeholder="Например: TradePro, InvestMarket24">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-400 mb-2">Примерная сумма потерь (₸)</label>
+              <select id="amount" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none transition">
+                <option value="">Выберите</option>
+                <option value="до 100 000">До 100 000 ₸</option>
+                <option value="100 000 - 500 000">100 000 — 500 000 ₸</option>
+                <option value="500 000 - 1 000 000">500 000 — 1 000 000 ₸</option>
+                <option value="1 000 000 - 5 000 000">1 000 000 — 5 000 000 ₸</option>
+                <option value="более 5 000 000">Более 5 000 000 ₸</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-400 mb-2">Когда произошло</label>
+              <input type="text" id="whenHappened" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none transition" placeholder="Например: январь 2026">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-400 mb-2">Как связались с вами мошенники</label>
+            <div class="flex flex-wrap gap-3">
+              <label class="glass rounded-xl px-4 py-2 cursor-pointer hover:border-emerald-500 border border-transparent transition-all text-sm">
+                <input type="checkbox" name="source" value="Telegram" class="hidden"> Telegram
+              </label>
+              <label class="glass rounded-xl px-4 py-2 cursor-pointer hover:border-emerald-500 border border-transparent transition-all text-sm">
+                <input type="checkbox" name="source" value="WhatsApp" class="hidden"> WhatsApp
+              </label>
+              <label class="glass rounded-xl px-4 py-2 cursor-pointer hover:border-emerald-500 border border-transparent transition-all text-sm">
+                <input type="checkbox" name="source" value="Instagram" class="hidden"> Instagram
+              </label>
+              <label class="glass rounded-xl px-4 py-2 cursor-pointer hover:border-emerald-500 border border-transparent transition-all text-sm">
+                <input type="checkbox" name="source" value="Звонок" class="hidden"> Звонок
+              </label>
+              <label class="glass rounded-xl px-4 py-2 cursor-pointer hover:border-emerald-500 border border-transparent transition-all text-sm">
+                <input type="checkbox" name="source" value="Реклама" class="hidden"> Реклама
+              </label>
+              <label class="glass rounded-xl px-4 py-2 cursor-pointer hover:border-emerald-500 border border-transparent transition-all text-sm">
+                <input type="checkbox" name="source" value="Знакомый" class="hidden"> Знакомый
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-3 mt-8">
+          <button onclick="goStep(1)" class="flex-1 glass text-white py-4 rounded-xl font-bold hover:bg-white/10 transition-all">Назад</button>
+          <button onclick="goStep(3)" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-xl font-bold transition-all hover:scale-[1.01]">Далее</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Comment + Submit -->
+      <div class="step" id="step3">
+        <h2 class="text-2xl font-bold mb-6">Дополнительная информация</h2>
+        <div class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium text-gray-400 mb-2">Кратко опишите ситуацию</label>
+            <textarea id="comment" rows="5" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none transition resize-none" placeholder="Что произошло? Сколько раз просили доплатить? Какие документы присылали?"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-400 mb-2">Есть ли сейчас «юрист» или «помощник», который звонит?</label>
+            <div class="flex gap-3">
+              <label class="flex-1 glass rounded-xl px-4 py-3 cursor-pointer hover:border-emerald-500 border border-transparent transition-all text-center text-sm">
+                <input type="radio" name="hasHelper" value="да" class="hidden"> Да
+              </label>
+              <label class="flex-1 glass rounded-xl px-4 py-3 cursor-pointer hover:border-emerald-500 border border-transparent transition-all text-center text-sm">
+                <input type="radio" name="hasHelper" value="нет" class="hidden"> Нет
+              </label>
+            </div>
+          </div>
+          <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-4">
+            <p class="text-sm text-emerald-400">🔒 Ваши данные конфиденциальны и используются только для связи по вашему делу.</p>
+          </div>
+        </div>
+        <div class="flex gap-3 mt-8">
+          <button onclick="goStep(2)" class="flex-1 glass text-white py-4 rounded-xl font-bold hover:bg-white/10 transition-all">Назад</button>
+          <button onclick="submitForm()" id="submitBtn" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-xl font-bold transition-all hover:scale-[1.01]">Отправить заявку</button>
+        </div>
+      </div>
+
+      <!-- Success -->
+      <div class="step" id="stepSuccess" class="text-center">
+        <div class="text-center py-8">
+          <div class="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-6 check-anim">
+            <svg class="w-10 h-10 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <h2 class="text-3xl font-black mb-4">Заявка отправлена!</h2>
+          <p class="text-gray-400 text-lg mb-2">Наш специалист свяжется с вами в ближайшее время.</p>
+          <p class="text-gray-500 text-sm mb-8">Сохраните этот номер для обращения:</p>
+          <div class="glass rounded-xl px-6 py-4 inline-block mb-8">
+            <p class="text-sm text-gray-500">Номер вашей заявки</p>
+            <p class="text-2xl font-black gradient-text" id="applicationNumber">#0000</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="check.html" class="glass text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/10 transition-all">Проверить статус</a>
+            <a href="/" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold transition-all">На главную</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const BOT_TOKEN = '8829750295:AAEdnt-7FPCVuVbgj6tgn7eC2_2LpY5VHCk';
+const CHAT_ID = '8471070560';
+let currentStep = 1;
+
+function goStep(n) {
+  if (n === 2 && !document.getElementById('fullName').value.trim()) { shake('#fullName'); return; }
+  if (n === 2 && !document.getElementById('iin').value.trim()) { shake('#iin'); return; }
+  if (n === 2 && !document.getElementById('phone').value.trim()) { shake('#phone'); return; }
+  if (n === 3 && !document.getElementById('platform').value.trim()) { shake('#platform'); return; }
+
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+  currentStep = n;
+  document.getElementById('progressBar').style.width = ((n - 1) / 2 * 100) + '%';
+  document.getElementById('stepLabel').textContent = n + ' / 3';
+  gsap.from('#step' + n, { opacity: 0, y: 20, duration: 0.4 });
+}
+
+function shake(sel) {
+  const el = document.querySelector(sel);
+  gsap.to(el, { x: [-10, 10, -10, 10, 0], duration: 0.4, borderColor: '#ef4444' });
+  setTimeout(() => el.style.borderColor = '', 2000);
+}
+
+function getSource() {
+  return Array.from(document.querySelectorAll('input[name="source"]:checked')).map(c => c.value).join(', ');
+}
+
+function getContactMethod() {
+  return document.querySelector('input[name="contactMethod"]:checked')?.value || 'phone';
+}
+
+function getHelper() {
+  return document.querySelector('input[name="hasHelper"]:checked')?.value || 'не указано';
+}
+
+async function submitForm() {
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Отправка...';
+
+  const data = {
+    fullName: document.getElementById('fullName').value.trim(),
+    iin: document.getElementById('iin').value.trim(),
+    birthDate: document.getElementById('birthDate').value,
+    phone: document.getElementById('phone').value.trim(),
+    contactMethod: getContactMethod(),
+    platform: document.getElementById('platform').value.trim(),
+    amount: document.getElementById('amount').value,
+    whenHappened: document.getElementById('whenHappened').value.trim(),
+    source: getSource(),
+    comment: document.getElementById('comment').value.trim(),
+    hasHelper: getHelper(),
+    timestamp: new Date().toISOString()
+  };
+
+  // Generate application number
+  const appNum = 'AF-' + Date.now().toString(36).toUpperCase().slice(-6);
+
+  // Format message for Telegram
+  const msg = `📝 *НОВАЯ ЗАЯВКА AntiFrog*
+┌─────────────────────
+│ 🔢 Номер: *${appNum}*
+│ 📅 ${new Date().toLocaleString('ru-RU')}
+└─────────────────────
+
+👤 *Личные данные*
+├ ФИО: ${data.fullName}
+├ ИИН: ${data.iin}
+├ Дата рождения: ${data.birthDate || 'не указана'}
+├ Телефон: ${data.phone}
+└ Способ связи: ${data.contactMethod}
+
+📋 *О ситуации*
+├ Платформа: ${data.platform}
+├ Сумма потерь: ${data.amount || 'не указана'}
+├ Когда: ${data.whenHappened || 'не указано'}
+├ Источник: ${data.source || 'не указан'}
+└ «Юрист» звонит: ${data.hasHelper}
+
+💬 *Комментарий*
+${data.comment || 'нет'}
+
+🔗 Проверка: check.html?case=${appNum}`;
+
+  // Save to localStorage for check.html
+  const cases = JSON.parse(localStorage.getItem('antifrog_cases') || '{}');
+  cases[appNum] = {
+    ...data,
+    status: 'На рассмотрении',
+    stage: 'Первичная консультация',
+    progress: 10,
+    lawyer: 'Ожидается',
+    comments: [{ date: new Date().toLocaleString('ru-RU'), text: 'Заявка получена. Ожидайте звонка специалиста.' }]
+  };
+  localStorage.setItem('antifrog_cases', JSON.stringify(cases));
+
+  // Send to Telegram
+  try {
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'Markdown' })
+    });
+  } catch(e) { console.error('Telegram send error:', e); }
+
+  // Show success
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('stepSuccess').classList.add('active');
+  document.getElementById('applicationNumber').textContent = '#' + appNum;
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('stepLabel').textContent = 'Готово';
+  gsap.from('#stepSuccess', { opacity: 0, scale: 0.95, duration: 0.5 });
+}
+
+// Radio/checkbox visual toggle
+document.querySelectorAll('label:has(input[type="radio"]), label:has(input[type="checkbox"])').forEach(label => {
+  label.addEventListener('click', () => {
+    setTimeout(() => {
+      const input = label.querySelector('input');
+      if (input.checked) label.classList.add('border-emerald-500', 'bg-emerald-500/10');
+      else label.classList.remove('border-emerald-500', 'bg-emerald-500/10');
+    }, 10);
+  });
+});
+
+// Phone mask
+document.getElementById('phone').addEventListener('input', function() {
+  let v = this.value.replace(/\D/g, '');
+  if (v.length > 0) {
+    if (v[0] === '7' || v[0] === '8') v = v.substring(1);
+    let formatted = '+7';
+    if (v.length > 0) formatted += ' (' + v.substring(0, 3);
+    if (v.length >= 3) formatted += ') ' + v.substring(3, 6);
+    if (v.length >= 6) formatted += '-' + v.substring(6, 8);
+    if (v.length >= 8) formatted += '-' + v.substring(8, 10);
+    this.value = formatted;
+  }
+});
+</script>
+</body>
+</html>

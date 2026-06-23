@@ -3,69 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AntiFrog | Возврат активов из мошеннических платформ</title>
-<meta name="description" content="AntiFrog — международный портал по возврату средств из мошеннических брокерских платформ. Проверка компаний, юридическая помощь, возврат денег.">
+<title>AntiFrog | Возврат активов</title>
+<meta name="description" content="Портал по возврату средств из мошеннических платформ. Проверка, консультация, возврат.">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        dark: { 900: '#050505', 800: '#0a0a0a', 700: '#111111', 600: '#1a1a1a' },
-        frog: { 500: '#10b981', 600: '#059669', 700: '#047857' },
-        accent: { 500: '#3b82f6', 600: '#2563eb' }
-      }
-    }
-  }
-}
-</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Inter',system-ui,sans-serif;background:#050505;color:#e5e7eb;overflow-x:hidden}
 .glass{background:rgba(17,17,17,0.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06)}
 .gradient-text{background:linear-gradient(135deg,#10b981,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.gradient-border{border:1px solid transparent;background-clip:padding-box;position:relative}
-.gradient-border::before{content:'';position:absolute;inset:-1px;border-radius:inherit;background:linear-gradient(135deg,#10b981,#3b82f6);z-index:-1;opacity:0.3}
-.particle{position:absolute;border-radius:50%;pointer-events:none}
-@keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-20px) rotate(180deg)}}
-@keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(16,185,129,0.2)}50%{box-shadow:0 0 40px rgba(16,185,129,0.4)}}
 .glow-card:hover{box-shadow:0 0 30px rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.3)}
-.counter{font-variant-numeric:tabular-nums}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+.particle{position:absolute;border-radius:50%;pointer-events:none}
 .hero-bg{background:radial-gradient(ellipse at 50% 0%,rgba(16,185,129,0.08) 0%,transparent 60%)}
-.section-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent)}
 </style>
 </head>
 <body>
 
-<!-- NAVIGATION -->
-<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 glass transition-all duration-300">
+<nav class="fixed top-0 left-0 right-0 z-50 glass transition-all duration-300" id="nav">
   <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
     <a href="/" class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-frog-500 to-accent-500 flex items-center justify-center font-black text-white text-lg">A</div>
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center font-black text-white text-lg">A</div>
       <span class="text-xl font-black tracking-tight">AntiFrog</span>
     </a>
     <div class="hidden md:flex items-center gap-8 text-sm font-medium">
-      <a href="#services" class="text-gray-400 hover:text-white transition">Услуги</a>
-      <a href="#registry" class="text-gray-400 hover:text-white transition">Реестр</a>
-      <a href="#cases" class="text-gray-400 hover:text-white transition">Кейсы</a>
-      <a href="#team" class="text-gray-400 hover:text-white transition">Команда</a>
-      <a href="#contacts" class="text-gray-400 hover:text-white transition">Контакты</a>
-      <a href="client/login.html" class="bg-frog-500 hover:bg-frog-600 text-white px-5 py-2.5 rounded-xl font-semibold transition-all hover:scale-105">Кабинет</a>
+      <a href="services.html" class="text-gray-400 hover:text-white transition">Услуги</a>
+      <a href="apply.html" class="text-gray-400 hover:text-white transition">Заявка</a>
+      <a href="check.html" class="text-gray-400 hover:text-white transition">Проверить дело</a>
+      <a href="apply.html" class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-semibold transition-all hover:scale-105">Начать</a>
     </div>
-    <button id="mobileMenuBtn" class="md:hidden text-gray-400">
+    <button id="menuBtn" class="md:hidden text-gray-400">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
   </div>
   <div id="mobileMenu" class="hidden md:hidden px-6 pb-4">
-    <a href="#services" class="block py-2 text-gray-400 hover:text-white">Услуги</a>
-    <a href="#registry" class="block py-2 text-gray-400 hover:text-white">Реестр</a>
-    <a href="#cases" class="block py-2 text-gray-400 hover:text-white">Кейсы</a>
-    <a href="#team" class="block py-2 text-gray-400 hover:text-white">Команда</a>
-    <a href="#contacts" class="block py-2 text-gray-400 hover:text-white">Контакты</a>
-    <a href="client/login.html" class="block py-2 text-frog-500 font-semibold">Кабинет клиента</a>
+    <a href="services.html" class="block py-2 text-gray-400 hover:text-white">Услуги</a>
+    <a href="apply.html" class="block py-2 text-gray-400 hover:text-white">Заявка</a>
+    <a href="check.html" class="block py-2 text-gray-400 hover:text-white">Проверить дело</a>
   </div>
 </nav>
 
@@ -74,8 +52,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:#050505;color:#e5e7eb;o
   <div id="particles" class="absolute inset-0 overflow-hidden"></div>
   <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
     <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-8 text-sm text-gray-400">
-      <span class="w-2 h-2 rounded-full bg-frog-500 animate-pulse"></span>
-      Портал работает 24/7 · Более 2800 помогли
+      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      Работаем 24/7 · Более 2800 помогли
     </div>
     <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
       <span class="gradient-text">Возврат активов</span><br>
@@ -85,19 +63,19 @@ body{font-family:'Inter',system-ui,sans-serif;background:#050505;color:#e5e7eb;o
       Мы объединяем регуляторов, банки и юристов для защиты пострадавших от финансового мошенничества. Проверьте компанию, подайте заявку, верните свои деньги.
     </p>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="#apply" class="bg-frog-500 hover:bg-frog-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all hover:scale-105 hover:shadow-lg hover:shadow-frog-500/20">
-        Проверить компанию
+      <a href="apply.html" class="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/20">
+        Оставить заявку
       </a>
-      <a href="#services" class="glass text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/10 transition-all">
-        Наши услуги
+      <a href="check.html" class="glass text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/10 transition-all">
+        Проверить статус дела
       </a>
     </div>
   </div>
 </section>
 
-<!-- STATS BAR -->
+<!-- STATS -->
 <section class="py-16 relative">
-  <div class="section-divider absolute top-0 left-0 right-0"></div>
+  <div class="divider absolute top-0 left-0 right-0"></div>
   <div class="max-w-7xl mx-auto px-6">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
       <div class="text-center stat-item">
@@ -105,394 +83,153 @@ body{font-family:'Inter',system-ui,sans-serif;background:#050505;color:#e5e7eb;o
         <div class="text-sm text-gray-500 mt-2">Клиентов помогли</div>
       </div>
       <div class="text-center stat-item">
-        <div class="text-4xl md:text-5xl font-black gradient-text counter" data-target="1470" data-suffix="М">$</div>
-        <div class="text-sm text-gray-500 mt-2">Возвращено средств</div>
+        <div class="text-4xl md:text-5xl font-black gradient-text">1.47 млрд</div>
+        <div class="text-sm text-gray-500 mt-2">₸ возвращено</div>
       </div>
       <div class="text-center stat-item">
         <div class="text-4xl md:text-5xl font-black gradient-text counter" data-target="94" data-suffix="%">0</div>
         <div class="text-sm text-gray-500 mt-2">Успешных случаев</div>
       </div>
       <div class="text-center stat-item">
-        <div class="text-4xl md:text-5xl font-black gradient-text counter" data-target="100" data-suffix="+">0</div>
-        <div class="text-sm text-gray-500 mt-2">Компаний в реестре</div>
+        <div class="text-4xl md:text-5xl font-black gradient-text">100+</div>
+        <div class="text-sm text-gray-500 mt-2">Платформ в базе</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SERVICES -->
-<section id="services" class="py-24 relative">
-  <div class="section-divider absolute top-0 left-0 right-0"></div>
+<!-- HOW IT WORKS -->
+<section class="py-24 relative">
+  <div class="divider absolute top-0 left-0 right-0"></div>
   <div class="max-w-7xl mx-auto px-6">
     <div class="text-center mb-16">
-      <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-4 text-sm text-frog-500 font-medium">Наши услуги</div>
-      <h2 class="text-4xl md:text-5xl font-black mb-4">Полный цикл возврата</h2>
-      <p class="text-gray-400 max-w-xl mx-auto">От проверки компании до возврата средств — мы ведём вас на каждом этапе</p>
+      <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-4 text-sm text-emerald-500 font-medium">Как это работает</div>
+      <h2 class="text-4xl md:text-5xl font-black mb-4">Три шага к возврату</h2>
     </div>
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="servicesGrid">
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="glass rounded-2xl p-8 text-center glow-card step-card" style="opacity:0;transform:translateY(20px)">
+        <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center text-3xl mx-auto mb-6">📝</div>
+        <div class="text-sm text-emerald-500 font-bold mb-2">Шаг 1</div>
+        <h3 class="text-xl font-bold mb-3">Оставьте заявку</h3>
+        <p class="text-gray-400 text-sm">Заполните простую форму. Укажите ФИО, ИНН и описание ситуации. Это займёт 2 минуты.</p>
+      </div>
+      <div class="glass rounded-2xl p-8 text-center glow-card step-card" style="opacity:0;transform:translateY(20px)">
+        <div class="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center text-3xl mx-auto mb-6">🔍</div>
+        <div class="text-sm text-blue-500 font-bold mb-2">Шаг 2</div>
+        <h3 class="text-xl font-bold mb-3">Анализ дела</h3>
+        <p class="text-gray-400 text-sm">Наш специалист изучит вашу ситуацию, определит стадию мошенничества и предложит план действий.</p>
+      </div>
+      <div class="glass rounded-2xl p-8 text-center glow-card step-card" style="opacity:0;transform:translateY(20px)">
+        <div class="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center text-3xl mx-auto mb-6">💰</div>
+        <div class="text-sm text-purple-500 font-bold mb-2">Шаг 3</div>
+        <h3 class="text-xl font-bold mb-3">Возврат средств</h3>
+        <p class="text-gray-400 text-sm">Юридическое сопровождение через банки, регуляторы и суд. Полный цикл до возврата денег.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- REGISTRY PREVIEW -->
-<section id="registry" class="py-24 relative">
-  <div class="section-divider absolute top-0 left-0 right-0"></div>
+<!-- SERVICES PREVIEW -->
+<section class="py-24 relative" id="services">
+  <div class="divider absolute top-0 left-0 right-0"></div>
   <div class="max-w-7xl mx-auto px-6">
     <div class="text-center mb-16">
-      <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-4 text-sm text-frog-500 font-medium">Реестр компаний</div>
-      <h2 class="text-4xl md:text-5xl font-black mb-4">Проверьте любого брокера</h2>
-      <p class="text-gray-400 max-w-xl mx-auto">Более 100 мошеннических платформ в нашей базе. Введите название и узнайте правду.</p>
+      <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-4 text-sm text-emerald-500 font-medium">Услуги</div>
+      <h2 class="text-4xl md:text-5xl font-black mb-4">Полный цикл помощи</h2>
     </div>
-    <div class="max-w-2xl mx-auto mb-12">
-      <div class="glass rounded-2xl p-2 flex items-center glow-card">
-        <input type="text" id="registrySearch" placeholder="Введите название компании..." class="flex-1 bg-transparent px-4 py-3 text-white outline-none text-lg placeholder-gray-600">
-        <button onclick="window.location.href='registry.html'" class="bg-frog-500 hover:bg-frog-600 text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 whitespace-nowrap">Проверить</button>
-      </div>
-    </div>
-    <div id="registryPreview" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="servicesGrid"></div>
     <div class="text-center mt-8">
-      <a href="registry.html" class="inline-flex items-center gap-2 text-frog-500 hover:text-frog-400 font-semibold transition">
-        Смотреть весь реестр
+      <a href="services.html" class="inline-flex items-center gap-2 text-emerald-500 hover:text-emerald-400 font-semibold transition">
+        Все услуги
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
       </a>
     </div>
   </div>
 </section>
 
-<!-- APPLY / QUIZ -->
-<section id="apply" class="py-24 relative">
-  <div class="section-divider absolute top-0 left-0 right-0"></div>
-  <div class="max-w-3xl mx-auto px-6">
-    <div class="text-center mb-16">
-      <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-4 text-sm text-frog-500 font-medium">Заявка</div>
-      <h2 class="text-4xl md:text-5xl font-black mb-4">Начните возврат сейчас</h2>
-      <p class="text-gray-400 max-w-xl mx-auto">Ответьте на несколько вопросов — мы определим стадию мошенничества и предложим план действий</p>
-    </div>
-    <div class="glass rounded-3xl p-8 md:p-12">
-      <div id="quizProgress" class="flex items-center gap-2 mb-8">
-        <div class="flex-1 h-1 rounded-full bg-white/10 overflow-hidden"><div id="quizBar" class="h-full bg-gradient-to-r from-frog-500 to-accent-500 rounded-full transition-all duration-500" style="width:0%"></div></div>
-        <span id="quizStep" class="text-sm text-gray-500 font-medium">0 / 5</span>
-      </div>
-      <div id="quizContainer">
-        <div id="quizStart" class="text-center">
-          <div class="text-6xl mb-6">🔍</div>
-          <h3 class="text-2xl font-bold mb-4">Как вас обманули?</h3>
-          <p class="text-gray-400 mb-8">Ответьте на 5 вопросов, чтобы мы могли помочь максимально эффективно</p>
-          <button onclick="startQuiz()" class="bg-frog-500 hover:bg-frog-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all hover:scale-105">Начать диагностику</button>
-        </div>
-        <div id="quizQuestions" class="hidden"></div>
-        <div id="quizResult" class="hidden text-center">
-          <div class="text-6xl mb-6">✅</div>
-          <h3 class="text-2xl font-bold mb-4">Заявка отправлена</h3>
-          <p class="text-gray-400 mb-6">Наш специалист свяжется с вами в течение 24 часов</p>
-          <div id="quizSummary" class="glass rounded-xl p-6 text-left mb-8"></div>
-          <a href="client/login.html" class="bg-frog-500 hover:bg-frog-600 text-white px-8 py-4 rounded-xl font-bold transition-all hover:scale-105 inline-block">Войти в кабинет</a>
-        </div>
+<!-- CTA -->
+<section class="py-24 relative">
+  <div class="divider absolute top-0 left-0 right-0"></div>
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <div class="glass rounded-3xl p-12 md:p-16 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-emerald-500/10 to-transparent rounded-full -mr-32 -mt-32"></div>
+      <div class="relative z-10">
+        <h2 class="text-3xl md:text-5xl font-black mb-4">Готовы вернуть свои деньги?</h2>
+        <p class="text-gray-400 text-lg mb-8 max-w-xl mx-auto">Оставьте заявку сейчас. Бесплатная консультация. Мы работаем по результату.</p>
+        <a href="apply.html" class="bg-emerald-500 hover:bg-emerald-600 text-white px-10 py-5 rounded-xl font-bold text-xl transition-all hover:scale-105 inline-block">
+          Оставить заявку
+        </a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CASES -->
-<section id="cases" class="py-24 relative">
-  <div class="section-divider absolute top-0 left-0 right-0"></div>
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="text-center mb-16">
-      <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-4 text-sm text-frog-500 font-medium">Кейсы</div>
-      <h2 class="text-4xl md:text-5xl font-black mb-4">847 успешных возвратов</h2>
-      <p class="text-gray-400 max-w-xl mx-auto">Каждый кейс — это реальный человек, которому мы помогли вернуть деньги</p>
-    </div>
-    <div id="casesGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-    </div>
-    <div class="text-center mt-8">
-      <a href="cases.html" class="inline-flex items-center gap-2 text-frog-500 hover:text-frog-400 font-semibold transition">
-        Смотреть все кейсы
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- TEAM -->
-<section id="team" class="py-24 relative">
-  <div class="section-divider absolute top-0 left-0 right-0"></div>
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="text-center mb-16">
-      <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-4 text-sm text-frog-500 font-medium">Команда</div>
-      <h2 class="text-4xl md:text-5xl font-black mb-4">Наши эксперты</h2>
-      <p class="text-gray-400 max-w-xl mx-auto">Профессиональная команда юристов, аналитиков и специалистов по возврату средств</p>
-    </div>
-    <div id="teamGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-    </div>
-  </div>
-</section>
-
-<!-- CONTACTS -->
-<section id="contacts" class="py-24 relative">
-  <div class="section-divider absolute top-0 left-0 right-0"></div>
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="text-center mb-16">
-      <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-4 text-sm text-frog-500 font-medium">Контакты</div>
-      <h2 class="text-4xl md:text-5xl font-black mb-4">Свяжитесь с нами</h2>
-      <p class="text-gray-400 max-w-xl mx-auto">Бесплатная консультация. Работаем по всей территории Казахстана.</p>
-    </div>
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="glass rounded-2xl p-8 text-center glow-card">
-        <div class="text-4xl mb-4">📞</div>
-        <h3 class="font-bold text-lg mb-2">Телефон</h3>
-        <p class="text-frog-500 font-semibold text-lg">+7 (700) 123-45-67</p>
-        <p class="text-gray-500 text-sm mt-2">Пн-Пт: 09:00 - 18:00</p>
-      </div>
-      <div class="glass rounded-2xl p-8 text-center glow-card">
-        <div class="text-4xl mb-4">✉️</div>
-        <h3 class="font-bold text-lg mb-2">Email</h3>
-        <p class="text-frog-500 font-semibold">info@antifrog.kz</p>
-        <p class="text-gray-500 text-sm mt-2">Ответим в течение 24 часов</p>
-      </div>
-      <div class="glass rounded-2xl p-8 text-center glow-card">
-        <div class="text-4xl mb-4">📍</div>
-        <h3 class="font-bold text-lg mb-2">Адрес</h3>
-        <p class="text-frog-500 font-semibold">г. Астана</p>
-        <p class="text-gray-500 text-sm mt-2">пр. Мангилик Ел, 55А</p>
-      </div>
-    </div>
-    <div class="mt-8 glass rounded-2xl p-6 flex items-center gap-4">
-      <div class="text-3xl">🏛️</div>
-      <div>
-        <h4 class="font-bold">Горячая линия АРРФР</h4>
-        <p class="text-gray-400 text-sm">1434 — официальный номер Агентства по регулированию финансового рынка</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
 <footer class="py-12 border-t border-white/5">
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-frog-500 to-accent-500 flex items-center justify-center font-black text-white text-sm">A</div>
-        <span class="font-bold">AntiFrog</span>
-      </div>
-      <p class="text-gray-600 text-sm">&copy; 2026 AntiFrog. Все права защищены.</p>
-      <div class="flex gap-6 text-sm text-gray-500">
-        <a href="#" class="hover:text-white transition">Политика конфиденциальности</a>
-        <a href="#" class="hover:text-white transition">Условия использования</a>
-      </div>
+  <div class="max-w-7xl mx-auto px-6 text-center">
+    <div class="flex items-center justify-center gap-3 mb-4">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center font-black text-white text-sm">A</div>
+      <span class="font-bold">AntiFrog</span>
     </div>
+    <p class="text-gray-600 text-sm">&copy; 2026 AntiFrog. Все права защищены.</p>
   </div>
 </footer>
 
 <script>
-const DATA_URL = 'data.json';
-let SITE_DATA = null;
+const SERVICES = [
+  {title:"Проверка компании",desc:"Проверяем брокерскую платформу на наличие лицензии, возраст домена и отзывы.",icon:"🔍",features:["Проверка лицензии АРРФР","Анализ домена","Поиск жалоб"]},
+  {title:"Возврат средств",desc:"Юридическое сопровождение через банки, регуляторы и суд.",icon:"💰",features:["Претензионная работа","Чарджбэк","Обращение в АРРФР"]},
+  {title:"Консультация",desc:"Бесплатная первичная консультация. Определяем стадию мошенничества.",icon:"⚖️",features:["Бесплатная диагностика","Определение стадии","План действий"]},
+  {title:"Сбор доказательств",desc:"Помогаем собрать и систематизировать все доказательства.",icon:"📋",features:["Анализ документов","Оценка переписок","Пакет для органов"]},
+  {title:"Заявление в полицию",desc:"Подготавливаем и подаём заявление о мошенничестве.",icon:"🚔",features:["Подготовка заявления","Подача в полицию","Сопровождение"]},
+  {title:"Жалоба в АРРФР",desc:"Готовим жалобу в Агентство по регулированию финансового рынка.",icon:"🏛️",features:["Жалоба на брокера","Проверка лицензии","Взаимодействие"]}
+];
 
-async function loadData() {
-  try {
-    const res = await fetch(DATA_URL);
-    SITE_DATA = await res.json();
-    renderServices();
-    renderRegistryPreview();
-    renderCases();
-    renderTeam();
-  } catch(e) { console.error('Failed to load data:', e); }
-}
-
-function renderServices() {
-  const grid = document.getElementById('servicesGrid');
-  grid.innerHTML = SITE_DATA.services.map((s, i) => `
-    <div class="glass rounded-2xl p-8 glow-card transition-all duration-300 hover:-translate-y-1" style="opacity:0;transform:translateY(20px)">
+function renderServices(){
+  document.getElementById('servicesGrid').innerHTML=SERVICES.map(s=>`
+    <div class="glass rounded-2xl p-8 glow-card transition-all duration-300 hover:-translate-y-1 step-card" style="opacity:0;transform:translateY(20px)">
       <div class="text-4xl mb-4">${s.icon}</div>
       <h3 class="text-xl font-bold mb-3">${s.title}</h3>
-      <p class="text-gray-400 text-sm mb-4 leading-relaxed">${s.description}</p>
-      <div class="flex flex-wrap gap-2">
-        ${s.features.map(f => `<span class="text-xs px-3 py-1 rounded-full bg-frog-500/10 text-frog-500">${f}</span>`).join('')}
-      </div>
-    </div>
-  `).join('');
+      <p class="text-gray-400 text-sm mb-4 leading-relaxed">${s.desc}</p>
+      <div class="flex flex-wrap gap-2">${s.features.map(f=>`<span class="text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500">${f}</span>`).join('')}</div>
+    </div>`).join('');
 }
 
-function renderRegistryPreview() {
-  const grid = document.getElementById('registryPreview');
-  const preview = SITE_DATA.registry.slice(0, 6);
-  grid.innerHTML = preview.map(c => `
-    <div class="glass rounded-xl p-5 glow-card transition-all duration-300 hover:-translate-y-1" style="opacity:0;transform:translateY(20px)">
-      <div class="flex items-center justify-between mb-3">
-        <h4 class="font-bold text-sm">${c.name}</h4>
-        <span class="text-xs px-2 py-1 rounded-full bg-red-500/10 text-red-400 font-medium">${c.risk}</span>
-      </div>
-      <p class="text-xs text-gray-500 mb-2">${c.type} · ${c.country}</p>
-      <div class="flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-red-500"></span>
-        <span class="text-xs text-red-400 font-medium">${c.status}</span>
-      </div>
-    </div>
-  `).join('');
-}
-
-function renderCases() {
-  const grid = document.getElementById('casesGrid');
-  const cases = SITE_DATA.cases.slice(0, 6);
-  grid.innerHTML = cases.map(c => `
-    <div class="glass rounded-2xl p-6 glow-card transition-all duration-300 hover:-translate-y-1" style="opacity:0;transform:translateY(20px)">
-      <div class="flex items-center justify-between mb-4">
-        <span class="text-xs text-gray-500">#${c.id}</span>
-        <span class="text-xs px-2 py-1 rounded-full bg-frog-500/10 text-frog-500 font-medium">${c.status}</span>
-      </div>
-      <h4 class="font-bold mb-2">${c.platform}</h4>
-      <div class="flex items-baseline gap-2 mb-3">
-        <span class="text-2xl font-black gradient-text">${(c.amount/1000000).toFixed(1)}M</span>
-        <span class="text-sm text-gray-500">тенге возвращено</span>
-      </div>
-      <p class="text-xs text-gray-600">${c.date}</p>
-    </div>
-  `).join('');
-}
-
-function renderTeam() {
-  const grid = document.getElementById('teamGrid');
-  grid.innerHTML = SITE_DATA.team.map((m, i) => {
-    const colors = ['#10b981','#3b82f6','#8b5cf6','#f59e0b','#ef4444','#ec4899'];
-    const color = colors[i % colors.length];
-    return `
-    <div class="glass rounded-2xl p-8 glow-card transition-all duration-300 hover:-translate-y-1 text-center" style="opacity:0;transform:translateY(20px)">
-      <div class="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold text-white" style="background:${color}20;color:${color}">${m.name.split(' ').map(n=>n[0]).join('')}</div>
-      <h4 class="font-bold text-lg mb-1">${m.name}</h4>
-      <p class="text-frog-500 text-sm font-medium mb-3">${m.role}</p>
-      <p class="text-gray-400 text-sm mb-4 leading-relaxed">${m.bio}</p>
-      <div class="flex flex-wrap gap-2 justify-center">
-        <span class="text-xs px-3 py-1 rounded-full bg-white/5 text-gray-400">${m.experience}</span>
-        <span class="text-xs px-3 py-1 rounded-full bg-white/5 text-gray-400">${m.specialization.split(',')[0]}</span>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// Quiz
-const quizData = [
-  { q: 'Как называется платформа?', type: 'text', key: 'platform' },
-  { q: 'Сколько денег вы потеряли (в тенге)?', type: 'select', key: 'amount', options: ['До 100 000 ₸','100 000 - 500 000 ₸','500 000 - 1 000 000 ₸','1 000 000 - 5 000 000 ₸','Более 5 000 000 ₸'] },
-  { q: 'Как вас обманули?', type: 'select', key: 'scheme', options: ['Фейковый брокер','Крипто-мошенничество','Финансовая пирамида','Фейковый регулятор','Recovery scam (повторный обман)','Другое'] },
-  { q: 'На какой стадии вы сейчас?', type: 'select', key: 'stage', options: ['Платформа ещё работает','Просят доплатить (комиссия/налог)','Юрист "помогает" вернуть','Платформа исчезла','Мне звонят "новые специалисты"'] },
-  { q: 'Как с вами связаться?', type: 'text', key: 'contact' }
-];
-let quizAnswers = {};
-
-function startQuiz() {
-  document.getElementById('quizStart').classList.add('hidden');
-  document.getElementById('quizQuestions').classList.remove('hidden');
-  renderQuizStep(0);
-}
-
-function renderQuizStep(idx) {
-  if (idx >= quizData.length) { finishQuiz(); return; }
-  const q = quizData[idx];
-  const pct = ((idx) / quizData.length * 100);
-  document.getElementById('quizBar').style.width = pct + '%';
-  document.getElementById('quizStep').textContent = `${idx + 1} / ${quizData.length}`;
-  const container = document.getElementById('quizQuestions');
-  container.innerHTML = `
-    <div class="quiz-step">
-      <h3 class="text-xl font-bold mb-6">${q.q}</h3>
-      ${q.type === 'text' ?
-        `<input type="text" id="quizInput" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-frog-500 transition mb-6" placeholder="Введите...">
-         <button onclick="saveQuizAnswer(${idx})" class="bg-frog-500 hover:bg-frog-600 text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">Далее</button>` :
-        `<div class="space-y-3 mb-6">
-          ${q.options.map((o,i) => `
-            <button onclick="selectQuizOption(${idx},'${o.replace(/'/g,"\\'")}',this)" class="w-full text-left glass rounded-xl px-5 py-4 hover:border-frog-500 border border-transparent transition-all hover:scale-[1.01] quiz-option">${o}</button>
-          `).join('')}
-        </div>`
-      }
-    </div>`;
-  gsap.from(container, { opacity: 0, y: 20, duration: 0.4 });
-}
-
-function selectQuizOption(idx, val, el) {
-  document.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('border-frog-500','bg-frog-500/10'));
-  el.classList.add('border-frog-500','bg-frog-500/10');
-  quizAnswers[quizData[idx].key] = val;
-  setTimeout(() => renderQuizStep(idx + 1), 400);
-}
-
-function saveQuizAnswer(idx) {
-  const val = document.getElementById('quizInput').value.trim();
-  if (!val) return;
-  quizAnswers[quizData[idx].key] = val;
-  renderQuizStep(idx + 1);
-}
-
-function finishQuiz() {
-  document.getElementById('quizQuestions').classList.add('hidden');
-  document.getElementById('quizResult').classList.remove('hidden');
-  document.getElementById('quizBar').style.width = '100%';
-  document.getElementById('quizStep').textContent = 'Готово';
-  const summary = document.getElementById('quizSummary');
-  summary.innerHTML = `<h4 class="font-bold mb-3">Ваша заявка:</h4>` +
-    Object.entries(quizAnswers).map(([k,v]) => `<p class="text-sm text-gray-400"><span class="text-white font-medium">${k}:</span> ${v}</p>`).join('');
-}
-
-// Particles
-function createParticles() {
-  const container = document.getElementById('particles');
-  for (let i = 0; i < 30; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    const size = Math.random() * 4 + 1;
-    p.style.cssText = `width:${size}px;height:${size}px;background:rgba(16,185,129,${Math.random()*0.3+0.1});left:${Math.random()*100}%;top:${Math.random()*100}%;animation:float ${Math.random()*6+4}s ease-in-out infinite ${Math.random()*4}s`;
-    container.appendChild(p);
+function createParticles(){
+  const c=document.getElementById('particles');
+  for(let i=0;i<25;i++){
+    const p=document.createElement('div');p.className='particle';
+    const sz=Math.random()*4+1;
+    p.style.cssText=`width:${sz}px;height:${sz}px;background:rgba(16,185,129,${Math.random()*.3+.1});left:${Math.random()*100}%;top:${Math.random()*100}%;animation:float ${Math.random()*6+4}s ease-in-out infinite ${Math.random()*4}s`;
+    c.appendChild(p);
   }
 }
 
-// Counter animation
-function animateCounters() {
-  document.querySelectorAll('.counter').forEach(el => {
-    const target = parseInt(el.dataset.target);
-    const suffix = el.dataset.suffix || '';
-    const duration = 2000;
-    const start = performance.now();
-    function update(now) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      el.textContent = Math.floor(target * eased).toLocaleString() + suffix;
-      if (progress < 1) requestAnimationFrame(update);
+function animateCounters(){
+  document.querySelectorAll('.counter').forEach(el=>{
+    const target=parseInt(el.dataset.target),suffix=el.dataset.suffix||'',dur=2000,start=performance.now();
+    function update(now){
+      const p=Math.min((now-start)/dur,1),eased=1-Math.pow(1-p,3);
+      el.textContent=Math.floor(target*eased).toLocaleString()+suffix;
+      if(p<1)requestAnimationFrame(update);
     }
     requestAnimationFrame(update);
   });
 }
 
-// Scroll animations
-function initScrollAnimations() {
+function initAnimations(){
   gsap.registerPlugin(ScrollTrigger);
-  gsap.utils.toArray('#servicesGrid > div, #registryPreview > div, #casesGrid > div, #teamGrid > div').forEach((el, i) => {
-    gsap.to(el, {
-      opacity: 1, y: 0, duration: 0.6, delay: (i % 3) * 0.1,
-      scrollTrigger: { trigger: el, start: 'top 85%' }
-    });
+  gsap.utils.toArray('.step-card').forEach((el,i)=>{
+    gsap.to(el,{opacity:1,y:0,duration:.6,delay:(i%3)*.1,scrollTrigger:{trigger:el,start:'top 85%'}});
   });
-  gsap.utils.toArray('.stat-item').forEach((el, i) => {
-    gsap.from(el, { opacity: 0, y: 30, duration: 0.6, delay: i * 0.15, scrollTrigger: { trigger: el, start: 'top 85%' } });
+  gsap.utils.toArray('.stat-item').forEach((el,i)=>{
+    gsap.from(el,{opacity:0,y:30,duration:.6,delay:i*.15,scrollTrigger:{trigger:el,start:'top 85%'}});
   });
 }
 
-// Navbar
-let lastScroll = 0;
-window.addEventListener('scroll', () => {
-  const nav = document.getElementById('navbar');
-  const st = window.scrollY;
-  if (st > 100) { nav.classList.add('shadow-lg'); } else { nav.classList.remove('shadow-lg'); }
-  lastScroll = st;
-});
-
-document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-  document.getElementById('mobileMenu').classList.toggle('hidden');
-});
-
-// Init
-loadData();
+document.getElementById('menuBtn').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('hidden'));
+renderServices();
 createParticles();
-setTimeout(() => { animateCounters(); initScrollAnimations(); }, 500);
+setTimeout(()=>{animateCounters();initAnimations()},500);
 </script>
 </body>
 </html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Проверка дела — AntiFrog</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:#050505;color:#e5e7eb}
+.glass{background:rgba(17,17,17,0.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06)}
+.gradient-text{background:linear-gradient(135deg,#10b981,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.glow-card:hover{box-shadow:0 0 30px rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.3)}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+.progress-track{height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;width:0%;transition:width 1.5s ease-out}
+.stage-dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,0.1);position:relative}
+.stage-dot.active{border-color:#10b981;background:#10b981}
+.stage-dot.done{border-color:#10b981;background:#10b981}
+.comment-item{border-left:2px solid rgba(16,185,129,0.3);padding-left:12px;padding-top:4px;padding-bottom:4px}
+.masked{font-family:monospace;letter-spacing:1px}
+</style>
+</head>
+<body>
+
+<nav class="fixed top-0 left-0 right-0 z-50 glass">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center font-black text-white text-lg">A</div>
+      <span class="text-xl font-black tracking-tight">AntiFrog</span>
+    </a>
+    <a href="/" class="text-sm text-gray-400 hover:text-white transition">← На главную</a>
+  </div>
+</nav>
+
+<section class="pt-28 pb-16 px-6">
+  <div class="max-w-3xl mx-auto text-center mb-12">
+    <h1 class="text-4xl md:text-5xl font-black mb-4">
+      <span class="gradient-text">Проверка</span> дела
+    </h1>
+    <p class="text-gray-400 text-lg">Введите номер дела, ФИО или ИНН для проверки статуса</p>
+  </div>
+
+  <div class="max-w-2xl mx-auto mb-12">
+    <div class="glass rounded-2xl p-2 flex items-center glow-card">
+      <input type="text" id="searchInput" placeholder="Номер дела, ФИО или ИНН..." class="flex-1 bg-transparent px-4 py-3 text-white outline-none text-lg placeholder-gray-600">
+      <button onclick="searchCase()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 whitespace-nowrap">Найти</button>
+    </div>
+  </div>
+
+  <!-- Search Results -->
+  <div id="searchResults" class="max-w-3xl mx-auto hidden"></div>
+
+  <!-- No Results -->
+  <div id="noResults" class="max-w-3xl mx-auto text-center py-12 hidden">
+    <div class="text-5xl mb-4">🔍</div>
+    <h3 class="text-xl font-bold mb-2">Дело не найдено</h3>
+    <p class="text-gray-500">Проверьте правильность введённых данных или обратитесь к менеджеру</p>
+  </div>
+
+  <!-- Initial State -->
+  <div id="initialState" class="max-w-3xl mx-auto text-center py-12">
+    <div class="text-5xl mb-4">📋</div>
+    <h3 class="text-xl font-bold mb-2">Введите данные для поиска</h3>
+    <p class="text-gray-500">Номер дела выдаётся при регистрации заявки</p>
+    <div class="mt-8 glass rounded-2xl p-6 text-left max-w-lg mx-auto">
+      <h4 class="font-bold mb-3">Примеры запросов:</h4>
+      <div class="space-y-2 text-sm text-gray-400">
+        <p>• <span class="text-emerald-500 font-mono">AF-A1B2C3</span> — номер дела</p>
+        <p>• <span class="text-emerald-500">Иванов Иван Иванович</span> — ФИО</p>
+        <p>• <span class="text-emerald-500 font-mono">123456789012</span> — ИНН</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const STAGES = ['А','Б','В','Г','Д','Е','Ж','З','И','К'];
+const STAGE_NAMES = {'А':'Платформа','Б':'Регулятор','В':'AML','Г':'Налог','Д':'Юрист','Е':'Страховка','Ж':'Суд','З':'Исполнитель','И':'ЦБ','К':'Recovery'};
+
+function maskIIN(iin) {
+  if (!iin || iin.length < 6) return iin;
+  return iin.substring(0, 3) + '***' + iin.substring(iin.length - 3);
+}
+
+function maskPhone(phone) {
+  if (!phone) return '';
+  const clean = phone.replace(/\D/g, '');
+  if (clean.length < 7) return phone;
+  return '+7 (***) ***-' + clean.substring(clean.length - 2);
+}
+
+function searchCase() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (!q) return;
+
+  const cases = JSON.parse(localStorage.getItem('antifrog_cases') || '{}');
+  const results = Object.entries(cases).filter(([num, c]) =>
+    num.toLowerCase().includes(q) ||
+    c.fullName.toLowerCase().includes(q) ||
+    c.iin.includes(q)
+  );
+
+  document.getElementById('initialState').classList.add('hidden');
+  document.getElementById('noResults').classList.add('hidden');
+  document.getElementById('searchResults').classList.add('hidden');
+
+  if (results.length === 0) {
+    document.getElementById('noResults').classList.remove('hidden');
+    gsap.from('#noResults', { opacity: 0, y: 20, duration: 0.4 });
+    return;
+  }
+
+  const container = document.getElementById('searchResults');
+  container.innerHTML = results.map(([num, c]) => {
+    const stageIdx = STAGES.indexOf(c.stage) >= 0 ? STAGES.indexOf(c.stage) : 0;
+    return `
+    <div class="glass rounded-3xl p-8 mb-6 glow-card">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-3 h-3 rounded-full bg-emerald-500" style="animation:pulse-dot 2s infinite"></div>
+        <span class="text-sm text-emerald-500 font-medium">${c.status}</span>
+      </div>
+
+      <h2 class="text-2xl font-black mb-1">Дело #${num}</h2>
+      <p class="text-gray-400 mb-6">${c.platform}</p>
+
+      <!-- Progress -->
+      <div class="mb-6">
+        <div class="flex justify-between text-sm mb-2">
+          <span class="text-gray-400">Прогресс</span>
+          <span class="text-emerald-500 font-bold">${c.progress}%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill bg-gradient-to-r from-emerald-500 to-blue-500" style="width:${c.progress}%"></div></div>
+      </div>
+
+      <!-- Stage Timeline -->
+      <div class="flex items-center justify-between mb-8 overflow-x-auto pb-2">
+        ${STAGES.map((s, i) => {
+          let cls = '';
+          if (i < stageIdx) cls = 'done';
+          else if (i === stageIdx) cls = 'active';
+          return `<div class="flex flex-col items-center gap-1 min-w-[32px]">
+            <div class="stage-dot ${cls}"></div>
+            <span class="text-[9px] text-gray-600">${s}</span>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <!-- Details -->
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="bg-white/3 rounded-xl p-4">
+          <p class="text-xs text-gray-500 mb-1">ФИО</p>
+          <p class="font-bold text-sm">${c.fullName}</p>
+        </div>
+        <div class="bg-white/3 rounded-xl p-4">
+          <p class="text-xs text-gray-500 mb-1">ИИН</p>
+          <p class="font-bold text-sm masked">${maskIIN(c.iin)}</p>
+        </div>
+        <div class="bg-white/3 rounded-xl p-4">
+          <p class="text-xs text-gray-500 mb-1">Телефон</p>
+          <p class="font-bold text-sm masked">${maskPhone(c.phone)}</p>
+        </div>
+        <div class="bg-white/3 rounded-xl p-4">
+          <p class="text-xs text-gray-500 mb-1">Текущий этап</p>
+          <p class="font-bold text-sm">${c.stage} — ${STAGE_NAMES[c.stage] || c.stage}</p>
+        </div>
+      </div>
+
+      <!-- Comments -->
+      <div class="bg-white/3 rounded-xl p-5">
+        <h4 class="font-bold text-sm mb-3">Комментарии</h4>
+        <div class="space-y-3">
+          ${(c.comments || []).map(cm => `
+            <div class="comment-item">
+              <p class="text-xs text-gray-500">${cm.date}</p>
+              <p class="text-sm mt-1">${cm.text}</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  container.classList.remove('hidden');
+  gsap.from('#searchResults > *', { opacity: 0, y: 20, duration: 0.5, stagger: 0.1 });
+}
+
+document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') searchCase(); });
+
+// Check URL params
+const params = new URLSearchParams(window.location.search);
+if (params.get('case')) {
+  document.getElementById('searchInput').value = params.get('case');
+  searchCase();
+}
+</script>
+</body>
+</html>
