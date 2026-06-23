@@ -2,234 +2,133 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AntiFrog | Возврат активов</title>
-<meta name="description" content="Портал по возврату средств из мошеннических платформ. Проверка, консультация, возврат.">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',system-ui,sans-serif;background:#050505;color:#e5e7eb;overflow-x:hidden}
-.glass{background:rgba(17,17,17,0.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06)}
-.gradient-text{background:linear-gradient(135deg,#10b981,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.glow-card:hover{box-shadow:0 0 30px rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.3)}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
-@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
-.particle{position:absolute;border-radius:50%;pointer-events:none}
-.hero-bg{background:radial-gradient(ellipse at 50% 0%,rgba(16,185,129,0.08) 0%,transparent 60%)}
-.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent)}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AntiFrog — Возврат денег от мошенников</title>
+<meta name="description" content="Помогаем вернуть деньги из мошеннических платформ. Бесплатная консультация. Работаем по всему Казахстану.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<nav class="fixed top-0 left-0 right-0 z-50 glass transition-all duration-300" id="nav">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-    <a href="/" class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center font-black text-white text-lg">A</div>
-      <span class="text-xl font-black tracking-tight">AntiFrog</span>
-    </a>
-    <div class="hidden md:flex items-center gap-8 text-sm font-medium">
-      <a href="services.html" class="text-gray-400 hover:text-white transition">Услуги</a>
-      <a href="apply.html" class="text-gray-400 hover:text-white transition">Заявка</a>
-      <a href="check.html" class="text-gray-400 hover:text-white transition">Проверить дело</a>
-      <a href="apply.html" class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-semibold transition-all hover:scale-105">Начать</a>
-    </div>
-    <button id="menuBtn" class="md:hidden text-gray-400">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-    </button>
-  </div>
-  <div id="mobileMenu" class="hidden md:hidden px-6 pb-4">
-    <a href="services.html" class="block py-2 text-gray-400 hover:text-white">Услуги</a>
-    <a href="apply.html" class="block py-2 text-gray-400 hover:text-white">Заявка</a>
-    <a href="check.html" class="block py-2 text-gray-400 hover:text-white">Проверить дело</a>
-  </div>
-</nav>
-
 <!-- HERO -->
-<section class="hero-bg min-h-screen flex items-center justify-center relative pt-20">
-  <div id="particles" class="absolute inset-0 overflow-hidden"></div>
-  <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
-    <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-8 text-sm text-gray-400">
-      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-      Работаем 24/7 · Более 2800 помогли
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">🛡️ Помогли вернуть более 1,4 млрд ₸</div>
+    <h1>Вас обманули?<br><span class="hl">Мы вернём ваши деньги</span></h1>
+    <p class="hero-sub">Бесплатная консультация. Работаем по результату. По всему Казахстану.</p>
+    <div class="hero-checks">
+      <div class="check">✓ Бесплатно определим стадию обмана</div>
+      <div class="check">✓ Поможем подать заявление в полицию и АРРФР</div>
+      <div class="check">✓ Вернём деньги через банк или суд</div>
     </div>
-    <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
-      <span class="gradient-text">Возврат активов</span><br>
-      <span class="text-white">из мошеннических платформ</span>
-    </h1>
-    <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-      Мы объединяем регуляторов, банки и юристов для защиты пострадавших от финансового мошенничества. Проверьте компанию, подайте заявку, верните свои деньги.
-    </p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="apply.html" class="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/20">
-        Оставить заявку
-      </a>
-      <a href="check.html" class="glass text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/10 transition-all">
-        Проверить статус дела
-      </a>
+    <div class="hero-actions">
+      <a href="/apply.html" class="btn btn-primary btn-lg">📝 Оставить заявку</a>
+      <a href="/quiz.html" class="btn btn-outline btn-lg">🧪 Пройти тест</a>
     </div>
   </div>
 </section>
 
 <!-- STATS -->
-<section class="py-16 relative">
-  <div class="divider absolute top-0 left-0 right-0"></div>
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-      <div class="text-center stat-item">
-        <div class="text-4xl md:text-5xl font-black gradient-text counter" data-target="2847">0</div>
-        <div class="text-sm text-gray-500 mt-2">Клиентов помогли</div>
+<section class="stats">
+  <div class="container stats-grid">
+    <div class="stat"><div class="stat-num">2 847</div><div class="stat-lbl">Клиентов помогли</div></div>
+    <div class="stat"><div class="stat-num">1,4 млрд ₸</div><div class="stat-lbl">Возвращено</div></div>
+    <div class="stat"><div class="stat-num">94%</div><div class="stat-lbl">Успешных дел</div></div>
+    <div class="stat"><div class="stat-num">100+</div><div class="stat-lbl">Платформ в базе</div></div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Как мы работаем</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Вы оставляете заявку</h3>
+        <p>Заполняете простую форму: ФИО, ИНН, описание ситуации. 2 минуты.</p>
       </div>
-      <div class="text-center stat-item">
-        <div class="text-4xl md:text-5xl font-black gradient-text">1.47 млрд</div>
-        <div class="text-sm text-gray-500 mt-2">₸ возвращено</div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Мы анализируем дело</h3>
+        <p>Наш юрист изучает ситуацию, определяет стадию мошенничества, составляет план.</p>
       </div>
-      <div class="text-center stat-item">
-        <div class="text-4xl md:text-5xl font-black gradient-text counter" data-target="94" data-suffix="%">0</div>
-        <div class="text-sm text-gray-500 mt-2">Успешных случаев</div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Возвращаем деньги</h3>
+        <p>Чарджбэк, жалоба в АРРФР, заявление в полицию, суд — полный цикл.</p>
       </div>
-      <div class="text-center stat-item">
-        <div class="text-4xl md:text-5xl font-black gradient-text">100+</div>
-        <div class="text-sm text-gray-500 mt-2">Платформ в базе</div>
-      </div>
+    </div>
+    <div class="center">
+      <a href="/apply.html" class="btn btn-primary">📝 Начать сейчас</a>
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section class="py-24 relative">
-  <div class="divider absolute top-0 left-0 right-0"></div>
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="text-center mb-16">
-      <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-4 text-sm text-emerald-500 font-medium">Как это работает</div>
-      <h2 class="text-4xl md:text-5xl font-black mb-4">Три шага к возврату</h2>
-    </div>
-    <div class="grid md:grid-cols-3 gap-8">
-      <div class="glass rounded-2xl p-8 text-center glow-card step-card" style="opacity:0;transform:translateY(20px)">
-        <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center text-3xl mx-auto mb-6">📝</div>
-        <div class="text-sm text-emerald-500 font-bold mb-2">Шаг 1</div>
-        <h3 class="text-xl font-bold mb-3">Оставьте заявку</h3>
-        <p class="text-gray-400 text-sm">Заполните простую форму. Укажите ФИО, ИНН и описание ситуации. Это займёт 2 минуты.</p>
-      </div>
-      <div class="glass rounded-2xl p-8 text-center glow-card step-card" style="opacity:0;transform:translateY(20px)">
-        <div class="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center text-3xl mx-auto mb-6">🔍</div>
-        <div class="text-sm text-blue-500 font-bold mb-2">Шаг 2</div>
-        <h3 class="text-xl font-bold mb-3">Анализ дела</h3>
-        <p class="text-gray-400 text-sm">Наш специалист изучит вашу ситуацию, определит стадию мошенничества и предложит план действий.</p>
-      </div>
-      <div class="glass rounded-2xl p-8 text-center glow-card step-card" style="opacity:0;transform:translateY(20px)">
-        <div class="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center text-3xl mx-auto mb-6">💰</div>
-        <div class="text-sm text-purple-500 font-bold mb-2">Шаг 3</div>
-        <h3 class="text-xl font-bold mb-3">Возврат средств</h3>
-        <p class="text-gray-400 text-sm">Юридическое сопровождение через банки, регуляторы и суд. Полный цикл до возврата денег.</p>
-      </div>
+<!-- QUIZ PROMO -->
+<section class="section section-dark">
+  <div class="container text-center">
+    <div class="quiz-promo">
+      <div class="quiz-promo-icon">🧪</div>
+      <h2>Узнали ли вас?</h2>
+      <p>Ответьте на 7 вопросов и узнайте, попали ли вы в мошенническую схему. Это бесплатно и анонимно.</p>
+      <a href="/quiz.html" class="btn btn-primary btn-lg">Пройти тест</a>
     </div>
   </div>
 </section>
 
-<!-- SERVICES PREVIEW -->
-<section class="py-24 relative" id="services">
-  <div class="divider absolute top-0 left-0 right-0"></div>
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="text-center mb-16">
-      <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-4 text-sm text-emerald-500 font-medium">Услуги</div>
-      <h2 class="text-4xl md:text-5xl font-black mb-4">Полный цикл помощи</h2>
+<!-- SCAM SIGNS -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Признаки мошенничества</h2>
+    <p class="section-sub">Если вы встретили хотя бы 3 признака — скорее всего, это обман</p>
+    <div class="signs-grid">
+      <div class="sign-card">🚫 Обещают guaranteed доход 20-40% в месяц</div>
+      <div class="sign-card">🚫 Просят заплатить «комиссию» чтобы вывести деньги</div>
+      <div class="sign-card">🚫 «Регулятор» звонит из WhatsApp</div>
+      <div class="sign-card">🚫 Юрист сам предлагает помощь по телефону</div>
+      <div class="sign-card">🚫 Нет лицензии АРРФР (проверьте на finreg.kz)</div>
+      <div class="sign-card">🚫 Просят паспортные данные «для верификации»</div>
+      <div class="sign-card">🚫 Говорят «не говорите родственникам»</div>
+      <div class="sign-card">🚫 Домен сайта зарегистрирован менее года назад</div>
     </div>
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="servicesGrid"></div>
-    <div class="text-center mt-8">
-      <a href="services.html" class="inline-flex items-center gap-2 text-emerald-500 hover:text-emerald-400 font-semibold transition">
-        Все услуги
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-      </a>
+    <div class="center mt">
+      <a href="/apply.html" class="btn btn-primary">Обратиться за помощью</a>
+    </div>
+  </div>
+</section>
+
+<!-- HOTLINES -->
+<section class="section section-dark">
+  <div class="container">
+    <h2 class="section-title">Горячие линии Казахстана</h2>
+    <div class="hotlines">
+      <div class="hotline"><div class="hotline-num">1434</div><div class="hotline-name">АРРФР</div><div class="hotline-desc">Проверка лицензий, жалобы</div></div>
+      <div class="hotline"><div class="hotline-num">102</div><div class="hotline-name">Полиция</div><div class="hotline-desc">Заявление о мошенничестве</div></div>
+      <div class="hotline"><div class="hotline-num">116</div><div class="hotline-name">Доверие</div><div class="hotline-desc">Психологическая помощь</div></div>
     </div>
   </div>
 </section>
 
 <!-- CTA -->
-<section class="py-24 relative">
-  <div class="divider absolute top-0 left-0 right-0"></div>
-  <div class="max-w-4xl mx-auto px-6 text-center">
-    <div class="glass rounded-3xl p-12 md:p-16 relative overflow-hidden">
-      <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-emerald-500/10 to-transparent rounded-full -mr-32 -mt-32"></div>
-      <div class="relative z-10">
-        <h2 class="text-3xl md:text-5xl font-black mb-4">Готовы вернуть свои деньги?</h2>
-        <p class="text-gray-400 text-lg mb-8 max-w-xl mx-auto">Оставьте заявку сейчас. Бесплатная консультация. Мы работаем по результату.</p>
-        <a href="apply.html" class="bg-emerald-500 hover:bg-emerald-600 text-white px-10 py-5 rounded-xl font-bold text-xl transition-all hover:scale-105 inline-block">
-          Оставить заявку
-        </a>
-      </div>
-    </div>
+<section class="section cta-section">
+  <div class="container text-center">
+    <h2>Готовы вернуть свои деньги?</h2>
+    <p>Оставьте заявку — мы свяжемся с вами в ближайшее время</p>
+    <a href="/apply.html" class="btn btn-primary btn-xl">📝 Оставить заявку</a>
   </div>
 </section>
 
-<footer class="py-12 border-t border-white/5">
-  <div class="max-w-7xl mx-auto px-6 text-center">
-    <div class="flex items-center justify-center gap-3 mb-4">
-      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center font-black text-white text-sm">A</div>
-      <span class="font-bold">AntiFrog</span>
-    </div>
-    <p class="text-gray-600 text-sm">&copy; 2026 AntiFrog. Все права защищены.</p>
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <p>© 2026 AntiFrog. Все права защищены.</p>
+    <p>Сервис помощи пострадавшим от финансового мошенничества</p>
   </div>
 </footer>
 
-<script>
-const SERVICES = [
-  {title:"Проверка компании",desc:"Проверяем брокерскую платформу на наличие лицензии, возраст домена и отзывы.",icon:"🔍",features:["Проверка лицензии АРРФР","Анализ домена","Поиск жалоб"]},
-  {title:"Возврат средств",desc:"Юридическое сопровождение через банки, регуляторы и суд.",icon:"💰",features:["Претензионная работа","Чарджбэк","Обращение в АРРФР"]},
-  {title:"Консультация",desc:"Бесплатная первичная консультация. Определяем стадию мошенничества.",icon:"⚖️",features:["Бесплатная диагностика","Определение стадии","План действий"]},
-  {title:"Сбор доказательств",desc:"Помогаем собрать и систематизировать все доказательства.",icon:"📋",features:["Анализ документов","Оценка переписок","Пакет для органов"]},
-  {title:"Заявление в полицию",desc:"Подготавливаем и подаём заявление о мошенничестве.",icon:"🚔",features:["Подготовка заявления","Подача в полицию","Сопровождение"]},
-  {title:"Жалоба в АРРФР",desc:"Готовим жалобу в Агентство по регулированию финансового рынка.",icon:"🏛️",features:["Жалоба на брокера","Проверка лицензии","Взаимодействие"]}
-];
-
-function renderServices(){
-  document.getElementById('servicesGrid').innerHTML=SERVICES.map(s=>`
-    <div class="glass rounded-2xl p-8 glow-card transition-all duration-300 hover:-translate-y-1 step-card" style="opacity:0;transform:translateY(20px)">
-      <div class="text-4xl mb-4">${s.icon}</div>
-      <h3 class="text-xl font-bold mb-3">${s.title}</h3>
-      <p class="text-gray-400 text-sm mb-4 leading-relaxed">${s.desc}</p>
-      <div class="flex flex-wrap gap-2">${s.features.map(f=>`<span class="text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500">${f}</span>`).join('')}</div>
-    </div>`).join('');
-}
-
-function createParticles(){
-  const c=document.getElementById('particles');
-  for(let i=0;i<25;i++){
-    const p=document.createElement('div');p.className='particle';
-    const sz=Math.random()*4+1;
-    p.style.cssText=`width:${sz}px;height:${sz}px;background:rgba(16,185,129,${Math.random()*.3+.1});left:${Math.random()*100}%;top:${Math.random()*100}%;animation:float ${Math.random()*6+4}s ease-in-out infinite ${Math.random()*4}s`;
-    c.appendChild(p);
-  }
-}
-
-function animateCounters(){
-  document.querySelectorAll('.counter').forEach(el=>{
-    const target=parseInt(el.dataset.target),suffix=el.dataset.suffix||'',dur=2000,start=performance.now();
-    function update(now){
-      const p=Math.min((now-start)/dur,1),eased=1-Math.pow(1-p,3);
-      el.textContent=Math.floor(target*eased).toLocaleString()+suffix;
-      if(p<1)requestAnimationFrame(update);
-    }
-    requestAnimationFrame(update);
-  });
-}
-
-function initAnimations(){
-  gsap.registerPlugin(ScrollTrigger);
-  gsap.utils.toArray('.step-card').forEach((el,i)=>{
-    gsap.to(el,{opacity:1,y:0,duration:.6,delay:(i%3)*.1,scrollTrigger:{trigger:el,start:'top 85%'}});
-  });
-  gsap.utils.toArray('.stat-item').forEach((el,i)=>{
-    gsap.from(el,{opacity:0,y:30,duration:.6,delay:i*.15,scrollTrigger:{trigger:el,start:'top 85%'}});
-  });
-}
-
-document.getElementById('menuBtn').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('hidden'));
-renderServices();
-createParticles();
-setTimeout(()=>{animateCounters();initAnimations()},500);
-</script>
+<script src="js/common.js"></script>
 </body>
 </html>

@@ -2,94 +2,62 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Услуги — AntiFrog</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',system-ui,sans-serif;background:#050505;color:#e5e7eb;overflow-x:hidden}
-.glass{background:rgba(17,17,17,0.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06)}
-.gradient-text{background:linear-gradient(135deg,#10b981,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.glow-card:hover{box-shadow:0 0 30px rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.3)}
-</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<nav class="fixed top-0 left-0 right-0 z-50 glass">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-    <a href="/" class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center font-black text-white text-lg">A</div>
-      <span class="text-xl font-black tracking-tight">AntiFrog</span>
-    </a>
-    <div class="flex items-center gap-4">
-      <a href="apply.html" class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-semibold transition-all hover:scale-105 text-sm">Заявка</a>
-      <a href="/" class="text-sm text-gray-400 hover:text-white transition">← На главную</a>
+<section class="section" style="padding-top:32px">
+  <div class="container" style="max-width:700px">
+    <div class="text-center" style="margin-bottom:32px">
+      <h1 style="font-size:28px;font-weight:900">💼 Наши услуги</h1>
+      <p style="color:var(--muted);font-size:15px">Полный цикл помощи пострадавшим</p>
     </div>
-  </div>
-</nav>
 
-<section class="pt-28 pb-8 px-6">
-  <div class="max-w-7xl mx-auto text-center">
-    <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-4 text-sm text-emerald-500 font-medium">Услуги</div>
-    <h1 class="text-4xl md:text-6xl font-black mb-4">
-      <span class="gradient-text">Полный цикл</span> помощи
-    </h1>
-    <p class="text-gray-400 text-lg max-w-2xl mx-auto">От проверки компании до возврата средств — мы ведём вас на каждом этапе</p>
-  </div>
-</section>
+    <div class="space-y" id="servicesList"></div>
 
-<section class="px-6 pb-24">
-  <div class="max-w-5xl mx-auto">
-    <div class="space-y-6" id="servicesList"></div>
-
-    <div class="mt-16 glass rounded-3xl p-10 text-center">
-      <h2 class="text-3xl font-black mb-4">Готовы начать?</h2>
-      <p class="text-gray-400 mb-8 max-w-xl mx-auto">Бесплатная консультация. Мы определим стадию вашего дела и предложим план действий.</p>
-      <a href="apply.html" class="bg-emerald-500 hover:bg-emerald-600 text-white px-10 py-5 rounded-xl font-bold text-xl transition-all hover:scale-105 inline-block">
-        Оставить заявку
-      </a>
+    <div class="card card-lg text-center" style="margin-top:32px">
+      <h2 style="font-size:24px;font-weight:900;margin-bottom:12px">Не знаете, что выбрать?</h2>
+      <p style="color:var(--muted);margin-bottom:20px">Оставьте заявку — мы бесплатно определим что вам нужно</p>
+      <a href="/apply.html" class="btn btn-primary btn-lg" style="margin:0 auto">📝 Оставить заявку</a>
     </div>
   </div>
 </section>
 
+<script src="js/common.js"></script>
 <script>
 const SERVICES = [
-  {title:"Проверка компании",icon:"🔍",desc:"Проверяем брокерскую платформу на наличие лицензии, возраст домена и отзывы.",details:["Проверка лицензии АРРФР на finreg.kz","Анализ возраста домена (whois)","Поиск жалоб и отзывов в интернете","Определение юрисдикции регистрации","Заключение: мошенник или легальная компания"],price:"Бесплатно"},
-  {title:"Бесплатная консультация",icon:"⚖️",desc:"Первичная консультация для определения стадии мошенничества и плана действий.",details:["Определение стадии схемы (А-К)","Объяснение что происходит и почему","План действий на ближайшие шаги","Рекомендации по стоп-платежам","Ответы на все ваши вопросы"],price:"Бесплатно"},
-  {title:"Сбор доказательств",icon:"📋",desc:"Помогаем собрать и систематизировать все доказательства мошенничества.",details:["Анализ скриншотов и переписок","Оценка юридической силы документов","Подготовка пакета для органов","Фиксация доказательств в区块链","Хранение копий всех материалов"],price:"По запросу"},
-  {title:"Жалоба в АРРФР",icon:"🏛️",desc:"Подготовка и подача жалобы в Агентство по регулированию финансового рынка.",details:["Составление жалобы по образцу","Приложение доказательств","Подача через finreg.kz","Контроль рассмотрения","Получение ответа от регулятора"],price:"От 45 000 ₸"},
-  {title:"Чарджбэк через банк",icon:"💳",desc:"Процедура возврата средств через банк-эмитент вашей карты.",details:["Анализ транзакций за 60 дней","Подача заявления в банк","Сбор подтверждающих документов","Контроль процесса возврата","Обжалование отказа банка"],price:"От 35 000 ₸"},
-  {title:"Заявление в полицию",icon:"🚔",desc:"Подготовка и подача заявления о мошенничестве (ст. 190 УК РК).",details:["Составление заявления","Приложение всех доказательств","Подача в отдел полиции","Контроль возбуждения дела","Сопровождение следствия"],price:"От 25 000 ₸"},
-  {title:"Юридическое сопровождение",icon:"⚖️",desc:"Полное юридическое сопровождение процесса возврата средств.",details:["Анализ правовых оснований","Подготовка претензий и исков","Представительство в суде","Взаимодействие с банками","Контроль исполнения решений"],price:"По договору"},
-  {title:"Возврат средств",icon:"💰",desc:"Комплексная услуга по возврату денег из мошеннических платформ.",details:["Полный цикл: от заявки до возврата","Все органы: АРРФР, полиция, банки","Мониторинг статуса дела","Отчётность по результатам","Гарантия результата"],price:"Гонорар успеха"}
+  {icon:'🔍',title:'Проверка компании',price:'Бесплатно',items:['Проверка лицензии АРРФР','Анализ возраста домена','Поиск жалоб','Определение юрисдикции']},
+  {icon:'⚖️',title:'Бесплатная консультация',price:'Бесплатно',items:['Определение стадии обмана','Объяснение ситуации','План действий','Рекомендации']},
+  {icon:'📋',title:'Сбор доказательств',price:'По запросу',items:['Анализ скриншотов','Оценка документов','Подготовка пакета','Фиксация доказательств']},
+  {icon:'🏛️',title:'Жалоба в АРРФР',price:'от 45 000 ₸',items:['Составление жалобы','Подача через finreg.kz','Контроль рассмотрения','Получение ответа']},
+  {icon:'💳',title:'Чарджбэк',price:'от 35 000 ₸',items:['Анализ транзакций','Заявление в банк','Контроль возврата','Обжалование отказа']},
+  {icon:'🚔',title:'Заявление в полицию',price:'от 25 000 ₸',items:['Составление заявления','Подача в полицию','Контроль возбуждения','Сопровождение']},
+  {icon:'⚖️',title:'Юридическое сопровождение',price:'По договору',items:['Претензии и иски','Представительство','Взаимодействие с банками','Контроль решений']},
+  {icon:'💰',title:'Полный возврат',price:'Гонорар успеха',items:['Полный цикл','Все органы','Мониторинг','Отчётность','Гарантия']}
 ];
 
-document.getElementById('servicesList').innerHTML = SERVICES.map((s, i) => `
-  <div class="glass rounded-2xl p-8 glow-card transition-all duration-300 hover:-translate-y-1 service-card" style="opacity:0;transform:translateY(20px)">
-    <div class="flex items-start gap-6">
-      <div class="text-5xl flex-shrink-0">${s.icon}</div>
-      <div class="flex-1">
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="text-2xl font-bold">${s.title}</h3>
-          <span class="text-sm px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-500 font-semibold">${s.price}</span>
+document.getElementById('servicesList').innerHTML = SERVICES.map(s => `
+  <div class="card" style="padding:20px">
+    <div style="display:flex;align-items:start;gap:16px">
+      <span style="font-size:32px;flex-shrink:0">${s.icon}</span>
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <h3 style="font-size:18px;font-weight:700">${s.title}</h3>
+          <span style="font-size:12px;padding:4px 10px;background:rgba(16,185,129,0.1);color:var(--green);border-radius:8px;font-weight:600">${s.price}</span>
         </div>
-        <p class="text-gray-400 mb-4 leading-relaxed">${s.desc}</p>
-        <ul class="space-y-2">
-          ${s.details.map(d => `<li class="flex items-center gap-2 text-sm text-gray-300">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0"></span>${d}
-          </li>`).join('')}
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:4px">
+          ${s.items.map(i => `<li style="font-size:13px;color:var(--muted);padding-left:16px;position:relative"><span style="position:absolute;left:0;color:var(--green)">•</span>${i}</li>`).join('')}
         </ul>
+        <a href="/apply.html" class="btn btn-primary btn-sm" style="margin-top:12px;max-width:200px">Обратиться</a>
       </div>
     </div>
   </div>
 `).join('');
-
-gsap.utils.toArray('.service-card').forEach((el, i) => {
-  gsap.to(el, { opacity: 1, y: 0, duration: 0.5, delay: i * 0.08, scrollTrigger: { trigger: el, start: 'top 90%' } });
-});
-gsap.registerPlugin(ScrollTrigger);
 </script>
 </body>
 </html>

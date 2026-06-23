@@ -2,221 +2,127 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Admin — AntiFrog</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',system-ui,sans-serif;background:#050505;color:#e5e7eb}
-.glass{background:rgba(17,17,17,0.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06)}
-.gradient-text{background:linear-gradient(135deg,#10b981,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-textarea{font-family:monospace;font-size:13px;line-height:1.5}
-.toast{position:fixed;bottom:24px;right:24px;padding:12px 24px;border-radius:12px;font-weight:600;z-index:100;transform:translateY(100px);opacity:0;transition:all .3s}
-.toast.show{transform:translateY(0);opacity:1}
-</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<div class="flex min-h-screen">
-  <aside class="w-64 glass border-r border-white/5 p-6 hidden md:block">
-    <div class="flex items-center gap-3 mb-10">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center font-black text-white text-lg">A</div>
-      <span class="text-xl font-black">Admin</span>
-    </div>
-    <nav class="space-y-2">
-      <button onclick="showTab('cases')" class="atab w-full text-left px-4 py-3 rounded-xl text-sm font-medium hover:bg-white/5 transition flex items-center gap-3" data-tab="cases"><span>📋</span> Заявки</button>
-      <button onclick="showTab('add')" class="atab w-full text-left px-4 py-3 rounded-xl text-sm font-medium hover:bg-white/5 transition flex items-center gap-3" data-tab="add"><span>➕</span> Добавить дело</button>
-      <button onclick="showTab('telegram')" class="atab w-full text-left px-4 py-3 rounded-xl text-sm font-medium hover:bg-white/5 transition flex items-center gap-3" data-tab="telegram"><span>🤖</span> Telegram бот</button>
-      <button onclick="showTab('settings')" class="atab w-full text-left px-4 py-3 rounded-xl text-sm font-medium hover:bg-white/5 transition flex items-center gap-3" data-tab="settings"><span>⚙️</span> Настройки</button>
-    </nav>
-    <div class="mt-auto pt-10">
-      <a href="/" class="text-sm text-gray-500 hover:text-white transition">← Сайт</a>
-    </div>
-  </aside>
-
-  <main class="flex-1 p-6 md:p-10">
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <h1 class="text-2xl font-black">Админ-панель</h1>
-        <p class="text-gray-500 text-sm mt-1">Управление заявками и настройками</p>
-      </div>
-      <span class="text-xs text-gray-600 font-mono">/admin.html</span>
+<section class="section" style="padding-top:32px">
+  <div class="container" style="max-width:800px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+      <h1 style="font-size:24px;font-weight:900">⚙️ Админ-панель</h1>
+      <a href="/" style="font-size:13px;color:var(--muted)">← Сайт</a>
     </div>
 
-    <!-- Cases Tab -->
-    <div id="tab-cases" class="atcontent">
-      <div class="glass rounded-2xl p-6">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="font-bold text-lg">Все заявки</h2>
-          <span class="text-sm text-gray-500" id="casesCount">0 заявок</span>
+    <div class="admin-tabs">
+      <div class="admin-tab active" onclick="showTab('list')">📋 Заявки</div>
+      <div class="admin-tab" onclick="showTab('add')">➕ Добавить</div>
+      <div class="admin-tab" onclick="showTab('info')">🤖 Бот</div>
+    </div>
+
+    <div id="tabList">
+      <div id="casesList"></div>
+    </div>
+
+    <div id="tabAdd" class="hidden">
+      <div class="card card-lg">
+        <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">Добавить дело</h2>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">ФИО</label><input class="form-input" id="aName"></div>
+          <div class="form-group"><label class="form-label">ИИН</label><input class="form-input" id="aIin" maxlength="12"></div>
         </div>
-        <div id="casesList" class="space-y-3"></div>
-      </div>
-    </div>
-
-    <!-- Add Case Tab -->
-    <div id="tab-add" class="atcontent hidden">
-      <div class="glass rounded-2xl p-6">
-        <h2 class="font-bold text-lg mb-6">Добавить дело вручную</h2>
-        <div class="grid md:grid-cols-2 gap-4 mb-6">
-          <div><label class="block text-xs text-gray-500 mb-1">Номер дела</label><input type="text" id="addNum" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" placeholder="AF-XXXXXX"></div>
-          <div><label class="block text-xs text-gray-500 mb-1">ФИО</label><input type="text" id="addName" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" placeholder="Иванов Иван Иванович"></div>
-          <div><label class="block text-xs text-gray-500 mb-1">ИИН</label><input type="text" id="addIin" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" maxlength="12"></div>
-          <div><label class="block text-xs text-gray-500 mb-1">Телефон</label><input type="tel" id="addPhone" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition"></div>
-          <div><label class="block text-xs text-gray-500 mb-1">Платформа</label><input type="text" id="addPlatform" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition"></div>
-          <div><label class="block text-xs text-gray-500 mb-1">Стадия</label>
-            <select id="addStage" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition">
-              <option value="А">А — Платформа</option><option value="Б">Б — Регулятор</option><option value="В">В — AML</option><option value="Г">Г — Налог</option><option value="Д">Д — Юрист</option><option value="К">К — Recovery</option>
-            </select>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Телефон</label><input class="form-input" id="aPhone"></div>
+          <div class="form-group"><label class="form-label">Платформа</label><input class="form-input" id="aPlatform"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Этап</label>
+            <select class="form-input" id="aStage"><option>Заявка</option><option>Анализ</option><option>Претензия</option><option>Возврат</option></select>
           </div>
-          <div><label class="block text-xs text-gray-500 mb-1">Прогресс (%)</label><input type="number" id="addProgress" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" value="10" min="0" max="100"></div>
-          <div><label class="block text-xs text-gray-500 mb-1">Статус</label><input type="text" id="addStatus" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" value="На рассмотрении"></div>
+          <div class="form-group"><label class="form-label">Прогресс %</label><input type="number" class="form-input" id="aProgress" value="10"></div>
         </div>
-        <button onclick="addCase()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold transition-all">+ Добавить</button>
+        <button onclick="addCase()" class="btn btn-primary">+ Добавить</button>
       </div>
     </div>
 
-    <!-- Telegram Tab -->
-    <div id="tab-telegram" class="atcontent hidden">
-      <div class="glass rounded-2xl p-6">
-        <h2 class="font-bold text-lg mb-4">Telegram бот</h2>
-        <p class="text-gray-400 text-sm mb-6">Заявки с сайта автоматически отправляются в Telegram бот.</p>
-        <div class="bg-white/3 rounded-xl p-4 mb-4">
-          <p class="text-xs text-gray-500 mb-1">Бот</p>
-          <p class="font-mono text-sm">@finmanager_check_bot</p>
+    <div id="tabInfo" class="hidden">
+      <div class="card card-lg">
+        <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">Telegram бот</h2>
+        <div style="background:var(--card);border-radius:12px;padding:16px;margin-bottom:12px">
+          <p style="font-size:12px;color:var(--muted)">Бот</p>
+          <p style="font-family:monospace">@finmanager_check_bot</p>
         </div>
-        <div class="bg-white/3 rounded-xl p-4 mb-4">
-          <p class="text-xs text-gray-500 mb-1">Chat ID</p>
-          <p class="font-mono text-sm">8471070560</p>
+        <div style="background:var(--card);border-radius:12px;padding:16px;margin-bottom:12px">
+          <p style="font-size:12px;color:var(--muted)">Chat ID</p>
+          <p style="font-family:monospace">8471070560</p>
         </div>
-        <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-4">
-          <p class="text-sm text-emerald-400">✅ Бот настроен. Заявки с apply.html автоматически приходят в ваш Telegram.</p>
+        <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:12px;padding:16px">
+          <p style="font-size:13px;color:var(--green)">✅ Заявки с сайта приходят в Telegram автоматически</p>
         </div>
       </div>
     </div>
+  </div>
+</section>
 
-    <!-- Settings Tab -->
-    <div id="tab-settings" class="atcontent hidden">
-      <div class="glass rounded-2xl p-6">
-        <h2 class="font-bold text-lg mb-4">Настройки</h2>
-        <div class="space-y-4">
-          <div class="bg-white/3 rounded-xl p-4">
-            <p class="text-xs text-gray-500 mb-1">Репозиторий</p>
-            <p class="font-mono text-sm">manageralexaystreltsov-ops/anti-fraud-portal</p>
-          </div>
-          <div class="bg-white/3 rounded-xl p-4">
-            <p class="text-xs text-gray-500 mb-1">URL сайта</p>
-            <p class="font-mono text-sm">https://manageralexaystreltsov-ops.github.io/anti-fraud-portal/</p>
-          </div>
-          <div class="bg-white/3 rounded-xl p-4">
-            <p class="text-xs text-gray-500 mb-1">Данные хранятся в</p>
-            <p class="font-mono text-sm">localStorage (браузер админа)</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-</div>
-
-<div id="toastEl" class="toast"></div>
-
+<script src="js/common.js"></script>
 <script>
-const STAGE_NAMES = {'А':'Платформа','Б':'Регулятор','В':'AML','Г':'Налог','Д':'Юрист','Е':'Страховка','Ж':'Суд','З':'Исполнитель','И':'ЦБ','К':'Recovery'};
-
-function getCases() { return JSON.parse(localStorage.getItem('antifrog_cases') || '{}'); }
-function saveCases(c) { localStorage.setItem('antifrog_cases', JSON.stringify(c)); }
-
-function showToast(msg, type='success') {
-  const t = document.getElementById('toastEl');
-  t.textContent = msg;
-  t.className = 'toast show ' + (type === 'success' ? 'bg-emerald-500' : 'bg-red-500');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-function showTab(tab) {
-  document.querySelectorAll('.atcontent').forEach(el => el.classList.add('hidden'));
-  document.querySelectorAll('.atab').forEach(el => el.classList.remove('bg-white/5'));
-  document.getElementById('tab-' + tab).classList.remove('hidden');
-  document.querySelector(`[data-tab="${tab}"]`)?.classList.add('bg-white/5');
-  if (tab === 'cases') renderCases();
+function showTab(t) {
+  ['List','Add','Info'].forEach(id => document.getElementById('tab'+id).classList.add('hidden'));
+  document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.remove('hidden');
+  document.querySelectorAll('.admin-tab').forEach(el => el.classList.remove('active'));
+  event.target.classList.add('active');
+  if (t === 'list') renderCases();
 }
 
 function renderCases() {
   const cases = getCases();
-  const list = document.getElementById('casesList');
+  const el = document.getElementById('casesList');
   const entries = Object.entries(cases);
-  document.getElementById('casesCount').textContent = entries.length + ' заявок';
-
-  if (entries.length === 0) {
-    list.innerHTML = '<p class="text-gray-600 text-center py-8">Нет заявок. Клиенты могут оставить заявку на <a href="apply.html" class="text-emerald-500">apply.html</a></p>';
-    return;
-  }
-
-  list.innerHTML = entries.map(([num, c]) => `
-    <div class="glass rounded-xl p-5 flex items-center justify-between hover:bg-white/5 transition cursor-pointer" onclick="viewCase('${num}')">
-      <div class="flex items-center gap-4">
-        <div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 font-bold text-sm">${num.slice(-2)}</div>
-        <div>
-          <p class="font-bold">${c.fullName || 'Без имени'}</p>
-          <p class="text-sm text-gray-500">${c.platform || '?'} · ${c.stage} — ${STAGE_NAMES[c.stage] || ''}</p>
-        </div>
+  if (!entries.length) { el.innerHTML = '<div class="card text-center" style="padding:32px;color:var(--muted)">Нет заявок</div>'; return; }
+  el.innerHTML = entries.map(([n, c]) => `
+    <div class="card" style="padding:16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="editCase('${n}')">
+      <div>
+        <p style="font-weight:700">${c.fullName||'Без имени'}</p>
+        <p style="font-size:12px;color:var(--muted)">${c.platform||'?'} · ${c.stage} · ${c.progress}%</p>
       </div>
-      <div class="text-right">
-        <span class="text-xs px-3 py-1 rounded-full ${c.progress >= 50 ? 'bg-emerald-500/10 text-emerald-500' : 'bg-yellow-500/10 text-yellow-500'} font-medium">${c.status}</span>
-        <p class="text-xs text-gray-600 mt-1">${c.progress}%</p>
-      </div>
+      <span style="font-size:11px;padding:4px 10px;background:${c.progress>=50?'rgba(16,185,129,0.1)':'rgba(245,158,11,0.1)'};color:${c.progress>=50?'var(--green)':'var(--gold)'};border-radius:8px;font-weight:600">${c.status}</span>
     </div>
   `).join('');
 }
 
-function viewCase(num) {
+function editCase(num) {
   const cases = getCases();
   const c = cases[num];
-  if (!c) return;
-
-  const newStatus = prompt(`Статус для дела ${num}:\nТекущий: ${c.status}\nВведите новый статус:`, c.status);
-  if (newStatus && newStatus !== c.status) {
-    c.status = newStatus;
+  const s = prompt(`Статус для #${num}:\nТекущий: ${c.status}`, c.status);
+  if (s && s !== c.status) {
+    c.status = s;
     if (!c.comments) c.comments = [];
-    c.comments.push({ date: new Date().toLocaleString('ru-RU'), text: `Статус изменён на: ${newStatus}` });
-    cases[num] = c;
-    saveCases(cases);
-    renderCases();
-    showToast('Статус обновлён');
+    c.comments.push({ date: new Date().toLocaleString('ru-RU'), text: 'Статус: ' + s });
+    cases[num] = c; saveCases(cases); renderCases(); showToast('Обновлено');
   }
 }
 
 function addCase() {
-  const num = document.getElementById('addNum').value.trim() || ('AF-' + Date.now().toString(36).toUpperCase().slice(-6));
+  const num = 'AF-' + Date.now().toString(36).toUpperCase().slice(-6);
   const cases = getCases();
   cases[num] = {
-    fullName: document.getElementById('addName').value.trim(),
-    iin: document.getElementById('addIin').value.trim(),
-    phone: document.getElementById('addPhone').value.trim(),
-    platform: document.getElementById('addPlatform').value.trim(),
-    stage: document.getElementById('addStage').value,
-    progress: parseInt(document.getElementById('addProgress').value) || 10,
-    status: document.getElementById('addStatus').value.trim() || 'На рассмотрении',
-    birthDate: '',
-    contactMethod: '',
-    amount: '',
-    whenHappened: '',
-    source: '',
-    comment: '',
-    hasHelper: '',
-    lawyer: 'Ожидается',
-    comments: [{ date: new Date().toLocaleString('ru-RU'), text: 'Дело создано вручную администратором' }],
-    timestamp: new Date().toISOString()
+    fullName: document.getElementById('aName').value.trim(),
+    iin: document.getElementById('aIin').value.trim(),
+    phone: document.getElementById('aPhone').value.trim(),
+    platform: document.getElementById('aPlatform').value.trim(),
+    stage: document.getElementById('aStage').value,
+    progress: parseInt(document.getElementById('aProgress').value)||10,
+    status: 'На рассмотрении',
+    comments: [{ date: new Date().toLocaleString('ru-RU'), text: 'Создано администратором' }]
   };
-  saveCases(cases);
-  showToast('Дело добавлено: ' + num);
-  ['addNum','addName','addIin','addPhone','addPlatform'].forEach(id => document.getElementById(id).value = '');
-  showTab('cases');
+  saveCases(cases); showToast('Добавлено: ' + num); showTab('list');
 }
 
-showTab('cases');
+renderCases();
 </script>
 </body>
 </html>
