@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Админ-панель — AntiFrog</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:#050505;color:#e5e7eb}
+.glass{background:rgba(17,17,17,0.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06)}
+.gradient-text{background:linear-gradient(135deg,#10b981,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+textarea{font-family:monospace;font-size:13px;line-height:1.5}
+.status-toast{position:fixed;bottom:24px;right:24px;padding:12px 24px;border-radius:12px;font-weight:600;z-index:100;transform:translateY(100px);opacity:0;transition:all .3s}
+.status-toast.show{transform:translateY(0);opacity:1}
+</style>
+</head>
+<body>
+
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside class="w-64 glass border-r border-white/5 p-6 hidden md:block">
+    <div class="flex items-center gap-3 mb-10">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center font-black text-white text-lg">A</div>
+      <span class="text-xl font-black">Admin</span>
+    </div>
+    <nav class="space-y-2">
+      <button onclick="showTab('data')" class="admin-tab w-full text-left px-4 py-3 rounded-xl text-sm font-medium hover:bg-white/5 transition flex items-center gap-3" data-tab="data">
+        <span>📊</span> Данные (data.json)
+      </button>
+      <button onclick="showTab('clients')" class="admin-tab w-full text-left px-4 py-3 rounded-xl text-sm font-medium hover:bg-white/5 transition flex items-center gap-3" data-tab="clients">
+        <span>👥</span> Клиенты
+      </button>
+      <button onclick="showTab('registry')" class="admin-tab w-full text-left px-4 py-3 rounded-xl text-sm font-medium hover:bg-white/5 transition flex items-center gap-3" data-tab="registry">
+        <span>📋</span> Реестр
+      </button>
+      <button onclick="showTab('cases')" class="admin-tab w-full text-left px-4 py-3 rounded-xl text-sm font-medium hover:bg-white/5 transition flex items-center gap-3" data-tab="cases">
+        <span>💼</span> Кейсы
+      </button>
+      <button onclick="showTab('deploy')" class="admin-tab w-full text-left px-4 py-3 rounded-xl text-sm font-medium hover:bg-white/5 transition flex items-center gap-3" data-tab="deploy">
+        <span>🚀</span> Деплой
+      </button>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 p-6 md:p-10">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-black">Админ-панель AntiFrog</h1>
+        <p class="text-gray-500 text-sm mt-1">Управление данными сайта через GitHub API</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="/" class="text-sm text-gray-500 hover:text-white transition">← Сайт</a>
+        <a href="../client/login.html" class="text-sm text-emerald-500 hover:text-emerald-400 transition">Кабинет</a>
+      </div>
+    </div>
+
+    <!-- GitHub Token -->
+    <div class="glass rounded-2xl p-6 mb-8" id="tokenSection">
+      <h2 class="font-bold mb-4">🔑 GitHub Token</h2>
+      <div class="flex gap-3">
+        <input type="password" id="githubToken" placeholder="ghp_..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition font-mono text-sm">
+        <button onclick="saveToken()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold transition-all">Сохранить</button>
+      </div>
+      <p class="text-xs text-gray-600 mt-2">Токен сохраняется в localStorage. Используется для pushes в GitHub.</p>
+    </div>
+
+    <!-- Data Tab -->
+    <div id="tab-data" class="admin-content">
+      <div class="glass rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-bold">Редактор data.json</h2>
+          <div class="flex gap-3">
+            <button onclick="loadDataEditor()" class="text-sm text-gray-400 hover:text-white transition">🔄 Загрузить</button>
+            <button onclick="pushData()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all">📤 Push в GitHub</button>
+          </div>
+        </div>
+        <textarea id="dataEditor" class="w-full h-[500px] bg-black/30 border border-white/10 rounded-xl p-4 text-gray-300 outline-none focus:border-emerald-500 transition resize-none"></textarea>
+      </div>
+    </div>
+
+    <!-- Clients Tab -->
+    <div id="tab-clients" class="admin-content hidden">
+      <div class="glass rounded-2xl p-6">
+        <h2 class="font-bold mb-4">Управление клиентами</h2>
+        <p class="text-gray-500 text-sm mb-6">Клиенты хранятся в data.json в объекте clientData (для кабинета). Добавьте нового клиента:</p>
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">ID клиента</label>
+            <input type="text" id="newClientId" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" placeholder="12345">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Имя</label>
+            <input type="text" id="newClientName" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" placeholder="Клиент">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Платформа</label>
+            <input type="text" id="newClientPlatform" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" placeholder="TradePro">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Сумма (тенге)</label>
+            <input type="number" id="newClientAmount" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" placeholder="4500000">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Стадия</label>
+            <select id="newClientStage" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition">
+              <option value="А">А — Платформа</option>
+              <option value="Б">Б — Регулятор</option>
+              <option value="В">В — AML</option>
+              <option value="Г">Г — Налог</option>
+              <option value="Д">Д — Юрист</option>
+              <option value="К">К — Recovery</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Прогресс (%)</label>
+            <input type="number" id="newClientProgress" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" placeholder="50" min="0" max="100">
+          </div>
+        </div>
+        <button onclick="addClient()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold transition-all">+ Добавить клиента</button>
+        <div id="clientsList" class="mt-6 space-y-3"></div>
+      </div>
+    </div>
+
+    <!-- Registry Tab -->
+    <div id="tab-registry" class="admin-content hidden">
+      <div class="glass rounded-2xl p-6">
+        <h2 class="font-bold mb-4">Добавить компанию в реестр</h2>
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Название</label>
+            <input type="text" id="newCompanyName" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" placeholder="TradePro">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Тип</label>
+            <input type="text" id="newCompanyType" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" placeholder="Брокерская платформа">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Домен</label>
+            <input type="text" id="newCompanyDomain" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" placeholder="tradepro.com">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Страна</label>
+            <input type="text" id="newCompanyCountry" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" placeholder="Острова Кука">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Риск</label>
+            <select id="newCompanyRisk" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition">
+              <option value="Критический">Критический</option>
+              <option value="Высокий">Высокий</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Дата регистрации домена</label>
+            <input type="date" id="newCompanyDate" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition">
+          </div>
+        </div>
+        <button onclick="addCompany()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold transition-all">+ Добавить компанию</button>
+      </div>
+    </div>
+
+    <!-- Cases Tab -->
+    <div id="tab-cases" class="admin-content hidden">
+      <div class="glass rounded-2xl p-6">
+        <h2 class="font-bold mb-4">Добавить кейс</h2>
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">ID кейса</label>
+            <input type="text" id="newCaseId" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" placeholder="848">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Платформа</label>
+            <input type="text" id="newCasePlatform" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" placeholder="TradePro">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Сумма возврата (тенге)</label>
+            <input type="number" id="newCaseAmount" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition" placeholder="4500000">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Статус</label>
+            <select id="newCaseStatus" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-emerald-500 transition">
+              <option>Возврат средств завершён</option>
+              <option>В работе</option>
+              <option>Ожидание</option>
+            </select>
+          </div>
+        </div>
+        <button onclick="addCase()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold transition-all">+ Добавить кейс</button>
+      </div>
+    </div>
+
+    <!-- Deploy Tab -->
+    <div id="tab-deploy" class="admin-content hidden">
+      <div class="glass rounded-2xl p-6">
+        <h2 class="font-bold mb-4">Деплой на GitHub Pages</h2>
+        <p class="text-gray-400 text-sm mb-6">После редактирования данных нажмите кнопку для отправки изменений в GitHub. Сайт обновится автоматически.</p>
+        <div class="space-y-4">
+          <div class="bg-white/3 rounded-xl p-4 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500">✓</div>
+            <div>
+              <p class="font-medium">Репозиторий</p>
+              <p class="text-sm text-gray-500 font-mono">finmanager063-design/anti-fraud-portal</p>
+            </div>
+          </div>
+          <div class="bg-white/3 rounded-xl p-4 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-500">🌐</div>
+            <div>
+              <p class="font-medium">GitHub Pages URL</p>
+              <p class="text-sm text-gray-500 font-mono">https://finmanager063-design.github.io/anti-fraud-portal/</p>
+            </div>
+          </div>
+          <button onclick="deployToGitHub()" class="w-full bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white py-4 rounded-xl font-bold text-lg transition-all hover:scale-[1.01]">
+            🚀 Отправить изменения в GitHub
+          </button>
+        </div>
+        <div id="deployLog" class="mt-6 bg-black/30 rounded-xl p-4 font-mono text-xs text-gray-500 hidden max-h-64 overflow-y-auto"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toast" class="status-toast"></div>
+
+<script>
+const REPO = 'finmanager063-design/anti-fraud-portal';
+const BRANCH = 'main';
+let TOKEN = localStorage.getItem('gh_token') || '';
+let DATA = null;
+
+function showToast(msg, type='success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'status-toast show ' + (type === 'success' ? 'bg-emerald-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function saveToken() {
+  TOKEN = document.getElementById('githubToken').value.trim();
+  localStorage.setItem('gh_token', TOKEN);
+  showToast('Токен сохранён');
+}
+
+function showTab(tab) {
+  document.querySelectorAll('.admin-content').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.admin-tab').forEach(el => el.classList.remove('bg-white/5'));
+  document.getElementById('tab-' + tab).classList.remove('hidden');
+  document.querySelector(`[data-tab="${tab}"]`).classList.add('bg-white/5');
+  if (tab === 'data') loadDataEditor();
+  if (tab === 'clients') loadClientsList();
+}
+
+async function loadDataEditor() {
+  try {
+    const res = await fetch('../data.json');
+    DATA = await res.json();
+    document.getElementById('dataEditor').value = JSON.stringify(DATA, null, 2);
+    showToast('Данные загружены');
+  } catch(e) { showToast('Ошибка загрузки: ' + e.message, 'error'); }
+}
+
+async function pushData() {
+  if (!TOKEN) { showToast('Введите GitHub токен', 'error'); return; }
+  const content = document.getElementById('dataEditor').value;
+  JSON.parse(content); // validate
+
+  const log = document.getElementById('deployLog');
+  log.classList.remove('hidden');
+  log.innerHTML += '📤 Отправка data.json...\n';
+
+  try {
+    const getFile = await fetch(`https://api.github.com/repos/${REPO}/contents/data.json`, {
+      headers: { 'Authorization': `token ${TOKEN}` }
+    });
+    const fileData = await getFile.json();
+    const sha = fileData.sha;
+
+    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/data.json`, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: 'Update data.json via admin panel',
+        content: btoa(unescape(encodeURIComponent(content))),
+        sha: sha,
+        branch: BRANCH
+      })
+    });
+
+    if (res.ok) {
+      log.innerHTML += '✅ data.json обновлён в GitHub\n';
+      showToast('Данные отправлены в GitHub!');
+    } else {
+      const err = await res.json();
+      log.innerHTML += '❌ Ошибка: ' + (err.message || res.statusText) + '\n';
+      showToast('Ошибка отправки', 'error');
+    }
+  } catch(e) {
+    log.innerHTML += '❌ Сетевая ошибка: ' + e.message + '\n';
+    showToast('Ошибка сети', 'error');
+  }
+}
+
+function addClient() {
+  const id = document.getElementById('newClientId').value.trim();
+  const name = document.getElementById('newClientName').value.trim();
+  const platform = document.getElementById('newClientPlatform').value.trim();
+  const amount = parseInt(document.getElementById('newClientAmount').value) || 0;
+  const stage = document.getElementById('newClientStage').value;
+  const progress = parseInt(document.getElementById('newClientProgress').value) || 0;
+
+  if (!id) { showToast('Введите ID клиента', 'error'); return; }
+
+  if (!DATA) DATA = { stats:{}, registry:[], team:[], cases:[], services:[], contacts:{} };
+  if (!DATA.clients) DATA.clients = {};
+  DATA.clients[id] = { name, platform, amount, lost: amount * 1.3, returned: Math.floor(amount * progress / 100), stage, status: progress >= 75 ? 'Возврат средств' : 'В работе', progress, date: new Date().toISOString().split('T')[0] };
+
+  document.getElementById('dataEditor').value = JSON.stringify(DATA, null, 2);
+  loadClientsList();
+  showToast('Клиент добавлен');
+}
+
+function loadClientsList() {
+  if (!DATA) return;
+  const list = document.getElementById('clientsList');
+  const clients = DATA.clients || {};
+  list.innerHTML = Object.entries(clients).map(([id, c]) => `
+    <div class="glass rounded-xl p-4 flex items-center justify-between">
+      <div>
+        <p class="font-bold">#${id} — ${c.name}</p>
+        <p class="text-sm text-gray-500">${c.platform} · ${c.stage} · ${c.progress}%</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-sm font-bold gradient-text">${(c.amount/1000000).toFixed(1)}M ₸</span>
+        <button onclick="deleteClient('${id}')" class="text-red-400 hover:text-red-300 text-sm">Удалить</button>
+      </div>
+    </div>
+  `).join('') || '<p class="text-gray-600 text-sm">Нет клиентов</p>';
+}
+
+function deleteClient(id) {
+  delete DATA.clients[id];
+  document.getElementById('dataEditor').value = JSON.stringify(DATA, null, 2);
+  loadClientsList();
+  showToast('Клиент удалён');
+}
+
+function addCompany() {
+  const company = {
+    name: document.getElementById('newCompanyName').value.trim(),
+    type: document.getElementById('newCompanyType').value.trim(),
+    domain: document.getElementById('newCompanyDomain').value.trim(),
+    country: document.getElementById('newCompanyCountry').value.trim(),
+    risk: document.getElementById('newCompanyRisk').value,
+    status: 'Мошенник',
+    registered: document.getElementById('newCompanyDate').value,
+    licenses: []
+  };
+  if (!company.name) { showToast('Введите название', 'error'); return; }
+  DATA.registry.push(company);
+  document.getElementById('dataEditor').value = JSON.stringify(DATA, null, 2);
+  showToast('Компания добавлена в реестр');
+}
+
+function addCase() {
+  const cs = {
+    id: document.getElementById('newCaseId').value.trim(),
+    client: 'Аноним',
+    platform: document.getElementById('newCasePlatform').value.trim(),
+    amount: parseInt(document.getElementById('newCaseAmount').value) || 0,
+    status: document.getElementById('newCaseStatus').value,
+    date: new Date().toISOString().split('T')[0]
+  };
+  if (!cs.id) { showToast('Введите ID кейса', 'error'); return; }
+  DATA.cases.unshift(cs);
+  document.getElementById('dataEditor').value = JSON.stringify(DATA, null, 2);
+  showToast('Кейс добавлен');
+}
+
+async function deployToGitHub() {
+  if (!TOKEN) { showToast('Введите GitHub токен', 'error'); return; }
+  const log = document.getElementById('deployLog');
+  log.classList.remove('hidden');
+  log.innerHTML = '🚀 Начинаем деплой...\n';
+
+  // Push data.json
+  log.innerHTML += '📤 Отправка data.json...\n';
+  await pushData();
+  log.innerHTML += '✅ Деплой завершён! Сайт обновится через 1-2 минуты.\n';
+}
+
+// Init
+showTab('data');
+loadDataEditor();
+</script>
+</body>
+</html>

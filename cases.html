@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кейсы — AntiFrog</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:#050505;color:#e5e7eb;overflow-x:hidden}
+.glass{background:rgba(17,17,17,0.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06)}
+.gradient-text{background:linear-gradient(135deg,#10b981,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.glow-card:hover{box-shadow:0 0 30px rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.3)}
+</style>
+</head>
+<body>
+
+<nav class="fixed top-0 left-0 right-0 z-50 glass">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center font-black text-white text-lg">A</div>
+      <span class="text-xl font-black tracking-tight">AntiFrog</span>
+    </a>
+    <a href="/" class="text-sm text-gray-400 hover:text-white transition">← На главную</a>
+  </div>
+</nav>
+
+<section class="pt-28 pb-8 px-6">
+  <div class="max-w-7xl mx-auto text-center">
+    <h1 class="text-4xl md:text-6xl font-black mb-4">
+      <span class="gradient-text">847</span> успешных возвратов
+    </h1>
+    <p class="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">Каждый кейс — это реальный человек, которому мы помогли вернуть деньги из мошеннических платформ</p>
+    <div class="flex flex-wrap justify-center gap-4 mb-8">
+      <div class="glass rounded-xl px-6 py-3 text-center">
+        <p class="text-2xl font-black gradient-text">1.47 млрд ₸</p>
+        <p class="text-xs text-gray-500">Возвращено</p>
+      </div>
+      <div class="glass rounded-xl px-6 py-3 text-center">
+        <p class="text-2xl font-black gradient-text">94%</p>
+        <p class="text-xs text-gray-500">Успешных</p>
+      </div>
+      <div class="glass rounded-xl px-6 py-3 text-center">
+        <p class="text-2xl font-black gradient-text">100+</p>
+        <p class="text-xs text-gray-500">Платформ</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="px-6 pb-24">
+  <div class="max-w-7xl mx-auto">
+    <div id="casesGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    <div class="text-center mt-12">
+      <button onclick="loadMore()" id="loadMoreBtn" class="glass hover:bg-white/5 text-white px-8 py-4 rounded-xl font-bold transition-all">
+        Загрузить ещё
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+let DATA = null;
+let shown = 0;
+const PER_PAGE = 20;
+
+async function loadData() {
+  const res = await fetch('data.json');
+  DATA = await res.json();
+  loadMore();
+}
+
+function loadMore() {
+  const grid = document.getElementById('casesGrid');
+  const all = DATA.cases;
+  const batch = all.slice(shown, shown + PER_PAGE);
+
+  batch.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = 'glass rounded-2xl p-6 glow-card transition-all duration-300 hover:-translate-y-1 case-item';
+    div.style.opacity = '0';
+    div.style.transform = 'translateY(20px)';
+    div.innerHTML = `
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-xs text-gray-600 font-mono">#${c.id}</span>
+        <span class="text-xs px-2 py-1 rounded-full ${c.status === 'Возврат средств завершён' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-yellow-500/10 text-yellow-500'} font-medium">${c.status}</span>
+      </div>
+      <h3 class="font-bold text-base mb-3">${c.platform}</h3>
+      <div class="flex items-baseline gap-2 mb-3">
+        <span class="text-3xl font-black gradient-text">${(c.amount/1000000).toFixed(1)}</span>
+        <span class="text-sm text-gray-500">млн ₸</span>
+      </div>
+      <div class="flex items-center gap-2 text-xs text-gray-600">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        ${c.date}
+      </div>
+    `;
+    grid.appendChild(div);
+  });
+
+  shown += batch.length;
+
+  gsap.to('.case-item', { opacity: 1, y: 0, duration: 0.4, stagger: 0.03 });
+
+  if (shown >= all.length) {
+    document.getElementById('loadMoreBtn').style.display = 'none';
+  }
+}
+
+loadData();
+</script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кабинет клиента — AntiFrog</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:#050505;color:#e5e7eb}
+.glass{background:rgba(17,17,17,0.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06)}
+.gradient-text{background:linear-gradient(135deg,#10b981,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.glow-card{transition:all .3s}
+.glow-card:hover{box-shadow:0 0 30px rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.3)}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.4}}
+@keyframes money-counter{0%{transform:translateY(100%);opacity:0}100%{transform:translateY(0);opacity:1}}
+.money-animate{animation:money-counter 0.8s ease-out forwards}
+.progress-track{height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;width:0%;transition:width 1.5s ease-out}
+.stage-dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,0.1);position:relative}
+.stage-dot.active{border-color:#10b981;background:#10b981}
+.stage-dot.active::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(16,185,129,0.3);animation:pulse-dot 2s infinite}
+.stage-dot.done{border-color:#10b981;background:#10b981}
+.comment-item{border-left:2px solid rgba(16,185,129,0.3);padding-left:12px;padding-top:4px;padding-bottom:4px}
+</style>
+</head>
+<body>
+
+<nav class="fixed top-0 left-0 right-0 z-50 glass">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center font-black text-white text-lg">A</div>
+      <span class="text-xl font-black tracking-tight">AntiFrog</span>
+    </a>
+    <div class="flex items-center gap-4">
+      <span class="text-sm text-gray-500" id="clientName"></span>
+      <button onclick="logout()" class="text-sm text-gray-500 hover:text-white transition">Выйти</button>
+    </div>
+  </div>
+</nav>
+
+<main class="pt-24 pb-16 px-6">
+  <div class="max-w-6xl mx-auto">
+
+    <!-- Status Header -->
+    <div class="glass rounded-3xl p-8 md:p-10 mb-8 relative overflow-hidden" id="statusCard">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-emerald-500/5 to-transparent rounded-full -mr-32 -mt-32"></div>
+      <div class="relative z-10">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-3 h-3 rounded-full bg-emerald-500" style="animation:pulse-dot 2s infinite"></div>
+          <span class="text-sm text-emerald-500 font-medium">Дело активно</span>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-black mb-2">Ваш статус</h1>
+        <p class="text-gray-400 text-lg mb-6" id="currentStatus">Идёт претензионная работа</p>
+
+        <!-- Money Counter -->
+        <div class="glass rounded-2xl p-6 mb-8 inline-block">
+          <p class="text-sm text-gray-500 mb-1">Сумма к возврату</p>
+          <div class="flex items-baseline gap-2">
+            <span class="text-4xl md:text-5xl font-black gradient-text money-animate" id="amountDisplay">0</span>
+            <span class="text-lg text-gray-500">тенге</span>
+          </div>
+          <p class="text-xs text-gray-600 mt-2">≈ <span id="usdDisplay">$0</span></p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mb-4">
+          <div class="flex justify-between text-sm mb-2">
+            <span class="text-gray-400">Прогресс возврата</span>
+            <span class="text-emerald-500 font-bold" id="progressPct">0%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill bg-gradient-to-r from-emerald-500 to-blue-500" id="mainProgress"></div>
+          </div>
+        </div>
+
+        <!-- Stage Timeline -->
+        <div class="flex items-center justify-between mt-8 overflow-x-auto pb-2" id="stageTimeline">
+        </div>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+
+      <!-- Left Column -->
+      <div class="md:col-span-2 space-y-6">
+
+        <!-- Case Details -->
+        <div class="glass rounded-2xl p-6 glow-card">
+          <h2 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <span class="text-xl">📋</span> Детали дела
+          </h2>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white/3 rounded-xl p-4">
+              <p class="text-xs text-gray-500 mb-1">Номер дела</p>
+              <p class="font-bold text-lg" id="caseNumber">#847</p>
+            </div>
+            <div class="bg-white/3 rounded-xl p-4">
+              <p class="text-xs text-gray-500 mb-1">Платформа</p>
+              <p class="font-bold text-lg" id="casePlatform">—</p>
+            </div>
+            <div class="bg-white/3 rounded-xl p-4">
+              <p class="text-xs text-gray-500 mb-1">Дата обращения</p>
+              <p class="font-bold" id="caseDate">—</p>
+            </div>
+            <div class="bg-white/3 rounded-xl p-4">
+              <p class="text-xs text-gray-500 mb-1">Стадия схемы</p>
+              <p class="font-bold text-red-400" id="caseStage">—</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comments / Timeline -->
+        <div class="glass rounded-2xl p-6 glow-card">
+          <h2 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <span class="text-xl">💬</span> Комментарии юриста
+          </h2>
+          <div class="space-y-4" id="commentsList">
+            <div class="comment-item">
+              <p class="text-sm text-gray-400">22.06.2026, 14:30</p>
+              <p class="text-sm mt-1">Подано ходатайство в банк о возврате средств. Ожидаем ответа в течение 5 рабочих дней.</p>
+            </div>
+            <div class="comment-item">
+              <p class="text-sm text-gray-400">20.06.2026, 10:15</p>
+              <p class="text-sm mt-1">Получен ответ от АРРФР: жалоба зарегистрирована, присвоен номер дела ARR-2026-0847.</p>
+            </div>
+            <div class="comment-item">
+              <p class="text-sm text-gray-400">18.06.2026, 16:45</p>
+              <p class="text-sm mt-1">Собран полный пакет документов: скриншоты переписки, чеки, копия паспорта. Начинаем претензионную работу.</p>
+            </div>
+            <div class="comment-item">
+              <p class="text-sm text-gray-400">17.06.2026, 09:00</p>
+              <p class="text-sm mt-1">Первичная консультация. Определена стадия Б (регулятор). Клиент проинформирован о стоп-платежах.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="space-y-6">
+
+        <!-- Recovery Progress -->
+        <div class="glass rounded-2xl p-6 glow-card">
+          <h2 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <span class="text-xl">💰</span> Финансы
+          </h2>
+          <div class="space-y-4">
+            <div class="bg-white/3 rounded-xl p-4">
+              <p class="text-xs text-gray-500 mb-1">Потерянная сумма</p>
+              <p class="text-xl font-bold text-red-400" id="lostAmount">—</p>
+            </div>
+            <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-4">
+              <p class="text-xs text-gray-500 mb-1">Возвращено</p>
+              <p class="text-xl font-bold text-emerald-500" id="returnedAmount">—</p>
+            </div>
+            <div class="bg-white/3 rounded-xl p-4">
+              <p class="text-xs text-gray-500 mb-1">Ожидаемая сумма</p>
+              <p class="text-xl font-bold gradient-text" id="expectedAmount">—</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="glass rounded-2xl p-6 glow-card">
+          <h2 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <span class="text-xl">⚡</span> Быстрые действия
+          </h2>
+          <div class="space-y-3">
+            <button class="w-full text-left glass rounded-xl px-4 py-3 hover:border-emerald-500 border border-transparent transition-all flex items-center gap-3">
+              <span class="text-lg">📞</span>
+              <div>
+                <p class="font-medium text-sm">Связаться с юристом</p>
+                <p class="text-xs text-gray-500">Позвонить или написать</p>
+              </div>
+            </button>
+            <button class="w-full text-left glass rounded-xl px-4 py-3 hover:border-emerald-500 border border-transparent transition-all flex items-center gap-3">
+              <span class="text-lg">📄</span>
+              <div>
+                <p class="font-medium text-sm">Скачать документы</p>
+                <p class="text-xs text-gray-500">PDF-копии всех документов</p>
+              </div>
+            </button>
+            <button class="w-full text-left glass rounded-xl px-4 py-3 hover:border-emerald-500 border border-transparent transition-all flex items-center gap-3">
+              <span class="text-lg">📊</span>
+              <div>
+                <p class="font-medium text-sm">Статистика дела</p>
+                <p class="text-xs text-gray-500">Подробный отчёт</p>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Registries Checked -->
+        <div class="glass rounded-2xl p-6 glow-card">
+          <h2 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <span class="text-xl">🔍</span> Проверенные реестры
+          </h2>
+          <div class="space-y-2" id="registriesChecked">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const clientData = {
+  '847': { name:'Клиент #847', platform:'TradePro Global', amount:4500000, lost:6200000, returned:4500000, stage:'Б', status:'Идёт претензионная работа', progress:75, date:'17.06.2026' },
+  '12345': { name:'Клиент #12345', platform:'CryptoInvest KZ', amount:2800000, lost:3500000, returned:1200000, stage:'В', status:'Подготовка документов', progress:45, date:'15.06.2026' },
+  '77019993430': { name:'Клиент', platform:'InvestMarket24', amount:7200000, lost:9800000, returned:0, stage:'А', status:'Первичная консультация', progress:15, date:'22.06.2026' }
+};
+
+const defaultClient = { name:'Новый клиент', platform:'Неизвестная платформа', amount:0, lost:0, returned:0, stage:'—', status:'Ожидание данных', progress:0, date: new Date().toISOString().split('T')[0] };
+
+const stages = ['А','Б','В','Г','Д','Е','Ж','З','И','К'];
+const stageNames = { 'А':'Платформа','Б':'Регулятор','В':'AML','Г':'Налог','Д':'Юрист','Е':'Страховка','Ж':'Суд','З':'Исполнитель','И':'ЦБ','К':'Recovery' };
+const registries = [
+  { name:'АРРФР', status:'Проверено', ok:true },
+  { name:'finreg.kz', status:'Проверено', ok:true },
+  { name:'e-gov.kz', status:'Проверено', ok:true },
+  { name:'sud.kz', status:'Нет дел', ok:true },
+  { name:'НБК РК', status:'Проверено', ok:true },
+  { name:'КГД МФ РК', status:'Проверено', ok:true }
+];
+
+function init() {
+  const id = localStorage.getItem('antifrog_client') || '847';
+  const client = clientData[id] || { ...defaultClient, name: `Клиент ${id}` };
+
+  document.getElementById('clientName').textContent = client.name;
+  document.getElementById('currentStatus').textContent = client.status;
+  document.getElementById('casePlatform').textContent = client.platform;
+  document.getElementById('caseDate').textContent = client.date;
+  document.getElementById('caseStage').textContent = stageNames[client.stage] || client.stage;
+
+  // Animate money
+  animateMoney('amountDisplay', client.amount);
+  document.getElementById('usdDisplay').textContent = '$' + Math.round(client.amount / 450).toLocaleString();
+  document.getElementById('lostAmount').textContent = client.lost.toLocaleString() + ' ₸';
+  document.getElementById('returnedAmount').textContent = client.returned.toLocaleString() + ' ₸';
+  document.getElementById('expectedAmount').textContent = client.amount.toLocaleString() + ' ₸';
+
+  // Progress
+  setTimeout(() => {
+    document.getElementById('mainProgress').style.width = client.progress + '%';
+    document.getElementById('progressPct').textContent = client.progress + '%';
+  }, 500);
+
+  // Stage timeline
+  const timeline = document.getElementById('stageTimeline');
+  const currentIdx = stages.indexOf(client.stage);
+  timeline.innerHTML = stages.map((s, i) => {
+    let cls = '';
+    if (i < currentIdx) cls = 'done';
+    else if (i === currentIdx) cls = 'active';
+    return `<div class="flex flex-col items-center gap-1 min-w-[40px]">
+      <div class="stage-dot ${cls}"></div>
+      <span class="text-[10px] text-gray-600">${s}</span>
+    </div>`;
+  }).join('');
+
+  // Registries
+  const regContainer = document.getElementById('registriesChecked');
+  regContainer.innerHTML = registries.map(r => `
+    <div class="flex items-center justify-between text-sm py-2 border-b border-white/5 last:border-0">
+      <span class="text-gray-400">${r.name}</span>
+      <span class="text-emerald-500 text-xs font-medium flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>${r.status}
+      </span>
+    </div>
+  `).join('');
+
+  // GSAP animations
+  gsap.from('#statusCard', { opacity: 0, y: 30, duration: 0.6 });
+  gsap.from('.glass:not(#statusCard)', { opacity: 0, y: 20, duration: 0.5, stagger: 0.1, delay: 0.3 });
+}
+
+function animateMoney(id, target) {
+  const el = document.getElementById(id);
+  const duration = 2000;
+  const start = performance.now();
+  function update(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.floor(target * eased).toLocaleString();
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+function logout() {
+  localStorage.removeItem('antifrog_client');
+  window.location.href = 'login.html';
+}
+
+init();
+</script>
+</body>
+</html>

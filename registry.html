@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Реестр компаний — AntiFrog</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:#050505;color:#e5e7eb;overflow-x:hidden}
+.glass{background:rgba(17,17,17,0.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06)}
+.gradient-text{background:linear-gradient(135deg,#10b981,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.glow-card:hover{box-shadow:0 0 30px rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.3)}
+@keyframes scanline{0%{top:-100%}100%{top:200%}}
+.scanning .scan-line{display:block}
+.scan-line{display:none;position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#10b981,transparent);animation:scanline 1.5s linear infinite}
+.result-item{opacity:0;transform:translateY(10px)}
+</style>
+</head>
+<body>
+
+<nav class="fixed top-0 left-0 right-0 z-50 glass">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center font-black text-white text-lg">A</div>
+      <span class="text-xl font-black tracking-tight">AntiFrog</span>
+    </a>
+    <a href="/" class="text-sm text-gray-400 hover:text-white transition">← На главную</a>
+  </div>
+</nav>
+
+<section class="pt-28 pb-16 px-6">
+  <div class="max-w-5xl mx-auto text-center">
+    <h1 class="text-4xl md:text-6xl font-black mb-4">
+      <span class="gradient-text">Реестр</span> компаний
+    </h1>
+    <p class="text-gray-400 text-lg mb-10 max-w-2xl mx-auto">Проверьте брокера, инвестиционную платформу или финансовую компанию по нашей базе мошенников</p>
+
+    <div class="glass rounded-2xl p-2 max-w-3xl mx-auto mb-6 scanning relative overflow-hidden" id="searchBox">
+      <div class="scan-line"></div>
+      <div class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-gray-500 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input type="text" id="searchInput" placeholder="Введите название компании..." class="flex-1 bg-transparent px-2 py-3 text-white outline-none text-lg placeholder-gray-600">
+        <button onclick="performSearch()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 whitespace-nowrap">Найти</button>
+      </div>
+    </div>
+
+    <div id="searchStats" class="text-sm text-gray-600 mb-8"></div>
+  </div>
+</section>
+
+<section class="px-6 pb-24">
+  <div class="max-w-7xl mx-auto">
+    <div id="resultsContainer" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    <div id="emptyState" class="text-center py-20 hidden">
+      <div class="text-6xl mb-4">🔍</div>
+      <h3 class="text-xl font-bold mb-2">Ничего не найдено</h3>
+      <p class="text-gray-500">Попробуйте другой запрос или проверьте правописание</p>
+    </div>
+    <div id="initialState" class="text-center py-20">
+      <div class="text-6xl mb-4">📋</div>
+      <h3 class="text-xl font-bold mb-2">Введите название компании</h3>
+      <p class="text-gray-500">Мы проверим по нашей базе из 100+ мошеннических платформ</p>
+    </div>
+  </div>
+</section>
+
+<script>
+let DATA = null;
+
+async function loadData() {
+  const res = await fetch('data.json');
+  DATA = await res.json();
+}
+
+function performSearch() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (!q) { showAll(); return; }
+
+  const box = document.getElementById('searchBox');
+  box.classList.add('scanning');
+
+  setTimeout(() => {
+    const results = DATA.registry.filter(c =>
+      c.name.toLowerCase().includes(q) ||
+      c.type.toLowerCase().includes(q) ||
+      c.country.toLowerCase().includes(q) ||
+      c.domain.toLowerCase().includes(q)
+    );
+    box.classList.remove('scanning');
+    renderResults(results, q);
+  }, 1200);
+}
+
+function showAll() {
+  renderResults(DATA.registry, '');
+}
+
+function renderResults(items, query) {
+  const container = document.getElementById('resultsContainer');
+  const empty = document.getElementById('emptyState');
+  const initial = document.getElementById('initialState');
+  const stats = document.getElementById('searchStats');
+
+  initial.classList.add('hidden');
+
+  if (items.length === 0) {
+    container.innerHTML = '';
+    empty.classList.remove('hidden');
+    stats.textContent = '';
+    return;
+  }
+
+  empty.classList.add('hidden');
+  stats.textContent = query ? `Найдено: ${items.length} компания(й) по запросу "${query}"` : `Всего в реестре: ${items.length} компаний`;
+
+  container.innerHTML = items.map((c, i) => {
+    const riskColor = c.risk === 'Критический' ? 'text-red-400 bg-red-500/10' : 'text-orange-400 bg-orange-500/10';
+    const statusColor = 'text-red-400 bg-red-500/10';
+    return `
+    <div class="glass rounded-2xl p-6 glow-card transition-all duration-300 hover:-translate-y-1 result-item">
+      <div class="flex items-start justify-between mb-4">
+        <h3 class="font-bold text-base leading-tight pr-2">${c.name}</h3>
+        <span class="text-xs px-2 py-1 rounded-full ${riskColor} font-medium whitespace-nowrap">${c.risk}</span>
+      </div>
+      <p class="text-xs text-gray-500 mb-3">${c.type}</p>
+      <div class="space-y-2 mb-4">
+        <div class="flex items-center gap-2 text-sm">
+          <span class="text-gray-600">Страна:</span>
+          <span class="text-gray-300">${c.country}</span>
+        </div>
+        <div class="flex items-center gap-2 text-sm">
+          <span class="text-gray-600">Домен:</span>
+          <span class="text-gray-300 font-mono text-xs">${c.domain}</span>
+        </div>
+        <div class="flex items-center gap-2 text-sm">
+          <span class="text-gray-600">Регистрация:</span>
+          <span class="text-gray-300">${c.registered}</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 pt-3 border-t border-white/5">
+        <span class="w-2 h-2 rounded-full bg-red-500"></span>
+        <span class="text-xs ${statusColor} px-2 py-1 rounded-full font-medium">${c.status}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  gsap.to('.result-item', { opacity: 1, y: 0, duration: 0.4, stagger: 0.05 });
+}
+
+document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') performSearch(); });
+
+loadData();
+</script>
+</body>
+</html>
