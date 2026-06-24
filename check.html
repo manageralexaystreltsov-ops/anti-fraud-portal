@@ -83,8 +83,30 @@ function generateClients(count) {
   return clients;
 }
 
-const ALL_CLIENTS = generateClients(1200);
-document.getElementById('totalCount').textContent = `В базе: ${ALL_CLIENTS.length} дел`;
+function loadRealClients() {
+  const cases = getCases();
+  return Object.entries(cases).map(([num, c]) => ({
+    num,
+    fullName: c.fullName || 'Без имени',
+    iin: '',
+    phone: c.phone || '',
+    platform: c.platform || '',
+    stage: c.stage || 'Заявка',
+    status: c.status || 'На рассмотрении',
+    progress: c.progress || 0,
+    city: '',
+    amount: c.amount || 0,
+    recovered: c.recovered || 0,
+    date: c.time ? new Date(c.time).toLocaleDateString('ru-RU') : '',
+    comments: c.comments || [],
+    _real: true
+  }));
+}
+
+const REAL_CLIENTS = loadRealClients();
+const FAKE_CLIENTS = generateClients(1200);
+const ALL_CLIENTS = [...REAL_CLIENTS, ...FAKE_CLIENTS];
+document.getElementById('totalCount').textContent = `В базе: ${ALL_CLIENTS.length} дел (${REAL_CLIENTS.length} реальных)`;
 
 function maskIIN(iin) { return iin.slice(0,3) + '***' + iin.slice(-3); }
 function maskPhone(p) { return p.replace(/\d{3}\)\s\d{2}-\d{2}/, '*** **-**'); }
@@ -96,15 +118,16 @@ function renderClients(list) {
   document.getElementById('filterInfo').textContent = list.length === ALL_CLIENTS.length ? 'Показаны все' : `Найдено: ${list.length}`;
 
   grid.innerHTML = list.slice(0, 100).map((c, i) => {
-    const color = AVATAR_COLORS[i % AVATAR_COLORS.length];
+    const color = c._real ? '#10b981' : AVATAR_COLORS[i % AVATAR_COLORS.length];
     const initials = c.fullName.split(' ').slice(0, 2).map(n => n[0]).join('');
     const statusClass = c.progress >= 80 ? 'done' : c.progress >= 40 ? 'active' : 'pending';
+    const realBadge = c._real ? '<span style="font-size:10px;background:#10b98120;color:#10b981;padding:2px 6px;border-radius:4px;margin-left:6px;font-weight:600">РЕАЛЬНЫЙ</span>' : '';
     return `
     <div class="client-card" onclick='showDetail(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
       <div class="client-avatar" style="background:${color}20;color:${color}">${initials}</div>
       <div class="client-info">
-        <div class="client-name">${c.fullName}</div>
-        <div class="client-meta">${c.platform} · ${c.city} · #${c.num}</div>
+        <div class="client-name">${c.fullName}${realBadge}</div>
+        <div class="client-meta">${c.platform}${c.city ? ' · ' + c.city : ''} · #${c.num}</div>
       </div>
       <div class="client-status ${statusClass}">${c.status}</div>
     </div>`;
@@ -156,7 +179,14 @@ function showDetail(c) {
 function closeModal(e) { if (e.target === document.getElementById('modal')) document.getElementById('modal').style.display = 'none'; }
 
 document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
-renderClients(ALL_CLIENTS);
+
+const urlCase = new URLSearchParams(location.search).get('case');
+if (urlCase) {
+  document.getElementById('searchInput').value = urlCase;
+  search();
+} else {
+  renderClients(ALL_CLIENTS);
+}
 </script>
 </body>
 </html>
