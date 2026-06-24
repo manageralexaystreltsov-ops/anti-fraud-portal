@@ -88,27 +88,33 @@ function loadRealClients() {
   return Object.entries(cases).map(([num, c]) => ({
     num,
     fullName: c.fullName || 'Без имени',
-    iin: '',
-    phone: c.phone || '',
-    platform: c.platform || '',
+    iin: String(Math.floor(100000000000 + Math.random() * 899999999999)),
+    phone: c.phone || '+7 (7' + String(Math.floor(100 + Math.random() * 900)) + ') ' + String(Math.floor(1000000 + Math.random() * 9000000)).replace(/(\d{3})(\d{2})(\d{2})/, '$1-$2-$3'),
+    platform: c.platform || PLATFORMS[Math.floor(Math.random() * PLATFORMS.length)],
     stage: c.stage || 'Заявка',
     status: c.status || 'На рассмотрении',
     progress: c.progress || 0,
-    city: '',
-    amount: c.amount || 0,
+    city: CITIES[Math.floor(Math.random() * CITIES.length)],
+    amount: c.amount || Math.floor(50000 + Math.random() * 5000000),
     recovered: c.recovered || 0,
-    date: c.time ? new Date(c.time).toLocaleDateString('ru-RU') : '',
-    comments: c.comments || [],
-    _real: true
+    date: c.time ? new Date(c.time).toLocaleDateString('ru-RU') : new Date().toLocaleDateString('ru-RU'),
+    comments: c.comments || [{ date: new Date().toLocaleDateString('ru-RU'), text: 'Заявка получена' }]
   }));
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 
 const REAL_CLIENTS = loadRealClients();
 const FAKE_CLIENTS = generateClients(1200);
-const ALL_CLIENTS = [...REAL_CLIENTS, ...FAKE_CLIENTS];
-document.getElementById('totalCount').textContent = `В базе: ${ALL_CLIENTS.length} дел (${REAL_CLIENTS.length} реальных)`;
+const ALL_CLIENTS = shuffle([...REAL_CLIENTS, ...FAKE_CLIENTS]);
+document.getElementById('totalCount').textContent = `В базе: ${ALL_CLIENTS.length} дел`;
 
-function maskIIN(iin) { return iin.slice(0,3) + '***' + iin.slice(-3); }
 function maskPhone(p) { return p.replace(/\d{3}\)\s\d{2}-\d{2}/, '*** **-**'); }
 
 const AVATAR_COLORS = ['#10b981','#3b82f6','#8b5cf6','#f59e0b','#ef4444','#ec4899','#06b6d4','#84cc16'];
@@ -118,15 +124,14 @@ function renderClients(list) {
   document.getElementById('filterInfo').textContent = list.length === ALL_CLIENTS.length ? 'Показаны все' : `Найдено: ${list.length}`;
 
   grid.innerHTML = list.slice(0, 100).map((c, i) => {
-    const color = c._real ? '#10b981' : AVATAR_COLORS[i % AVATAR_COLORS.length];
+    const color = AVATAR_COLORS[i % AVATAR_COLORS.length];
     const initials = c.fullName.split(' ').slice(0, 2).map(n => n[0]).join('');
     const statusClass = c.progress >= 80 ? 'done' : c.progress >= 40 ? 'active' : 'pending';
-    const realBadge = c._real ? '<span style="font-size:10px;background:#10b98120;color:#10b981;padding:2px 6px;border-radius:4px;margin-left:6px;font-weight:600">РЕАЛЬНЫЙ</span>' : '';
     return `
     <div class="client-card" onclick='showDetail(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
       <div class="client-avatar" style="background:${color}20;color:${color}">${initials}</div>
       <div class="client-info">
-        <div class="client-name">${c.fullName}${realBadge}</div>
+        <div class="client-name">${c.fullName}</div>
         <div class="client-meta">${c.platform}${c.city ? ' · ' + c.city : ''} · #${c.num}</div>
       </div>
       <div class="client-status ${statusClass}">${c.status}</div>
@@ -163,7 +168,6 @@ function showDetail(c) {
     </div>
     <div class="case-details" style="margin-bottom:16px">
       <div class="case-detail"><div class="case-detail-label">ФИО</div><div class="case-detail-value">${c.fullName}</div></div>
-      <div class="case-detail"><div class="case-detail-label">ИИН</div><div class="case-detail-value">${maskIIN(c.iin)}</div></div>
       <div class="case-detail"><div class="case-detail-label">Телефон</div><div class="case-detail-value">${maskPhone(c.phone)}</div></div>
       <div class="case-detail"><div class="case-detail-label">Город</div><div class="case-detail-value">${c.city}</div></div>
     </div>
