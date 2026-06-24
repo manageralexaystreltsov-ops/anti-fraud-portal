@@ -449,9 +449,9 @@ textarea.form-input { resize: vertical; min-height: 100px; }
 .shimmer { background: linear-gradient(90deg, var(--card) 25%, rgba(255,255,255,0.06) 50%, var(--card) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
 
 /* ===== CHECK PAGE — MOBILE FIRST ===== */
-.ck-hero { position: relative; padding: 32px 0 24px; overflow: hidden; }
+.ck-hero { position: relative; padding: 48px 0 40px; overflow: hidden; min-height: 280px; }
 .ck-hero-glow { position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, rgba(16,185,129,0.1), transparent 70%); top: -100px; left: 50%; transform: translateX(-50%); pointer-events: none; }
-.ck-hero-inner { position: relative; z-index: 1; text-align: center; }
+.ck-hero-inner { position: relative; z-index: 2; text-align: center; }
 .ck-badge { display: inline-block; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--green); margin-bottom: 16px; }
 .ck-title { font-size: clamp(22px,5vw,32px); font-weight: 900; margin-bottom: 8px; }
 .ck-sub { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
@@ -480,6 +480,18 @@ textarea.form-input { resize: vertical; min-height: 100px; }
 .ck-lstep span { color: var(--green); font-weight: 700; }
 .ck-loading-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
 .ck-loading-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--blue)); border-radius: 2px; transition: width .3s; }
+.ck-loading-status { text-align: center; font-size: 12px; color: var(--muted); margin-top: 12px; font-family: monospace; }
+.ck-loading-orgs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; justify-content: center; }
+.ck-org-pulse {
+  display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;
+  border-radius: 8px; border: 1px solid var(--border); background: var(--card);
+  font-size: 11px; transition: all .3s;
+}
+.ck-org-pulse.done { border-color: var(--green); background: rgba(16,185,129,0.08); }
+.ck-org-flag { font-size: 12px; }
+.ck-org-name { font-weight: 600; color: var(--text); }
+.ck-org-status { font-size: 10px; }
+.ck-org-pulse.done .ck-org-status { color: var(--green); }
 
 /* Filters */
 .ck-filters { padding: 12px 0; }

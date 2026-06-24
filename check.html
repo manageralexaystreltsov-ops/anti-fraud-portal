@@ -30,9 +30,11 @@
   <div class="container">
     <div class="ck-loading-card">
       <div class="ck-loading-spinner"></div>
-      <div class="ck-loading-title" id="loadingTitle">Подключение к системе...</div>
+      <div class="ck-loading-title" id="loadingTitle">Инициализация поиска...</div>
+      <div class="ck-loading-orgs" id="loadingOrgs"></div>
       <div class="ck-loading-steps" id="loadingSteps"></div>
       <div class="ck-loading-bar"><div class="ck-loading-fill" id="loadingFill"></div></div>
+      <div class="ck-loading-status" id="loadingStatus">Подключение...</div>
     </div>
   </div>
 </div>
@@ -171,21 +173,66 @@ function doSearch(){
   if(!q){showList(FILTERED);return;}
   hide('listSection');show('searchLoading');
   document.getElementById('loadingSteps').innerHTML='';
+  document.getElementById('loadingOrgs').innerHTML='';
   document.getElementById('loadingFill').style.width='0%';
-  var steps=[{t:'Соединение с АРРФР...',d:500},{t:'Запрос в FinCEN...',d:600},{t:'Проверка blockchain...',d:500},{t:'Сверка с НБК...',d:400},{t:'Анализ данных...',d:300}];
-  var i=0;
-  function next(){
+  document.getElementById('loadingStatus').textContent='Подключение...';
+
+  var orgs=[
+    {n:'АРРФР',f:'🇰🇿',d:300},{n:'НБ РК',f:'🏦',d:250},{n:'FinCEN',f:'🇺🇸',d:400},
+    {n:'FCA',f:'🇬🇧',d:350},{n:'SEC',f:'🇺🇸',d:300},{n:'FBI',f:'🇺🇸',d:280},
+    {n:'BaFin',f:'🇩🇪',d:320},{n:'CySEC',f:'🇨🇾',d:290},{n:'ASIC',f:'🇦🇺',d:310},
+    {n:'МВД РК',f:'👮',d:260},{n:'Интерпол',f:'🌍',d:380},{n:'FATF',f:'🌍',d:340},
+    {n:'MAS',f:'🇸🇬',d:300},{n:'FINMA',f:'🇨🇭',d:270},{n:'ESMA',f:'🇪🇺',d:330},
+    {n:'Блокчейн',f:'⛓️',d:400},{n:'SWIFT',f:'💱',d:350},{n:'МВФ',f:'🌍',d:300}
+  ];
+
+  var steps=[
+    {t:'Инициализация защищённого соединения...',d:400},
+    {t:'Запрос в реестры регуляторов...',d:500},
+    {t:'Проверка blockchain транзакций...',d:600},
+    {t:'Сверка с базами данных банков...',d:400},
+    {t:'Анализ результатов...',d:300},
+    {t:'Формирование ответа...',d:200}
+  ];
+
+  var total=orgs.length+steps.length;
+  var done=0;
+
+  function addOrg(i){
+    if(i>=orgs.length){runSteps(0);return;}
+    var o=orgs[i];
+    var el=document.createElement('div');
+    el.className='ck-org-pulse';
+    el.innerHTML='<span class="ck-org-flag">'+o.f+'</span><span class="ck-org-name">'+o.n+'</span><span class="ck-org-status">⏳</span>';
+    document.getElementById('loadingOrgs').appendChild(el);
+    document.getElementById('loadingStatus').textContent='Запрос в '+o.n+'...';
+
+    setTimeout(function(){
+      el.querySelector('.ck-org-status').textContent='✓';
+      el.classList.add('done');
+      done++;
+      document.getElementById('loadingFill').style.width=Math.round(done/total*100)+'%';
+      setTimeout(function(){addOrg(i+1);},80);
+    },o.d);
+  }
+
+  function runSteps(i){
     if(i>=steps.length){
-      var found=ALL.filter(function(c){return c.num.toLowerCase().indexOf(q)>=0||c.fullName.toLowerCase().indexOf(q)>=0||c.platform.toLowerCase().indexOf(q)>=0;});
-      setTimeout(function(){hide('searchLoading');FILTERED=found;showList(found);show('filtersBar');document.getElementById('resultText').textContent='Найдено: '+found.length;},200);
+      setTimeout(function(){
+        var found=ALL.filter(function(c){return c.num.toLowerCase().indexOf(q)>=0||c.fullName.toLowerCase().indexOf(q)>=0||c.platform.toLowerCase().indexOf(q)>=0;});
+        hide('searchLoading');FILTERED=found;showList(found);show('filtersBar');
+        document.getElementById('resultText').textContent='Найдено: '+found.length;
+      },300);
       return;
     }
     document.getElementById('loadingTitle').textContent=steps[i].t;
     document.getElementById('loadingSteps').innerHTML+='<div class="ck-lstep"><span>✓</span> '+steps[i].t+'</div>';
-    document.getElementById('loadingFill').style.width=((i+1)/steps.length*100)+'%';
-    i++;setTimeout(next,steps[i-1].d);
+    done++;
+    document.getElementById('loadingFill').style.width=Math.round(done/total*100)+'%';
+    setTimeout(function(){runSteps(i+1);},steps[i].d);
   }
-  next();
+
+  addOrg(0);
 }
 
 function filterSt(s,btn){
