@@ -39,6 +39,9 @@
     <div class="modal-handle"></div>
     <div id="modalContent"></div>
   </div>
+  <div style="position:fixed;bottom:0;left:0;right:0;padding:12px 16px;background:rgba(5,10,18,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);z-index:2001">
+    <a href="/anti-fraud-portal/apply.html" class="btn btn-primary" style="max-width:600px;margin:0 auto">📝 Обратиться</a>
+  </div>
 </div>
 
 <script src="js/common.js"></script>
@@ -187,10 +190,9 @@ function showDetail(c) {
     </div>
     <div class="case-detail" style="margin-bottom:16px"><div class="case-detail-label">Платформа</div><div class="case-detail-value">${c.platform}</div></div>
     <div class="case-detail" style="margin-bottom:16px"><div class="case-detail-label">Сумма</div><div class="case-detail-value" style="color:var(--green)">${c.amount.toLocaleString()} ₸</div></div>
-    <div class="case-comments"><h4>Комментарии</h4>
+    <div class="case-comments" style="margin-bottom:60px"><h4>Комментарии</h4>
       ${c.comments.map(cm => `<div class="comment"><div class="comment-date">${cm.date}</div><div class="comment-text">${cm.text}</div></div>`).join('')}
-    </div>
-    <div style="margin-top:20px"><a href="/anti-fraud-portal/apply.html" class="btn btn-primary" style="width:100%">📝 Обратиться</a></div>`;
+    </div>`;
   document.getElementById('modal').style.display = 'flex';
 }
 
