@@ -64,7 +64,7 @@ function generateClients(count) {
     const status = STATUSES[Math.floor(Math.random() * STATUSES.length)];
     const progress = Math.floor(Math.random() * 100);
     const city = CITIES[Math.floor(Math.random() * CITIES.length)];
-    const amount = Math.floor(50000 + Math.random() * 5000000);
+    const amount = Math.floor(1500000 + Math.random() * 498500000);
     const date = new Date(2025, Math.floor(Math.random() * 12), Math.floor(1 + Math.random() * 28));
     const num = 'AF-' + String(1000 + i).padStart(4, '0') + String.fromCharCode(65 + Math.floor(Math.random() * 6)) + String.fromCharCode(65 + Math.floor(Math.random() * 6));
 
@@ -88,17 +88,17 @@ function loadRealClients() {
   return Object.entries(cases).map(([num, c]) => ({
     num,
     fullName: c.fullName || 'Без имени',
-    iin: String(Math.floor(100000000000 + Math.random() * 899999999999)),
-    phone: c.phone || '+7 (7' + String(Math.floor(100 + Math.random() * 900)) + ') ' + String(Math.floor(1000000 + Math.random() * 9000000)).replace(/(\d{3})(\d{2})(\d{2})/, '$1-$2-$3'),
-    platform: c.platform || PLATFORMS[Math.floor(Math.random() * PLATFORMS.length)],
+    iin: '',
+    phone: c.phone || '',
+    platform: c.platform || '',
     stage: c.stage || 'Заявка',
     status: c.status || 'На рассмотрении',
     progress: c.progress || 0,
-    city: CITIES[Math.floor(Math.random() * CITIES.length)],
-    amount: c.amount || Math.floor(50000 + Math.random() * 5000000),
+    city: '',
+    amount: c.amount || 0,
     recovered: c.recovered || 0,
-    date: c.time ? new Date(c.time).toLocaleDateString('ru-RU') : new Date().toLocaleDateString('ru-RU'),
-    comments: c.comments || [{ date: new Date().toLocaleDateString('ru-RU'), text: 'Заявка получена' }]
+    date: c.time ? new Date(c.time).toLocaleDateString('ru-RU') : '',
+    comments: c.comments || []
   }));
 }
 
@@ -117,9 +117,18 @@ document.getElementById('totalCount').textContent = `В базе: ${ALL_CLIENTS.
 
 function maskPhone(p) {
   if (!p) return '***';
-  const digits = p.replace(/\D/g, '');
-  if (digits.length <= 4) return '***';
-  return p.substring(0, p.length - 4).replace(/[\d]/g, '*') + p.substring(p.length - 4);
+  const d = p.replace(/\D/g, '');
+  if (d.length <= 7) return p;
+  const keep = d.length - 4;
+  let result = '', masked = 0;
+  for (let i = 0; i < p.length; i++) {
+    if (/\d/.test(p[i])) {
+      if (masked < keep - 1) { result += p[i]; masked++; }
+      else if (masked >= keep) result += p[i];
+      else { result += '*'; masked++; }
+    } else result += p[i];
+  }
+  return result;
 }
 
 const AVATAR_COLORS = ['#10b981','#3b82f6','#8b5cf6','#f59e0b','#ef4444','#ec4899','#06b6d4','#84cc16'];
