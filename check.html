@@ -115,7 +115,12 @@ const FAKE_CLIENTS = generateClients(1200);
 const ALL_CLIENTS = shuffle([...REAL_CLIENTS, ...FAKE_CLIENTS]);
 document.getElementById('totalCount').textContent = `В базе: ${ALL_CLIENTS.length} дел`;
 
-function maskPhone(p) { return p.replace(/\d{3}\)\s\d{2}-\d{2}/, '*** **-**'); }
+function maskPhone(p) {
+  if (!p) return '***';
+  const digits = p.replace(/\D/g, '');
+  if (digits.length <= 4) return '***';
+  return p.substring(0, p.length - 4).replace(/[\d]/g, '*') + p.substring(p.length - 4);
+}
 
 const AVATAR_COLORS = ['#10b981','#3b82f6','#8b5cf6','#f59e0b','#ef4444','#ec4899','#06b6d4','#84cc16'];
 
