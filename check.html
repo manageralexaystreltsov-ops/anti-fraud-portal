@@ -155,27 +155,29 @@ const STATUS_STYLES={
   'Возврат средств':{bg:'rgba(16,185,129,0.12)',c:'#10b981',dot:'#10b981'},
 };
 const COLORS=['#10b981','#3b82f6','#8b5cf6','#f59e0b','#ef4444','#ec4899','#06b6d4','#84cc16'];
+const F=['Айбек','Айдар','Айгуль','Айжан','Акмарал','Акылбек','Алмаз','Алтунай','Альфия','Андрей','Анна','Ануар','Арман','Артем','Асель','Асхат','Бакыт','Бауыржан','Бегимай','Берик','Ботагоз','Вадим','Валерия','Виктор','Габит','Галия','Геннадий','Гульмира','Данияр','Дарига','Даурен','Денис','Диана','Дмитрий','Елена','Ержан','Ерлан','Ермек','Жадыра','Жанат','Жанна','Жаныбек','Забир','Зарина','Зинаида','Ибрагим','Игорь','Ирина','Кайрат','Камар','Канат','Карина','Куаныш','Лариса','Лаура','Мадина','Марал','Мария','Марат','Мирас','Назгуль','Назирбек','Наталья','Олег','Ольга','Павел','Раиса','Рамазан','Ренат','Ринат','Роза','Рустам','Сагынай','Самат','Сания','Светлана','Серик','Сергей','София','Султан','Тимур','Улжан','Улан','Фарид','Фатима','Шынар','Эльвира','Эльдар','Юлия','Яна'];
+const L=['Абдуллаев','Айтматов','Акбаев','Алиев','Амреев','Андреев','Арапов','Ахметов','Баймуратов','Бакиров','Балтабаев','Бектемиров','Бердиев','Бородин','Булатов','Васильев','Виноградов','Гаврилов','Голубев','Григорьев','Гусейнов','Давыдов','Джумабаев','Дмитриев','Ержанов','Ермекбаев','Жаксылыков','Жанайдаров','Жумабаев','Закиров','Ибрагимов','Иванов','Ильясов','Имангалиев','Кадыров','Калыков','Каменских','Капезов','Каримов','Касенов','Кенжетаев','Ким','Козлов','Колесников','Кондратьев','Кузнецов','Кулов','Ларионов','Лебедев','Магомедов','Макаров','Мамбетов','Мамыров','Масимов','Мендыбаев','Меркушев','Мешков','Михайлов','Молдагалиев','Муканов','Назаров','Наумов','Нурбаев','Омаров','Павлов','Петров','Поляков','Рахимов','Рогов','Рожков','Романов','Рыбаков','Сагинбаев','Садыков','Сапарбаев','Семёнов','Сергеев','Серикбаев','Сизов','Смирнов','Соколов','Соловьев','Тажиев','Токарев','Толеуов','Трофимов','Туленов','Уалиев','Уразов','Усенов','Фёдоров','Фомин','Хамитов','Чернов','Чесноков','Шарипов','Шевченко','Шипилов','Шульгин','Юсупов','Яковлев'];
+const P=['TradePro Global','InvestMarket24','CryptoInvest KZ','GlobalFX Trading','Premium Binary','AlgoTrade 360','SmartInvest Pro','Quantum Capital','Titan FX Group','EuroTrade Solutions','CryptoHarvest','Royal Forex Club','SwiftTrade Pro','Astana Digital Bank','Digital Assets Kazakhstan'];
+const C=['Алматы','Астана','Шымкент','Караганда','Актобе','Павлодар','Усть-Каменогорск','Семей','Атырау','Костанай'];
+
+function genFake(){
+  const arr=[];
+  for(let i=0;i<300;i++){
+    const f=F[~~(Math.random()*F.length)],l=L[~~(Math.random()*L.length)];
+    const p='+7 ('+(700+~~(Math.random()*100))+') '+String(~~(1e6+Math.random()*9e6)).replace(/(\d{3})(\d{2})(\d{2})/,'$1-$2-$3');
+    const pr=~~(Math.random()*100);
+    const st=pr>=80?'Завершено':pr>=40?'В работе':Object.keys(STATUS_STYLES)[~~(Math.random()*3)];
+    arr.push({num:'AF-'+String(1000+i).padStart(4,'0')+String.fromCharCode(65+~~(Math.random()*6))+String.fromCharCode(65+~~(Math.random()*6)),fullName:l+' '+f+' '+F[~~(Math.random()*F.length)]+'ович',phone:p,email:'',city:C[~~(Math.random()*C.length)],platform:P[~~(Math.random()*P.length)],stage:STAGES[~~(Math.random()*STAGES.length)],status:st,progress:pr,amount:~~(15e5+Math.random()*4985e5),recovered:0,intermediate:'',orgs:[],nextActions:'',comments:[{date:new Date().toLocaleDateString('ru-RU'),text:'Заявка получена'}],time:''});
+  }
+  return arr;
+}
 
 function loadClients(){
   const cases=getCases();
-  return Object.entries(cases).map(([num,c])=>({
-    num,
-    fullName:c.fullName||'Без имени',
-    phone:c.phone||'',
-    email:c.email||'',
-    city:c.city||'',
-    platform:c.platform||'',
-    stage:c.stage||'Заявка',
-    status:c.status||'На рассмотрении',
-    progress:c.progress||0,
-    amount:c.amount||0,
-    recovered:c.recovered||0,
-    intermediate:c.intermediate||'',
-    orgs:c.orgs||[],
-    nextActions:c.nextActions||'',
-    comments:c.comments||[],
-    time:c.time||''
+  const real=Object.entries(cases).map(([num,c])=>({
+    num,fullName:c.fullName||'Без имени',phone:c.phone||'',email:c.email||'',city:c.city||'',platform:c.platform||'',stage:c.stage||'Заявка',status:c.status||'На рассмотрении',progress:c.progress||0,amount:c.amount||0,recovered:c.recovered||0,intermediate:c.intermediate||'',orgs:c.orgs||[],nextActions:c.nextActions||'',comments:c.comments||[],time:c.time||''
   }));
+  return [...real,...genFake()];
 }
 
 let ALL=loadClients(), FILTERED=ALL, curFilter='all';
