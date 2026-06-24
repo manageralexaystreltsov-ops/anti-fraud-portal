@@ -208,7 +208,7 @@ img { max-width: 100%; display: block; }
 .stat-lbl { font-size: 13px; color: var(--muted); margin-top: 4px; }
 
 /* ===== SECTIONS ===== */
-.section { padding: 64px 0; }
+.section { padding: 40px 0; }
 .section-dark { background: var(--bg2); }
 .section-header { text-align: center; margin-bottom: 40px; }
 .section-title { font-size: clamp(26px, 5vw, 40px); font-weight: 900; margin-bottom: 8px; letter-spacing: -0.02em; }
