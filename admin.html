@@ -287,10 +287,11 @@ function editClient(num){
         <div class="adm-comments" id="e_comments">
           ${(c.comments||[]).map(cm=>`<div class="adm-comment"><div class="adm-comment-date">${cm.date}</div><div class="adm-comment-text">${cm.text}</div></div>`).join('')||'<p style="color:var(--muted);font-size:13px">Нет комментариев</p>'}
         </div>
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <textarea class="form-input" id="e_newComment" rows="2" placeholder="Добавить комментарий..." style="flex:1;font-size:13px;resize:none"></textarea>
-          <button onclick="addComment('${num}')" class="btn btn-primary btn-sm" style="align-self:flex-end">+</button>
+        <div class="adm-new-comment">
+          <textarea class="form-input" id="e_newComment" rows="4" placeholder="Добавить комментарий..." style="font-size:13px;resize:vertical;min-height:100px"></textarea>
+          <button onclick="addComment('${num}')" class="btn btn-primary btn-sm" style="width:100%;margin-top:8px">Добавить комментарий</button>
         </div>
+      </div>
       </div>
 
       <!-- ACTIONS -->
