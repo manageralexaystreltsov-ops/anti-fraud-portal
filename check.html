@@ -9,494 +9,456 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 <body>
 
-<section class="section" style="padding-top:24px">
-  <div class="container" style="max-width:1100px">
-
-    <div class="section-header" style="margin-bottom:24px">
-      <h1 style="font-size:clamp(22px,4vw,32px);font-weight:900">📋 Проверка дела</h1>
-      <p style="color:var(--muted);font-size:14px">Введите номер дела, ФИО или ИНН</p>
+<!-- HERO -->
+<section class="ck-hero">
+  <div class="ck-hero-glow"></div>
+  <div class="container ck-hero-inner">
+    <div class="ck-badge">🛡️ База AntiFrog • <span id="totalBadge">1200+</span> активных дел</div>
+    <h1 class="ck-title">Проверка дела</h1>
+    <p class="ck-sub">Введите номер дела, ФИО или ИНН для поиска в международных реестрах</p>
+    <div class="ck-search">
+      <svg class="ck-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" class="ck-search-input" id="searchInput" placeholder="Номер дела, ФИО, ИНН..." inputmode="search">
+      <button class="ck-search-btn" id="searchBtn" onclick="startSearch()">Найти</button>
     </div>
-
-    <!-- SEARCH -->
-    <div class="search-block" id="searchBlock">
-      <div class="search-input-wrap">
-        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input type="text" class="search-input" id="searchInput" placeholder="Номер дела, ФИО, ИНН...">
-        <button onclick="startSearch()" class="search-btn" id="searchBtn">Найти</button>
-      </div>
-    </div>
-
-    <!-- SEARCH ANIMATION -->
-    <div class="search-loading hidden" id="searchLoading">
-      <div class="loading-header">
-        <div class="loading-spinner"></div>
-        <span id="loadingText">Подключение к базам данных...</span>
-      </div>
-      <div class="loading-steps" id="loadingSteps"></div>
-      <div class="progress-bar"><div class="progress-fill" id="loadingProgress" style="width:0%"></div></div>
-    </div>
-
-    <!-- RESULTS INFO -->
-    <div class="results-info hidden" id="resultsInfo">
-      <span id="resultCount"></span>
-      <div class="filter-chips" id="filterChips">
-        <button class="filter-chip active" onclick="filterByStatus('all',this)">Все</button>
-        <button class="filter-chip" onclick="filterByStatus('На рассмотрении',this)">⏳ На рассмотрении</button>
-        <button class="filter-chip" onclick="filterByStatus('В работе',this)">🔵 В работе</button>
-        <button class="filter-chip" onclick="filterByStatus('Завершено',this)">✅ Завершено</button>
-      </div>
-    </div>
-
-    <!-- CLIENTS TABLE -->
-    <div class="clients-table-wrap hidden" id="clientsTable">
-      <table class="clients-table">
-        <thead>
-          <tr>
-            <th>Дело</th>
-            <th>Клиент</th>
-            <th>Платформа</th>
-            <th class="th-hide">Город</th>
-            <th>Статус</th>
-            <th class="th-hide">Прогресс</th>
-          </tr>
-        </thead>
-        <tbody id="clientsBody"></tbody>
-      </table>
-    </div>
-
-    <!-- SKELETON -->
-    <div class="skeleton-list hidden" id="skeletonList">
-      <div class="skeleton-row"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div><div class="skeleton-badge"></div></div>
-      <div class="skeleton-row"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line w70"></div><div class="skeleton-line w30"></div></div><div class="skeleton-badge"></div></div>
-      <div class="skeleton-row"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line w50"></div><div class="skeleton-line w45"></div></div><div class="skeleton-badge"></div></div>
-      <div class="skeleton-row"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line w65"></div><div class="skeleton-line w35"></div></div><div class="skeleton-badge"></div></div>
-      <div class="skeleton-row"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line w55"></div><div class="skeleton-line w40"></div></div><div class="skeleton-badge"></div></div>
-    </div>
-
   </div>
 </section>
 
-<!-- DETAIL MODAL -->
-<div class="modal-overlay" id="detailModal" style="display:none" onclick="closeDetail(event)">
-  <div class="detail-modal" onclick="event.stopPropagation()">
-    <div class="modal-handle"></div>
+<!-- STATS BAR -->
+<div class="ck-stats">
+  <div class="container ck-stats-inner">
+    <div class="ck-stat"><span class="ck-stat-num" data-count="1247">0</span><span class="ck-stat-lbl">дел в базе</span></div>
+    <div class="ck-stat"><span class="ck-stat-num" data-count="892">0</span><span class="ck-stat-lbl">в работе</span></div>
+    <div class="ck-stat"><span class="ck-stat-num" data-count="355">0</span><span class="ck-stat-lbl">завершено</span></div>
+  </div>
+</div>
 
-    <!-- HEADER -->
-    <div class="detail-header" id="detailHeader"></div>
-
-    <!-- TABS -->
-    <div class="detail-tabs" id="detailTabs">
-      <button class="detail-tab active" onclick="showDetailTab('overview',this)">📊 Обзор</button>
-      <button class="detail-tab" onclick="showDetailTab('funds',this)">💰 Движение средств</button>
-      <button class="detail-tab" onclick="showDetailTab('docs',this)">📄 Документы</button>
-      <button class="detail-tab" onclick="showDetailTab('finance',this)">📈 Итоги</button>
-      <button class="detail-tab" onclick="showDetailTab('comments',this)">💬 История</button>
+<!-- SEARCH LOADING -->
+<div class="ck-loading hidden" id="searchLoading">
+  <div class="container">
+    <div class="ck-loading-card">
+      <div class="ck-loading-spinner"></div>
+      <div class="ck-loading-title" id="loadingTitle">Подключение к системе...</div>
+      <div class="ck-loading-steps" id="loadingSteps"></div>
+      <div class="ck-loading-bar"><div class="ck-loading-fill" id="loadingFill"></div></div>
     </div>
+  </div>
+</div>
 
-    <!-- TAB CONTENT -->
-    <div class="detail-content" id="detailContent"></div>
-
-    <!-- FOOTER -->
-    <div class="detail-footer">
-      <div class="security-badges">
-        <span class="sec-badge">🔒 256-bit SSL</span>
-        <span class="sec-badge">🛡️ GDPR Compliant</span>
+<!-- FILTERS -->
+<div class="ck-filters hidden" id="filtersBar">
+  <div class="container">
+    <div class="ck-filters-row">
+      <span class="ck-result-text" id="resultText"></span>
+      <div class="ck-chips" id="filterChips">
+        <button class="ck-chip active" onclick="filterStatus('all',this)">Все</button>
+        <button class="ck-chip" onclick="filterStatus('На рассмотрении',this)">⏳ Ожидание</button>
+        <button class="ck-chip" onclick="filterStatus('В работе',this)">🔵 В работе</button>
+        <button class="ck-chip" onclick="filterStatus('Завершено',this)">✅ Готово</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- CLIENTS LIST -->
+<section class="ck-list-section" id="listSection">
+  <div class="container">
+    <!-- Mobile cards -->
+    <div class="ck-cards" id="clientsCards"></div>
+    <!-- Desktop table -->
+    <div class="ck-table-wrap hidden" id="tableWrap">
+      <table class="ck-table">
+        <thead><tr>
+          <th>Дело</th><th>Клиент</th><th>Платформа</th><th class="ck-th-hide">Город</th><th>Статус</th><th class="ck-th-hide">%</th>
+        </tr></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SKELETON -->
+<div class="ck-skeleton-section hidden" id="skeletonSection">
+  <div class="container">
+    <div class="ck-skeleton-card"><div class="sk-avatar"></div><div class="sk-lines"><div class="sk-line w60"></div><div class="sk-line w40"></div></div></div>
+    <div class="ck-skeleton-card"><div class="sk-avatar"></div><div class="sk-lines"><div class="sk-line w70"></div><div class="sk-line w30"></div></div></div>
+    <div class="ck-skeleton-card"><div class="sk-avatar"></div><div class="sk-lines"><div class="sk-line w50"></div><div class="sk-line w45"></div></div></div>
+    <div class="ck-skeleton-card"><div class="sk-avatar"></div><div class="sk-lines"><div class="sk-line w65"></div><div class="sk-line w35"></div></div></div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="ck-modal-overlay hidden" id="modalOverlay" onclick="closeModal()">
+  <div class="ck-modal" onclick="event.stopPropagation()">
+    <div class="ck-modal-handle"></div>
+
+    <!-- HEADER -->
+    <div class="ck-modal-head" id="modalHead"></div>
+
+    <!-- TABS -->
+    <div class="ck-modal-tabs" id="modalTabs">
+      <button class="ck-mtab active" data-tab="overview" onclick="switchTab('overview',this)">📊 Обзор</button>
+      <button class="ck-mtab" data-tab="funds" onclick="switchTab('funds',this)">💰 Средства</button>
+      <button class="ck-mtab" data-tab="docs" onclick="switchTab('docs',this)">📄 Документы</button>
+      <button class="ck-mtab" data-tab="comments" onclick="switchTab('comments',this)">💬 История</button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="ck-modal-body" id="modalBody"></div>
+
+    <!-- FOOTER -->
+    <div class="ck-modal-foot">
+      <span class="ck-sec-badge">🔒 256-bit SSL</span>
+      <span class="ck-sec-badge">🛡️ Закон РК о ПДн</span>
+    </div>
+  </div>
+</div>
+
+<!-- CONFETTI CANVAS -->
+<canvas id="confettiCanvas" style="position:fixed;inset:0;pointer-events:none;z-index:9999"></canvas>
+
 <script src="js/common.js"></script>
 <script>
-const STAGES = ['Заявка','Анализ','Претензия','Чарджбэк','Суд','Возврат','Завершено'];
-const STATUSES_COLORS = {
-  'На рассмотрении': { bg: 'rgba(245,158,11,0.12)', color: '#f59e0b', dot: '#f59e0b' },
-  'В работе': { bg: 'rgba(59,130,246,0.12)', color: '#3b82f6', dot: '#3b82f6' },
-  'Ожидание ответа': { bg: 'rgba(139,92,246,0.12)', color: '#8b5cf6', dot: '#8b5cf6' },
-  'Завершено': { bg: 'rgba(16,185,129,0.12)', color: '#10b981', dot: '#10b981' },
-  'Возврат средств': { bg: 'rgba(16,185,129,0.12)', color: '#10b981', dot: '#10b981' },
+const STAGES=['Заявка','Анализ','Претензия','Чарджбэк','Суд','Возврат','Завершено'];
+const STATUS_STYLES={
+  'На рассмотрении':{bg:'rgba(245,158,11,0.12)',c:'#f59e0b',dot:'#f59e0b'},
+  'В работе':{bg:'rgba(59,130,246,0.12)',c:'#3b82f6',dot:'#3b82f6'},
+  'Ожидание ответа':{bg:'rgba(139,92,246,0.12)',c:'#8b5cf6',dot:'#8b5cf6'},
+  'Завершено':{bg:'rgba(16,185,129,0.12)',c:'#10b981',dot:'#10b981'},
+  'Возврат средств':{bg:'rgba(16,185,129,0.12)',c:'#10b981',dot:'#10b981'},
 };
-const AVATAR_COLORS = ['#10b981','#3b82f6','#8b5cf6','#f59e0b','#ef4444','#ec4899','#06b6d4','#84cc16'];
+const COLORS=['#10b981','#3b82f6','#8b5cf6','#f59e0b','#ef4444','#ec4899','#06b6d4','#84cc16'];
+const F=['Айбек','Айдар','Айгуль','Айжан','Акмарал','Акылбек','Алмаз','Алтунай','Альфия','Андрей','Анна','Ануар','Арман','Артем','Асель','Асхат','Бакыт','Бауыржан','Бегимай','Берик','Ботагоз','Вадим','Валерия','Виктор','Габит','Галия','Геннадий','Гульмира','Данияр','Дарига','Даурен','Денис','Диана','Дмитрий','Елена','Ержан','Ерлан','Ермек','Жадыра','Жанат','Жанна','Жаныбек','Забир','Зарина','Зинаида','Ибрагим','Игорь','Ирина','Кайрат','Камар','Канат','Карина','Куаныш','Лариса','Лаура','Мадина','Марал','Мария','Марат','Мирас','Назгуль','Назирбек','Наталья','Олег','Ольга','Павел','Раиса','Рамазан','Ренат','Ринат','Роза','Рустам','Сагынай','Самат','Сания','Светлана','Серик','Сергей','София','Султан','Тимур','Улжан','Улан','Фарид','Фатима','Шынар','Эльвира','Эльдар','Юлия','Яна'];
+const L=['Абдуллаев','Айтматов','Акбаев','Алиев','Амреев','Андреев','Арапов','Ахметов','Баймуратов','Бакиров','Балтабаев','Бектемиров','Бердиев','Бородин','Булатов','Васильев','Виноградов','Гаврилов','Голубев','Григорьев','Гусейнов','Давыдов','Джумабаев','Дмитриев','Ержанов','Ермекбаев','Жаксылыков','Жанайдаров','Жумабаев','Закиров','Ибрагимов','Иванов','Ильясов','Имангалиев','Кадыров','Калыков','Каменских','Капезов','Каримов','Касенов','Кенжетаев','Ким','Козлов','Колесников','Кондратьев','Кузнецов','Кулов','Ларионов','Лебедев','Магомедов','Макаров','Мамбетов','Мамыров','Масимов','Мендыбаев','Меркушев','Мешков','Михайлов','Молдагалиев','Муканов','Назаров','Наумов','Нурбаев','Омаров','Павлов','Петров','Поляков','Рахимов','Рогов','Рожков','Романов','Рыбаков','Сагинбаев','Садыков','Сапарбаев','Семёнов','Сергеев','Серикбаев','Сизов','Смирнов','Соколов','Соловьев','Тажиев','Токарев','Толеуов','Трофимов','Туленов','Уалиев','Уразов','Усенов','Фёдоров','Фомин','Хамитов','Чернов','Чесноков','Шарипов','Шевченко','Шипилов','Шульгин','Юсупов','Яковлев'];
+const P=['TradePro Global','InvestMarket24','CryptoInvest KZ','GlobalFX Trading','Premium Binary','AlgoTrade 360','SmartInvest Pro','Quantum Capital','Titan FX Group','EuroTrade Solutions','CryptoHarvest','Royal Forex Club','SwiftTrade Pro','Astana Digital Bank','Digital Assets Kazakhstan'];
+const C=['Алматы','Астана','Шымкент','Караганда','Актобе','Павлодар','Усть-Каменогорск','Семей','Атырау','Костанай'];
 
-// Generate fake data
-const FIRST_NAMES = ['Айбек','Айдар','Айгуль','Айжан','Акмарал','Акылбек','Алмаз','Алтунай','Альфия','Андрей','Анна','Ануар','Арман','Артем','Асель','Асхат','Аяулым','Бакыт','Бауыржан','Бегимай','Берик','Ботагоз','Вадим','Валерия','Виктор','Габит','Галия','Геннадий','Гульмира','Данияр','Дарига','Даурен','Денис','Диана','Дмитрий','Елена','Ержан','Ерлан','Ермек','Жадыра','Жанат','Жанна','Жаныбек','Забир','Зарина','Зинаида','Ибрагим','Игорь','Ирина','Кайрат','Камар','Канат','Карина','Куаныш','Лариса','Лаура','Мадина','Марал','Мария','Марат','Мирас','Назгуль','Назирбек','Наталья','Нигора','Николай','Олег','Ольга','Оразбек','Павел','Раиса','Рамазан','Рауль','Ренат','Ринат','Роза','Рустам','Сагынай','Самат','Сания','Светлана','Серик','Сергей','София','Султан','Тагир','Тамара','Тимур','Турсун','Улжан','Улан','Фарид','Фатима','Халида','Шынар','Эльвира','Эльдар','Эрмек','Юлия','Яна'];
-const LAST_NAMES = ['Абдуллаев','Абдрахманов','Абикенов','Айтматов','Акбаев','Акжолов','Аксенов','Алиев','Алпысов','Амреев','Андреев','Арапов','Аргынбаев','Ахметов','Баймуратов','Бакиров','Балтабаев','Бектемиров','Бердиев','Биримжанов','Божко','Бородин','Булатов','Васильев','Виноградов','Гаврилов','Голубев','Григорьев','Гусейнов','Давыдов','Данияров','Джумабаев','Дмитриев','Досмурзаев','Ержанов','Ермекбаев','Есенбаев','Жаксылыков','Жанайдаров','Жарылгапов','Жумабаев','Закиров','Зверев','Ибрагимов','Иванов','Ильясов','Имангалиев','Исабаев','Кадыров','Кажегельдин','Калыков','Каменских','Канапьянов','Капезов','Каримов','Касенов','Кенжетаев','Ким','Козлов','Колесников','Кондратьев','Коптелов','Корнеев','Кравцов','Кузнецов','Кулов','Ларионов','Лебедев','Магомедов','Макаров','Мамбетов','Мамыров','Масимов','Мендыбаев','Меркушев','Мешков','Михайлов','Молдагалиев','Муканов','Назарбаев','Назаров','Нартов','Наумов','Несипбаев','Нурбаев','Нурланов','Омаров','Оразалин','Павлов','Петров','Поляков','Пономарёв','Рахимов','Рогов','Рожков','Романов','Рыбаков','Сагинбаев','Садыков','Сапарбаев','Сатпаев','Семёнов','Сергеев','Серикбаев','Сизов','Скворцов','Смирнов','Соколов','Соловьев','Сугуралиев','Тажиев','Тасмагамбетов','Токарев','Толеуов','Трофимов','Туленов','Уалиев','Уразов','Усенов','Фёдоров','Фомин','Хабаров','Хамитов','Чернов','Чесноков','Шаимов','Шарипов','Шевченко','Шипилов','Шокпаров','Шульгин','Юсупов','Яковлев'];
-const PLATFORMS = ['TradePro Global','InvestMarket24','CryptoInvest KZ','GlobalFX Trading','Premium Binary','AlgoTrade 360','SmartInvest Pro','Quantum Capital','Titan FX Group','EuroTrade Solutions','Nordic Invest Bank','CryptoHarvest','AsiaPacific Markets','Royal Forex Club','Prime Capital Group','SwiftTrade Pro','Digital Assets Kazakhstan','Astana Digital Bank'];
-const CITIES = ['Алматы','Астана','Шымкент','Караганда','Актобе','Павлодар','Усть-Каменогорск','Семей','Атырау','Костанай'];
-
-function genClients(count) {
-  const arr = [];
-  const cases = getCases();
-  Object.entries(cases).forEach(([num, c]) => {
-    arr.push({
-      num, fullName: c.fullName || 'Без имени',
-      phone: c.phone || '', platform: c.platform || '',
-      stage: c.stage || 'Заявка', status: c.status || 'На рассмотрении',
-      progress: c.progress || 0, city: '', amount: c.amount || 0,
-      date: c.time ? new Date(c.time).toLocaleDateString('ru-RU') : '',
-      comments: c.comments || [], _real: true
-    });
+function genAll(){
+  const arr=[];
+  const cases=getCases();
+  Object.entries(cases).forEach(([n,c])=>{
+    arr.push({num:n,fullName:c.fullName||'Без имени',phone:c.phone||'',platform:c.platform||'',stage:c.stage||'Заявка',status:c.status||'На рассмотрении',progress:c.progress||0,city:'',amount:c.amount||0,date:c.time?new Date(c.time).toLocaleDateString('ru-RU'):'',comments:c.comments||[],_real:true});
   });
-  for (let i = arr.length; i < count; i++) {
-    const f = FIRST_NAMES[Math.floor(Math.random()*FIRST_NAMES.length)];
-    const l = LAST_NAMES[Math.floor(Math.random()*LAST_NAMES.length)];
-    const p = '+7 (' + (700+Math.floor(Math.random()*100)) + ') ' + String(Math.floor(1000000+Math.random()*9000000)).replace(/(\d{3})(\d{2})(\d{2})/,'$1-$2-$3');
-    const st = STATUSES_COLORS;
-    const keys = Object.keys(st);
-    const prog = Math.floor(Math.random()*100);
-    const status = prog>=80?'Завершено':prog>=40?'В работе':keys[Math.floor(Math.random()*keys.length)];
-    const amount = Math.floor(1500000+Math.random()*498500000);
-    arr.push({
-      num: 'AF-'+String(1000+i).padStart(4,'0')+String.fromCharCode(65+Math.floor(Math.random()*6))+String.fromCharCode(65+Math.floor(Math.random()*6)),
-      fullName: l+' '+f+' '+FIRST_NAMES[Math.floor(Math.random()*FIRST_NAMES.length)]+'ович',
-      phone: p, platform: PLATFORMS[Math.floor(Math.random()*PLATFORMS.length)],
-      stage: STAGES[Math.floor(Math.random()*STAGES.length)],
-      status, progress: prog, city: CITIES[Math.floor(Math.random()*CITIES.length)],
-      amount, date: new Date(2025,Math.floor(Math.random()*12),1+Math.floor(Math.random()*28)).toLocaleDateString('ru-RU'),
-      comments: [{date:new Date().toLocaleDateString('ru-RU'),text:'Заявка получена'}]
-    });
+  for(let i=arr.length;i<1200;i++){
+    const f=F[~~(Math.random()*F.length)],l=L[~~(Math.random()*L.length)];
+    const p='+7 ('+(700+~~(Math.random()*100))+') '+String(~~(1e6+Math.random()*9e6)).replace(/(\d{3})(\d{2})(\d{2})/,'$1-$2-$3');
+    const pr=~~(Math.random()*100);
+    const st=pr>=80?'Завершено':pr>=40?'В работе':Object.keys(STATUS_STYLES)[~~(Math.random()*3)];
+    arr.push({num:'AF-'+String(1000+i).padStart(4,'0')+String.fromCharCode(65+~~(Math.random()*6))+String.fromCharCode(65+~~(Math.random()*6)),fullName:l+' '+f+' '+F[~~(Math.random()*F.length)]+'ович',phone:p,platform:P[~~(Math.random()*P.length)],stage:STAGES[~~(Math.random()*STAGES.length)],status:st,progress:pr,city:C[~~(Math.random()*C.length)],amount:~~(15e5+Math.random()*4985e5),date:new Date(2025,~~(Math.random()*12),1+~~(Math.random()*28)).toLocaleDateString('ru-RU'),comments:[{date:new Date().toLocaleDateString('ru-RU'),text:'Заявка получена'}]});
   }
   return arr;
 }
 
-let ALL_CLIENTS = [];
-let filteredClients = [];
-let currentFilter = 'all';
+let ALL=genAll(), FILTERED=ALL, curFilter='all';
 
-function maskFullName(name) {
-  const parts = name.split(' ');
-  if (parts.length < 2) return name;
-  return parts[0] + ' ' + parts[1][0] + '.' + (parts[2] ? ' ' + parts[2][0] + '.' : '');
-}
-
-function maskPhone(p) {
-  if (!p) return '***';
-  const d = p.replace(/\D/g, '');
-  if (d.length <= 7) return p;
-  const keep = d.length - 4;
-  let result = '', masked = 0;
-  for (let i = 0; i < p.length; i++) {
-    if (/\d/.test(p[i])) {
-      if (masked < keep - 1) { result += p[i]; masked++; }
-      else if (masked >= keep) result += p[i];
-      else { result += '*'; masked++; }
-    } else result += p[i];
+function maskName(n){const p=n.split(' ');return p.length<2?n:p[0]+' '+p[1][0]+'.'+(p[2]?' '+p[2][0]+'.':'');}
+function maskPhone(p){
+  if(!p)return'***';
+  const d=p.replace(/\D/g,'');
+  if(d.length<=7)return p;
+  const keep=d.length-4;
+  let r='',m=0;
+  for(let i=0;i<p.length;i++){
+    if(/\d/.test(p[i])){
+      if(m<keep-1){r+=p[i];m++;}
+      else if(m>=keep)r+=p[i];
+      else{r+='*';m++;}
+    }else r+=p[i];
   }
-  return result;
+  return r;
 }
 
-function maskEmail(e) {
-  if (!e) return '';
-  const [user, domain] = e.split('@');
-  return user[0] + '*****@' + (domain || '***');
+// COUNTER
+function animateCounters(){
+  document.querySelectorAll('.ck-stat-num[data-count]').forEach(el=>{
+    const t=+el.dataset.count;
+    const s=performance.now();
+    function u(now){
+      const p=Math.min((now-s)/2000,1);
+      el.textContent=Math.floor(t*(1-Math.pow(1-p,3))).toLocaleString();
+      if(p<1)requestAnimationFrame(u);
+    }
+    requestAnimationFrame(u);
+  });
 }
 
 // SEARCH
-function startSearch() {
-  const q = document.getElementById('searchInput').value.trim();
-  if (!q) { renderTable(ALL_CLIENTS); return; }
-
-  document.getElementById('clientsTable').classList.add('hidden');
-  document.getElementById('resultsInfo').classList.add('hidden');
+function startSearch(){
+  const q=document.getElementById('searchInput').value.trim();
+  if(!q){renderCards(ALL);return;}
+  hideAll();
   document.getElementById('searchLoading').classList.remove('hidden');
-  document.getElementById('loadingSteps').innerHTML = '';
-  document.getElementById('loadingProgress').style.width = '0%';
+  document.getElementById('loadingSteps').innerHTML='';
+  document.getElementById('loadingFill').style.width='0%';
 
-  const steps = [
-    { text: 'Подключение к АРРФР...', time: 600 },
-    { text: 'Запрос в FinCEN базы...', time: 800 },
-    { text: 'Проверка blockchain транзакций...', time: 700 },
-    { text: 'Сверка с реестрами регуляторов...', time: 500 },
-    { text: 'Анализ данных...', time: 400 },
+  const steps=[
+    {t:'Соединение с АРРФР...',d:500},
+    {t:'Запрос в FinCEN (США)...',d:600},
+    {t:'Проверка blockchain...',d:500},
+    {t:'Сверка с НБК...',d:400},
+    {t:'Анализ данных...',d:300},
   ];
-
-  let i = 0;
-  function nextStep() {
-    if (i >= steps.length) {
-      const found = ALL_CLIENTS.filter(c =>
-        c.num.toLowerCase().includes(q.toLowerCase()) ||
-        c.fullName.toLowerCase().includes(q.toLowerCase()) ||
-        c.platform.toLowerCase().includes(q.toLowerCase())
-      );
-      setTimeout(() => {
+  let i=0;
+  function next(){
+    if(i>=steps.length){
+      const found=ALL.filter(c=>c.num.toLowerCase().includes(q.toLowerCase())||c.fullName.toLowerCase().includes(q.toLowerCase())||c.platform.toLowerCase().includes(q.toLowerCase()));
+      setTimeout(()=>{
         document.getElementById('searchLoading').classList.add('hidden');
-        filteredClients = found;
-        currentFilter = 'all';
-        renderTable(found);
-        document.getElementById('resultsInfo').classList.remove('hidden');
-        document.getElementById('resultCount').textContent = `Найдено: ${found.length} дел`;
-      }, 300);
+        FILTERED=found;curFilter='all';
+        renderCards(found);
+        document.getElementById('filtersBar').classList.remove('hidden');
+        document.getElementById('resultText').textContent='Найдено: '+found.length+' дел';
+        gsap.from('.ck-card',{opacity:0,y:20,stagger:0.03,duration:0.3});
+      },200);
       return;
     }
-    const s = steps[i];
-    document.getElementById('loadingText').textContent = s.text;
-    document.getElementById('loadingSteps').innerHTML += `<div class="loading-step"><span class="step-ok">✓</span> ${s.text}</div>`;
-    document.getElementById('loadingProgress').style.width = ((i+1)/steps.length*100)+'%';
+    const s=steps[i];
+    document.getElementById('loadingTitle').textContent=s.t;
+    document.getElementById('loadingSteps').innerHTML+=`<div class="ck-lstep"><span>✓</span> ${s.t}</div>`;
+    document.getElementById('loadingFill').style.width=((i+1)/steps.length*100)+'%';
     i++;
-    setTimeout(nextStep, s.time);
+    setTimeout(next,s.d);
   }
-  nextStep();
+  next();
 }
 
-function filterByStatus(status, btn) {
-  currentFilter = status;
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+function filterStatus(st,btn){
+  curFilter=st;
+  document.querySelectorAll('.ck-chip').forEach(c=>c.classList.remove('active'));
   btn.classList.add('active');
-  const list = status === 'all' ? filteredClients : filteredClients.filter(c => c.status === status);
-  renderTable(list);
+  const list=st==='all'?FILTERED:FILTERED.filter(c=>c.status===st);
+  renderCards(list);
 }
 
-function renderTable(list) {
-  const tbody = document.getElementById('clientsBody');
-  document.getElementById('clientsTable').classList.remove('hidden');
-  tbody.innerHTML = list.slice(0, 50).map((c, i) => {
-    const color = AVATAR_COLORS[i % AVATAR_COLORS.length];
-    const initials = c.fullName.split(' ').slice(0,2).map(n=>n[0]).join('');
-    const sc = STATUSES_COLORS[c.status] || STATUSES_COLORS['На рассмотрении'];
-    return `<tr onclick='openDetail(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
-      <td><span class="td-num">#${c.num}</span></td>
-      <td>
-        <div class="td-client">
-          <div class="td-avatar" style="background:${color}20;color:${color}">${initials}</div>
-          <div><div class="td-name">${maskFullName(c.fullName)}</div><div class="td-phone">${maskPhone(c.phone)}</div></div>
+function hideAll(){
+  ['searchLoading','filtersBar','listSection','skeletonSection'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+}
+
+function renderCards(list){
+  hideAll();
+  document.getElementById('listSection').classList.remove('hidden');
+  const isMobile=window.innerWidth<768;
+  if(isMobile) renderMobile(list);
+  else renderDesktop(list);
+}
+
+function renderMobile(list){
+  document.getElementById('tableWrap').classList.add('hidden');
+  document.getElementById('clientsCards').classList.remove('hidden');
+  document.getElementById('clientsCards').innerHTML=list.slice(0,80).map((c,i)=>{
+    const sc=STATUS_STYLES[c.status]||STATUS_STYLES['На рассмотрении'];
+    const col=COLORS[i%COLORS.length];
+    const ini=c.fullName.split(' ').slice(0,2).map(n=>n[0]).join('');
+    return`<div class="ck-card" onclick='openDetail(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
+      <div class="ck-card-top">
+        <div class="ck-card-avatar" style="background:${sc.bg};color:${sc.c}">${ini}</div>
+        <div class="ck-card-info">
+          <div class="ck-card-name">${maskName(c.fullName)}</div>
+          <div class="ck-card-phone">${maskPhone(c.phone)}</div>
         </div>
-      </td>
-      <td><span class="td-platform">${c.platform}</span></td>
-      <td class="td-hide"><span class="td-city">${c.city || '—'}</span></td>
-      <td><span class="td-status" style="background:${sc.bg};color:${sc.color}"><span class="td-status-dot" style="background:${sc.dot}"></span>${c.status}</span></td>
-      <td class="td-hide"><div class="td-progress"><div class="td-progress-bar"><div class="td-progress-fill" style="width:${c.progress}%"></div></div><span>${c.progress}%</span></div></td>
+        <span class="ck-card-status" style="background:${sc.bg};color:${sc.c}"><span class="ck-dot" style="background:${sc.dot}"></span>${c.status}</span>
+      </div>
+      <div class="ck-card-bottom">
+        <span class="ck-card-meta">${c.platform}</span>
+        <span class="ck-card-num">#${c.num}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderDesktop(list){
+  document.getElementById('clientsCards').classList.add('hidden');
+  document.getElementById('tableWrap').classList.remove('hidden');
+  document.getElementById('tableBody').innerHTML=list.slice(0,80).map((c,i)=>{
+    const sc=STATUS_STYLES[c.status]||STATUS_STYLES['На рассмотрении'];
+    const col=COLORS[i%COLORS.length];
+    const ini=c.fullName.split(' ').slice(0,2).map(n=>n[0]).join('');
+    return`<tr onclick='openDetail(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
+      <td><span class="ck-tnum">#${c.num}</span></td>
+      <td><div class="ck-tclient"><div class="ck-tav" style="background:${col}20;color:${col}">${ini}</div><div><div class="ck-tn">${maskName(c.fullName)}</div><div class="ck-tp">${maskPhone(c.phone)}</div></div></div></td>
+      <td><span class="ck-tplat">${c.platform}</span></td>
+      <td class="ck-th-hide"><span class="ck-tcity">${c.city||'—'}</span></td>
+      <td><span class="ck-tstatus" style="background:${sc.bg};color:${sc.c}"><span class="ck-dot" style="background:${sc.dot}"></span>${c.status}</span></td>
+      <td class="ck-th-hide"><div class="ck-tprog"><div class="ck-tprog-bar"><div class="ck-tprog-fill" style="width:${c.progress}%"></div></div>${c.progress}%</div></td>
     </tr>`;
   }).join('');
-
-  gsap.from('#clientsBody tr', { opacity: 0, y: 15, duration: 0.3, stagger: 0.04 });
 }
 
 // DETAIL MODAL
-let currentDetail = null;
+let curCase=null;
+function openDetail(c){
+  curCase=c;
+  const sc=STATUS_STYLES[c.status]||STATUS_STYLES['На рассмотрении'];
+  const ini=c.fullName.split(' ').slice(0,2).map(n=>n[0]).join('');
+  const si=STAGES.indexOf(c.stage);
 
-function openDetail(c) {
-  currentDetail = c;
-  const color = AVATAR_COLORS[Math.floor(Math.random()*AVATAR_COLORS.length)];
-  const sc = STATUSES_COLORS[c.status] || STATUSES_COLORS['На рассмотрении'];
-  const si = STAGES.indexOf(c.stage);
-
-  document.getElementById('detailHeader').innerHTML = `
-    <div class="detail-top">
-      <div class="detail-avatar" style="background:${sc.bg};color:${sc.color}">${c.fullName.split(' ').slice(0,2).map(n=>n[0]).join('')}</div>
-      <div class="detail-info">
-        <h2>${maskFullName(c.fullName)}</h2>
-        <div class="detail-meta">
-          <span class="detail-num">#${c.num}</span>
-          <button class="copy-btn" onclick="copyNum('${c.num}')">📋</button>
-          <span class="detail-date">${c.date}</span>
-        </div>
+  document.getElementById('modalHead').innerHTML=`
+    <div class="ck-mhead-top">
+      <div class="ck-mhead-avatar" style="background:${sc.bg};color:${sc.c}">${ini}</div>
+      <div class="ck-mhead-info">
+        <h2>${maskName(c.fullName)}</h2>
+        <div class="ck-mhead-meta"><span class="ck-mhead-num">#${c.num}</span><button class="ck-copy" onclick="copyCase('${c.num}')">📋</button><span class="ck-mhead-date">${c.date}</span></div>
       </div>
-      <button class="detail-close" onclick="closeDetail()">✕</button>
+      <button class="ck-mclose" onclick="closeModal()">✕</button>
     </div>
-    <div class="detail-status-bar">
-      <span class="detail-status-badge" style="background:${sc.bg};color:${sc.color}"><span class="td-status-dot" style="background:${sc.dot}"></span>${c.status}</span>
-      <span class="detail-platform">📋 ${c.platform}</span>
-      ${c.city ? `<span class="detail-city">📍 ${c.city}</span>` : ''}
+    <div class="ck-mhead-bar">
+      <span class="ck-mhead-badge" style="background:${sc.bg};color:${sc.c}"><span class="ck-dot" style="background:${sc.dot}"></span>${c.status}</span>
+      <span class="ck-mhead-plat">📋 ${c.platform}</span>
     </div>
-    <div class="detail-stages">
-      ${STAGES.map((s,i) => `<div class="dstage"><div class="dstage-dot ${i<si?'done':i===si?'active':''}"></div><span>${s}</span></div>`).join('')}
-    </div>
-  `;
-
-  showDetailTab('overview', document.querySelector('.detail-tab'));
-  document.getElementById('detailModal').style.display = 'flex';
-  gsap.from('.detail-modal', { y: '100%', duration: 0.4, ease: 'power3.out' });
+    <div class="ck-stages">
+      ${STAGES.map((s,i)=>`<div class="ck-stg"><div class="ck-stg-dot ${i<si?'done':i===si?'active':''}"></div><span>${s}</span></div>`).join('')}
+    </div>`;
+  document.getElementById('modalOverlay').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+  gsap.from('.ck-modal',{y:'100%',duration:0.4,ease:'power3.out'});
+  switchTab('overview',document.querySelector('.ck-mtab'));
 }
 
-function closeDetail(e) {
-  if (e && e.target !== document.getElementById('detailModal')) return;
-  gsap.to('.detail-modal', { y: '100%', duration: 0.3, ease: 'power3.in', onComplete: () => {
-    document.getElementById('detailModal').style.display = 'none';
+function closeModal(){
+  gsap.to('.ck-modal',{y:'100%',duration:0.3,ease:'power3.in',onComplete:()=>{
+    document.getElementById('modalOverlay').classList.add('hidden');
+    document.body.style.overflow='';
   }});
 }
+function copyCase(n){navigator.clipboard.writeText(n);showToast('Скопировано');}
 
-function copyNum(num) {
-  navigator.clipboard.writeText(num);
-  showToast('Номер скопирован');
-}
-
-function showDetailTab(tab, btn) {
-  document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+function switchTab(tab,btn){
+  document.querySelectorAll('.ck-mtab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
-  const c = currentDetail;
-  const content = document.getElementById('detailContent');
+  const c=curCase,body=document.getElementById('modalBody');
 
-  if (tab === 'overview') {
-    const si = STAGES.indexOf(c.stage);
-    content.innerHTML = `
-      <div class="detail-section">
+  if(tab==='overview'){
+    const si=STAGES.indexOf(c.stage);
+    const icons=['📝','🔍','📨','💳','⚖️','💰','✅'];
+    const descs=['Заявка подана','Анализ документов','Претензия подана','Чарджбэк инициирован','Судебный процесс','Средства возвращены','Дело закрыто'];
+    const dates=[c.date,'15.01.2026','02.02.2026','18.02.2026','05.03.2026','20.03.2026','28.03.2026'];
+    body.innerHTML=`
+      <div class="ck-section">
         <h3>📊 Timeline дела</h3>
-        <div class="detail-timeline">
-          ${STAGES.slice(0, si+1).map((s,i) => {
-            const icons = ['📝','🔍','📨','💳','⚖️','💰','✅'];
-            const descs = ['Заявка подана','Анализ документов','Претензия подана','Чарджбэк инициирован','Судебный процесс','Средства возвращены','Дело закрыто'];
-            const dates = [c.date, '15.01.2026', '02.02.2026', '18.02.2026', '05.03.2026', '20.03.2026', '28.03.2026'];
-            return `<div class="dt-item ${i<si?'done':'current'}">
-              <div class="dt-icon">${icons[i]}</div>
-              <div class="dt-info">
-                <div class="dt-title">${s}</div>
-                <div class="dt-desc">${descs[i]}</div>
-                <div class="dt-date">${dates[i] || '—'}</div>
-              </div>
-              ${i<si?'<div class="dt-check">✓</div>':''}
-            </div>`;
-          }).join('')}
+        <div class="ck-timeline">
+          ${STAGES.slice(0,si+1).map((s,i)=>`
+            <div class="ck-tl-item ${i<si?'done':'current'}">
+              <div class="ck-tl-left"><div class="ck-tl-icon">${icons[i]}</div>${i<si?'<div class="ck-tl-line"></div>':''}</div>
+              <div class="ck-tl-right"><div class="ck-tl-title">${s}</div><div class="ck-tl-desc">${descs[i]}</div><div class="ck-tl-date">${dates[i]}</div></div>
+              ${i<si?'<div class="ck-tl-check">✓</div>':''}
+            </div>`).join('')}
         </div>
       </div>
-      <div class="detail-section">
-        <h3>📋 Информация</h3>
-        <div class="detail-grid">
-          <div class="detail-field"><span class="df-label">ФИО</span><span class="df-value">${maskFullName(c.fullName)}</span></div>
-          <div class="detail-field"><span class="df-label">Телефон</span><span class="df-value">${maskPhone(c.phone)}</span></div>
-          <div class="detail-field"><span class="df-label">Платформа</span><span class="df-value">${c.platform}</span></div>
-          <div class="detail-field"><span class="df-label">Город</span><span class="df-value">${c.city || '—'}</span></div>
-          <div class="detail-field"><span class="df-label">Сумма вложений</span><span class="df-value" style="color:var(--gold)">${c.amount.toLocaleString()} ₸</span></div>
-          <div class="detail-field"><span class="df-label">Этап</span><span class="df-value">${c.stage}</span></div>
+      <div class="ck-section">
+        <h3>📋 Данные</h3>
+        <div class="ck-fields">
+          <div class="ck-field"><span>ФИО</span><strong>${maskName(c.fullName)}</strong></div>
+          <div class="ck-field"><span>Телефон</span><strong>${maskPhone(c.phone)}</strong></div>
+          <div class="ck-field"><span>Платформа</span><strong>${c.platform}</strong></div>
+          <div class="ck-field"><span>Город</span><strong>${c.city||'—'}</strong></div>
+          <div class="ck-field"><span>Сумма</span><strong style="color:var(--gold)">${c.amount.toLocaleString()} ₸</strong></div>
+          <div class="ck-field"><span>Этап</span><strong>${c.stage}</strong></div>
         </div>
       </div>`;
   }
 
-  if (tab === 'funds') {
-    const returned = Math.floor(c.amount * (0.3 + Math.random()*0.5));
-    const pct = Math.round(returned/c.amount*100);
-    content.innerHTML = `
-      <div class="detail-section">
+  if(tab==='funds'){
+    const ret=~~(c.amount*(0.3+Math.random()*0.5));
+    const pct=~~(ret/c.amount*100);
+    body.innerHTML=`
+      <div class="ck-section">
         <h3>💰 Движение средств</h3>
-        <div class="fund-flow">
-          <div class="fund-node fund-miss">
-            <div class="fund-icon">🏦</div>
-            <div class="fund-label">Мошенническая платформа</div>
-            <div class="fund-amount" style="color:var(--red)">${c.amount.toLocaleString()} ₸</div>
-          </div>
-          <div class="fund-arrow"><div class="fund-arrow-line"></div><span>→</span></div>
-          <div class="fund-node fund-mid">
-            <div class="fund-icon">🔄</div>
-            <div class="fund-label">Промежуточные счета</div>
-            <div class="fund-amount">${c.amount.toLocaleString()} ₸</div>
-          </div>
-          <div class="fund-arrow"><div class="fund-arrow-line"></div><span>→</span></div>
-          <div class="fund-node fund-return">
-            <div class="fund-icon">💳</div>
-            <div class="fund-label">Карта клиента</div>
-            <div class="fund-amount" style="color:var(--green)">${returned.toLocaleString()} ₸</div>
-          </div>
+        <div class="ck-flow">
+          <div class="ck-flow-node miss"><div class="ck-flow-ico">🏦</div><div class="ck-flow-lbl">Мошенническая платформа</div><div class="ck-flow-amt" style="color:var(--red)">${c.amount.toLocaleString()} ₸</div></div>
+          <div class="ck-flow-arrow">→</div>
+          <div class="ck-flow-node mid"><div class="ck-flow-ico">🔄</div><div class="ck-flow-lbl">Промежуточные счета</div><div class="ck-flow-amt">${c.amount.toLocaleString()} ₸</div></div>
+          <div class="ck-flow-arrow">→</div>
+          <div class="ck-flow-node ret"><div class="ck-flow-ico">💳</div><div class="ck-flow-lbl">Карта клиента</div><div class="ck-flow-amt" style="color:var(--green)">${ret.toLocaleString()} ₸</div></div>
         </div>
-        <div class="fund-summary">
-          <div class="fund-stat"><span>Вложено</span><strong>${c.amount.toLocaleString()} ₸</strong></div>
-          <div class="fund-stat"><span>Возвращено</span><strong style="color:var(--green)">${returned.toLocaleString()} ₸</strong></div>
-          <div class="fund-stat"><span>Процент возврата</span><strong style="color:var(--green)">${pct}%</strong></div>
+        <div class="ck-flow-summary">
+          <div class="ck-fsum"><span>Вложено</span><strong>${c.amount.toLocaleString()} ₸</strong></div>
+          <div class="ck-fsum"><span>Возвращено</span><strong style="color:var(--green)">${ret.toLocaleString()} ₸</strong></div>
+          <div class="ck-fsum"><span>Процент</span><strong style="color:var(--green)">${pct}%</strong></div>
         </div>
       </div>`;
+    if(c.status==='Завершено'||c.status==='Возврат средств') setTimeout(fireConfetti,400);
   }
 
-  if (tab === 'docs') {
-    const docs = [
-      { name: 'Заявка на возврат.pdf', status: 'Принято', date: c.date, org: 'АРРФР' },
-      { name: 'Выписка по счету.pdf', status: 'Принято', date: '15.01.2026', org: 'Банк' },
-      { name: 'Скриншоты переписки.pdf', status: 'Принято', date: '18.01.2026', org: 'АРРФР' },
-      { name: 'Претензия в банк.docx', status: 'Отправлено', date: '02.02.2026', org: 'Bank of England' },
-      { name: 'Решение суда.pdf', status: 'Ожидание', date: '05.03.2026', org: 'Верховный суд' },
+  if(tab==='docs'){
+    const docs=[
+      {n:'Заявка на возврат.pdf',s:'Принято',d:c.date,o:'АРРФР'},
+      {n:'Выписка по счету.pdf',s:'Принято',d:'15.01.2026',o:'Банк'},
+      {n:'Скриншоты переписки.pdf',s:'Принято',d:'18.01.2026',o:'АРРФР'},
+      {n:'Претензия в банк.docx',s:'Отправлено',d:'02.02.2026',o:'Bank of England'},
+      {n:'Решение суда.pdf',s:'Ожидание',d:'05.03.2026',o:'Суд'},
     ];
-    content.innerHTML = `
-      <div class="detail-section">
-        <h3>📄 Документы и переписка</h3>
-        <div class="doc-list">
-          ${docs.map(d => {
-            const st = d.status==='Принято'?'done':d.status==='Отправлено'?'active':'pending';
-            return `<div class="doc-item">
-              <div class="doc-icon">📄</div>
-              <div class="doc-info">
-                <div class="doc-name">${d.name}</div>
-                <div class="doc-meta">${d.org} · ${d.date}</div>
-              </div>
-              <span class="doc-status ${st}">${d.status}</span>
-            </div>`;
-          }).join('')}
+    body.innerHTML=`<div class="ck-section"><h3>📄 Документы</h3><div class="ck-docs">
+      ${docs.map(d=>{const st=d.s==='Принято'?'done':d.s==='Отправлено'?'active':'pending';
+        return`<div class="ck-doc"><div class="ck-doc-ico">📄</div><div class="ck-doc-info"><div class="ck-doc-name">${d.n}</div><div class="ck-doc-meta">${d.o} · ${d.d}</div></div><span class="ck-doc-st ${st}">${d.s}</span></div>`;
+      }).join('')}
+    </div></div>`;
+  }
+
+  if(tab==='comments'){
+    const cms=c.comments||[];
+    body.innerHTML=`
+      <div class="ck-section"><h3>💬 История</h3>
+        <div class="ck-cmts">
+          ${cms.map(cm=>`<div class="ck-cmt"><div class="ck-cmt-av">👨‍💼</div><div class="ck-cmt-body"><div class="ck-cmt-head"><span>Менеджер</span><span>${cm.date}</span></div><div class="ck-cmt-text">${cm.text}</div></div></div>`).join('')}
         </div>
+        <div class="ck-cmt-input"><input type="text" class="form-input" id="cmtInput" placeholder="Комментарий..."><button onclick="addCmt()" class="ck-cmt-btn">+</button></div>
       </div>`;
   }
 
-  if (tab === 'finance') {
-    const returned = Math.floor(c.amount * (0.3 + Math.random()*0.5));
-    const fee = Math.floor(returned * 0.15);
-    content.innerHTML = `
-      <div class="detail-section">
-        <h3>📈 Финансовые результаты</h3>
-        <div class="finance-table">
-          <div class="fin-row"><span>Сумма вложений</span><strong>${c.amount.toLocaleString()} ₸</strong></div>
-          <div class="fin-row"><span>Возвращено клиенту</span><strong style="color:var(--green)">${returned.toLocaleString()} ₸</strong></div>
-          <div class="fin-row"><span>Комиссия сервиса</span><strong>${fee.toLocaleString()} ₸</strong></div>
-          <div class="fin-row"><span>Дата зачисления</span><strong>**** **** **** ${String(Math.floor(1000+Math.random()*9000))}</strong></div>
-        </div>
-      </div>`;
-  }
-
-  if (tab === 'comments') {
-    const comments = c.comments || [];
-    content.innerHTML = `
-      <div class="detail-section">
-        <h3>💬 Комментарии и история</h3>
-        <div class="comments-list">
-          ${comments.map(cm => `<div class="comment-item">
-            <div class="comment-avatar">👨‍💼</div>
-            <div class="comment-body">
-              <div class="comment-header">
-                <span class="comment-author">Менеджер AntiFrog</span>
-                <span class="comment-date">${cm.date}</span>
-              </div>
-              <div class="comment-text">${cm.text}</div>
-            </div>
-          </div>`).join('')}
-        </div>
-        <div class="comment-input">
-          <input type="text" class="form-input" id="newComment" placeholder="Добавить комментарий...">
-          <button onclick="addDetailComment()" class="btn btn-primary btn-sm">+</button>
-        </div>
-      </div>`;
-  }
-
-  gsap.from('#detailContent > *', { opacity: 0, y: 15, duration: 0.3 });
+  gsap.from('#modalBody > *',{opacity:0,y:10,duration:0.25});
 }
 
-function addDetailComment() {
-  const input = document.getElementById('newComment');
-  const text = input.value.trim();
-  if (!text || !currentDetail) return;
-  const cases = getCases();
-  if (cases[currentDetail.num]) {
-    if (!cases[currentDetail.num].comments) cases[currentDetail.num].comments = [];
-    cases[currentDetail.num].comments.push({ date: new Date().toLocaleString('ru-RU'), text });
-    saveCases(cases);
+function addCmt(){
+  const inp=document.getElementById('cmtInput'),t=inp.value.trim();
+  if(!t||!curCase)return;
+  const cs=getCases();
+  if(cs[curCase.num]){if(!cs[curCase.num].comments)cs[curCase.num].comments=[];cs[curCase.num].comments.push({date:new Date().toLocaleString('ru-RU'),text:t});saveCases(cs);}
+  curCase.comments.push({date:new Date().toLocaleString('ru-RU'),text:t});
+  switchTab('comments',document.querySelector('[data-tab="comments"]'));
+  inp.value='';
+}
+
+// CONFETTI
+function fireConfetti(){
+  const canvas=document.getElementById('confettiCanvas');
+  const ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  const parts=[];
+  for(let i=0;i<80;i++){
+    parts.push({x:Math.random()*canvas.width,y:-20-Math.random()*100,vx:(Math.random()-0.5)*4,vy:Math.random()*4+2,r:Math.random()*6+3,c:['#10b981','#3b82f6','#f59e0b','#ef4444','#8b5cf6'][~~(Math.random()*5)],rot:Math.random()*360,vr:(Math.random()-0.5)*10});
   }
-  currentDetail.comments.push({ date: new Date().toLocaleString('ru-RU'), text });
-  showDetailTab('comments', document.querySelector('.detail-tab:last-child'));
-  input.value = '';
+  let frame=0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    parts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.vy+=0.08;p.rot+=p.vr;
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.c;ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6);
+      ctx.restore();
+    });
+    frame++;
+    if(frame<120)requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  draw();
 }
 
 // INIT
-ALL_CLIENTS = genClients(1200);
-filteredClients = ALL_CLIENTS;
+document.getElementById('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')startSearch();});
 
-document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key==='Enter') startSearch(); });
-
-const urlCase = new URLSearchParams(location.search).get('case');
-if (urlCase) {
-  document.getElementById('searchInput').value = urlCase;
-  startSearch();
-} else {
-  renderTable(ALL_CLIENTS);
-  document.getElementById('resultsInfo').classList.remove('hidden');
-  document.getElementById('resultCount').textContent = `В базе: ${ALL_CLIENTS.length} дел`;
+const urlQ=new URLSearchParams(location.search).get('case');
+if(urlQ){document.getElementById('searchInput').value=urlQ;startSearch();}
+else{
+  renderCards(ALL);
+  document.getElementById('filtersBar').classList.remove('hidden');
+  document.getElementById('resultText').textContent='В базе: '+ALL.length+' дел';
+  animateCounters();
 }
+
+window.addEventListener('resize',()=>renderCards(FILTERED));
 </script>
 </body>
 </html>
