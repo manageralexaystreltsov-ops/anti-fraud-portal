@@ -709,6 +709,9 @@ textarea.form-input { resize: vertical; min-height: 100px; }
 .adm-delete-btn { width: 100%; background: none; border: 1px solid rgba(239,68,68,0.3); color: var(--red); padding: 10px; border-radius: 10px; font-size: 13px; cursor: pointer; font-family: inherit; transition: all .2s; }
 .adm-delete-btn:hover { background: rgba(239,68,68,0.1); }
 
+/* Next actions block */
+.ck-next-actions { background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.04)); border: 1px solid rgba(245,158,11,0.2); border-radius: 12px; padding: 14px; font-size: 13px; line-height: 1.6; color: var(--text); white-space: pre-wrap; }
+
 /* ===== RESPONSIVE CHECK — TABLET+ ===== */
 @media (min-width: 768px) {
   .ck-title { font-size: 36px; }

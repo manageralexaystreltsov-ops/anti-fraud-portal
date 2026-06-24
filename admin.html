@@ -122,7 +122,8 @@
 
         <div class="adm-section">
           <h3 class="adm-section-title">💬 Комментарий</h3>
-          <div class="form-group"><textarea class="form-input" id="a_comment" rows="3" placeholder="Первый комментарий к делу..."></textarea></div>
+          <div class="form-group"><label class="form-label">Комментарий для клиента (виден в истории)</label><textarea class="form-input" id="a_comment" rows="3" placeholder="Комментарий, который увидит клиент..."></textarea></div>
+          <div class="form-group"><label class="form-label">Следующие действия (что должен сделать клиент)</label><textarea class="form-input" id="a_nextActions" rows="2" placeholder="Например: Подготовить выписку по счёту, отправить скриншоты переписки..."></textarea></div>
         </div>
 
         <div style="display:flex;gap:8px">
@@ -274,7 +275,8 @@ function editClient(num){
 
       <!-- COMMENTS -->
       <div class="adm-card">
-        <h3 class="adm-card-title">💬 Комментарии</h3>
+        <h3 class="adm-card-title">💬 Комментарии и действия</h3>
+        <div class="form-group"><label class="form-label">Следующие действия (видно клиенту в обзоре)</label><textarea class="form-input" id="e_nextActions" rows="2" placeholder="Что должен сделать клиент сейчас..." style="font-size:13px;resize:none">${c.nextActions||''}</textarea></div>
         <div class="adm-comments" id="e_comments">
           ${(c.comments||[]).map(cm=>`<div class="adm-comment"><div class="adm-comment-date">${cm.date}</div><div class="adm-comment-text">${cm.text}</div></div>`).join('')||'<p style="color:var(--muted);font-size:13px">Нет комментариев</p>'}
         </div>
@@ -332,6 +334,7 @@ function saveEdit(num){
   c.recovered=parseInt(document.getElementById('e_recovered').value)||0;
   c.intermediate=document.getElementById('e_intermediate').value.trim();
   c.orgs=Array.from(document.querySelectorAll('#editContent .adm-chip input:checked')).map(cb=>cb.value);
+  c.nextActions=document.getElementById('e_nextActions').value.trim();
   saveCases(cases);
   closeEdit();
   renderList();
@@ -367,6 +370,7 @@ function addClient(){
     progress:parseInt(document.getElementById('a_progress').value)||10,
     status:document.getElementById('a_status').value,
     orgs:Array.from(document.querySelectorAll('#a_orgs input:checked')).map(cb=>cb.value),
+    nextActions:document.getElementById('a_nextActions')?.value?.trim()||'',
     comments:[{date:now.toLocaleString('ru-RU'),text:document.getElementById('a_comment').value.trim()||'Клиент добавлен в систему'}],
     time:now.toISOString()
   };
