@@ -386,18 +386,16 @@ function switchTab(tab,btn){
         ${c.orgs?.length?`<div style="margin-top:12px"><div style="font-size:12px;color:var(--muted);margin-bottom:6px">Органы:</div><div style="display:flex;flex-wrap:wrap;gap:4px">${c.orgs.map(o=>`<span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(16,185,129,0.1);color:var(--green)">${o}</span>`).join('')}</div></div>`:''}
       </div>
       ${c.nextActions?`<div class="ck-section"><h3>📌 Следующие действия</h3><div class="ck-next-actions">${c.nextActions}</div></div>`:''}
-    const rec=getRecommended(c);
-    body.innerHTML+=`
       <div class="ck-section">
         <h3>💡 Рекомендуемая услуга</h3>
-        <div class="ck-rec" onclick="openServiceOrder('${rec.title.replace(/'/g,"\\'")}','${rec.price}','${rec.action.replace(/'/g,"\\'")}')">
-          <div class="ck-rec-icon">${rec.icon}</div>
+        <div class="ck-rec" onclick="openServiceOrder('${getRecommended(c).title.replace(/'/g,"\\'")}','${getRecommended(c).price}','${getRecommended(c).action.replace(/'/g,"\\'")}')">
+          <div class="ck-rec-icon">${getRecommended(c).icon}</div>
           <div class="ck-rec-info">
-            <div class="ck-rec-title">${rec.title}</div>
-            <div class="ck-rec-desc">${rec.desc}</div>
-            <div class="ck-rec-price">${rec.price}</div>
+            <div class="ck-rec-title">${getRecommended(c).title}</div>
+            <div class="ck-rec-desc">${getRecommended(c).desc}</div>
+            <div class="ck-rec-price">${getRecommended(c).price}</div>
           </div>
-          <div class="ck-rec-btn">${rec.action} →</div>
+          <div class="ck-rec-btn">${getRecommended(c).action} →</div>
         </div>
       </div>`;
   }
