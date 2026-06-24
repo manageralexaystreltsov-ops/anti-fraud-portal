@@ -10,21 +10,15 @@ const NAV_HTML = `
     <button class="topnav-burger" id="burgerBtn" aria-label="Меню">
       <span></span><span></span><span></span>
     </button>
-    <div class="topnav-links" id="navLinks">
-      <a href="${BASE}/">Главная</a>
-      <a href="${BASE}/services.html">Услуги</a>
-      <a href="${BASE}/check.html">Проверить дело</a>
-      <a href="${BASE}/apply.html" class="topnav-cta">Обратиться</a>
-    </div>
   </div>
 </nav>
-<!-- Bottom mobile bar -->
-<div class="bottombar" id="bottomBar">
-  <a href="${BASE}/" class="bottombar-item"><span class="bottombar-icon">🏠</span><span>Главная</span></a>
-  <a href="${BASE}/services.html" class="bottombar-item"><span class="bottombar-icon">💼</span><span>Услуги</span></a>
-  <a href="${BASE}/apply.html" class="bottombar-item bottombar-cta"><span class="bottombar-icon">📝</span><span>Заявка</span></a>
-  <a href="${BASE}/check.html" class="bottombar-item"><span class="bottombar-icon">📋</span><span>Дело</span></a>
-  <a href="${BASE}/admin.html" class="bottombar-item" style="opacity:0.4"><span class="bottombar-icon">⚙️</span><span></span></a>
+<div class="burger-menu" id="burgerMenu">
+  <div class="burger-menu-inner">
+    <a href="${BASE}/" class="burger-link">🏠 Главная</a>
+    <a href="${BASE}/services.html" class="burger-link">💼 Услуги</a>
+    <a href="${BASE}/check.html" class="burger-link">📋 Проверить дело</a>
+    <a href="${BASE}/apply.html" class="burger-link burger-link-cta">📝 Обратиться</a>
+  </div>
 </div>
 `;
 
@@ -35,23 +29,31 @@ function initNav() {
   document.body.insertAdjacentHTML('afterbegin', NAV_HTML);
   document.body.classList.add('has-nav');
 
-  // Highlight current page
   const path = location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.topnav-links a, .bottombar-item').forEach(a => {
+  document.querySelectorAll('.burger-link').forEach(a => {
     const href = a.getAttribute('href').split('/').pop() || 'index.html';
     if (href === path || (path === '' && href === '/')) {
       a.classList.add('active');
     }
   });
 
-  // Burger toggle
   document.getElementById('burgerBtn').addEventListener('click', () => {
-    document.getElementById('navLinks').classList.toggle('open');
+    document.getElementById('burgerMenu').classList.toggle('open');
+    document.getElementById('burgerBtn').classList.toggle('active');
   });
 
-  // Close nav on link click
-  document.querySelectorAll('.topnav-links a').forEach(a => {
-    a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+  document.querySelectorAll('.burger-link').forEach(a => {
+    a.addEventListener('click', () => {
+      document.getElementById('burgerMenu').classList.remove('open');
+      document.getElementById('burgerBtn').classList.remove('active');
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.topnav') && !e.target.closest('.burger-menu')) {
+      document.getElementById('burgerMenu').classList.remove('open');
+      document.getElementById('burgerBtn').classList.remove('active');
+    }
   });
 }
 
@@ -76,7 +78,7 @@ function showToast(msg, type = 'success') {
   if (!toast) {
     toast = document.createElement('div');
     toast.id = 'globalToast';
-    toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;padding:12px 24px;border-radius:12px;font-weight:600;font-size:14px;z-index:9999;transition:all .3s;pointer-events:none;max-width:90vw;text-align:center;';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;padding:12px 24px;border-radius:12px;font-weight:600;font-size:14px;z-index:9999;transition:all .3s;pointer-events:none;max-width:90vw;text-align:center;';
     document.body.appendChild(toast);
   }
   toast.textContent = msg;
