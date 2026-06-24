@@ -6,8 +6,9 @@
 <title>Admin — AntiFrog</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
 
@@ -26,55 +27,104 @@
 </div>
 
 <!-- ADMIN PANEL -->
-<div id="panel" class="hidden" style="padding-bottom:80px">
-  <div class="container" style="max-width:800px">
+<div id="panel" class="hidden">
+  <div class="container" style="max-width:900px;padding:16px">
 
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-top:12px">
-      <h1 style="font-size:20px;font-weight:900">⚙️ Управление клиентами</h1>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h1 style="font-size:20px;font-weight:900">⚙️ Админ-панель</h1>
       <div style="display:flex;gap:8px">
-        <button onclick="exportData()" class="btn btn-outline btn-sm" style="max-width:120px">📥 Экспорт</button>
-        <button onclick="showTab('add')" class="btn btn-primary btn-sm" style="max-width:120px">➕ Добавить</button>
+        <button onclick="exportData()" class="btn btn-outline btn-sm" style="max-width:100px;font-size:12px">📥 Экспорт</button>
+        <button onclick="showTab('add')" class="btn btn-primary btn-sm" style="max-width:100px;font-size:12px">➕ Новый</button>
       </div>
     </div>
 
-    <!-- TABS -->
     <div class="admin-tabs" style="margin-bottom:16px">
-      <div class="admin-tab active" onclick="showTab('list')">📋 Клиенты (<span id="clientCount">0</span>)</div>
-      <div class="admin-tab" onclick="showTab('add')">➕ Новый</div>
-      <div class="admin-tab" onclick="showTab('import')">📥 Импорт</div>
+      <button class="admin-tab active" onclick="showTab('list')">📋 Клиенты (<span id="clientCount">0</span>)</button>
+      <button class="admin-tab" onclick="showTab('add')">➕ Новый</button>
+      <button class="admin-tab" onclick="showTab('import')">📥 Импорт</button>
     </div>
 
-    <!-- SEARCH -->
-    <div class="card" style="display:flex;gap:8px;padding:8px;margin-bottom:16px" id="searchBlock">
-      <input type="text" class="form-input" id="searchInput" placeholder="Поиск по ФИО, номеру, платформе..." style="border:none;background:none;flex:1" oninput="filterClients()">
+    <div class="adm-search">
+      <input type="text" class="form-input" id="searchInput" placeholder="Поиск по ФИО, номеру, платформе..." style="border:none;background:none;flex:1;font-size:14px" oninput="filterClients()">
     </div>
 
-    <!-- CLIENT LIST -->
-    <div id="listTab">
-      <div id="clientsList"></div>
-    </div>
+    <!-- LIST -->
+    <div id="listTab"><div id="clientsList"></div></div>
 
-    <!-- ADD CLIENT -->
+    <!-- ADD -->
     <div id="addTab" class="hidden">
-      <div class="card card-lg">
-        <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">Новый клиент</h2>
-        <div class="form-group"><label class="form-label">ФИО *</label><input class="form-input" id="a_name"></div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Телефон</label><input class="form-input" id="a_phone"></div>
-          <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="a_email"></div>
-        </div>
-        <div class="form-group"><label class="form-label">Платформа *</label><input class="form-input" id="a_platform"></div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Сумма потерь (₸)</label><input class="form-input" id="a_amount" type="number"></div>
-          <div class="form-group"><label class="form-label">Сумма возврата (₸)</label><input class="form-input" id="a_recovered" type="number" value="0"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Этап</label>
-            <select class="form-input" id="a_stage"><option>Заявка</option><option>Анализ</option><option>Претензия</option><option>Чарджбэк</option><option>Суд</option><option>Возврат</option><option>Завершено</option></select>
+      <div class="adm-form">
+        <h2 style="font-size:18px;font-weight:800;margin-bottom:16px">Новый клиент</h2>
+
+        <div class="adm-section">
+          <h3 class="adm-section-title">👤 Личные данные</h3>
+          <div class="form-group"><label class="form-label">ФИО *</label><input class="form-input" id="a_name" placeholder="Фамилия Имя Отчество"></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Телефон</label><input class="form-input" id="a_phone" placeholder="+7 (7XX) XXX-XX-XX"></div>
+            <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="a_email" placeholder="email@example.com"></div>
           </div>
-          <div class="form-group"><label class="form-label">Прогресс %</label><input class="form-input" id="a_progress" type="number" value="10" min="0" max="100"></div>
+          <div class="form-group"><label class="form-label">Город</label><input class="form-input" id="a_city" placeholder="Алматы, Астана..."></div>
         </div>
-        <div class="form-group"><label class="form-label">Первый комментарий</label><textarea class="form-input" id="a_comment" rows="2"></textarea></div>
+
+        <div class="adm-section">
+          <h3 class="adm-section-title">📋 Платформа и органы</h3>
+          <div class="form-group"><label class="form-label">Платформа *</label>
+            <select class="form-input" id="a_platform">
+              <option value="">Выберите...</option>
+              <option>TradePro Global</option><option>InvestMarket24</option><option>CryptoInvest KZ</option>
+              <option>GlobalFX Trading</option><option>Premium Binary</option><option>AlgoTrade 360</option>
+              <option>SmartInvest Pro</option><option>Quantum Capital</option><option>Titan FX Group</option>
+              <option>EuroTrade Solutions</option><option>CryptoHarvest</option><option>Royal Forex Club</option>
+              <option>SwiftTrade Pro</option><option>Astana Digital Bank</option><option>Digital Assets Kazakhstan</option>
+              <option value="__custom">Другая (вручную)</option>
+            </select>
+          </div>
+          <div class="form-group hidden" id="a_platformCustomWrap"><label class="form-label">Название платформы</label><input class="form-input" id="a_platformCustom" placeholder="Название"></div>
+          <div class="form-group"><label class="form-label">Органы (с кем работаем)</label>
+            <div class="adm-chips" id="a_orgs">
+              <label class="adm-chip"><input type="checkbox" value="АРРФР"> 🏛️ АРРФР</label>
+              <label class="adm-chip"><input type="checkbox" value="НБ РК"> 🏦 НБ РК</label>
+              <label class="adm-chip"><input type="checkbox" value="МВД РК"> 👮 МВД РК</label>
+              <label class="adm-chip"><input type="checkbox" value="FinCEN"> 🇺🇸 FinCEN</label>
+              <label class="adm-chip"><input type="checkbox" value="FCA"> 🇬🇧 FCA</label>
+              <label class="adm-chip"><input type="checkbox" value="SEC"> 🇺🇸 SEC</label>
+              <label class="adm-chip"><input type="checkbox" value="FBI"> 🇺🇸 FBI</label>
+              <label class="adm-chip"><input type="checkbox" value="BaFin"> 🇩🇪 BaFin</label>
+              <label class="adm-chip"><input type="checkbox" value="CySEC"> 🇨🇾 CySEC</label>
+              <label class="adm-chip"><input type="checkbox" value="ASIC"> 🇦🇺 ASIC</label>
+              <label class="adm-chip"><input type="checkbox" value="Интерпол"> 🌍 Интерпол</label>
+              <label class="adm-chip"><input type="checkbox" value="FATF"> 🌍 FATF</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="adm-section">
+          <h3 class="adm-section-title">💰 Финансы</h3>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Сумма потерь (₸) *</label><input class="form-input" id="a_amount" type="number" placeholder="0"></div>
+            <div class="form-group"><label class="form-label">Сумма возврата (₸)</label><input class="form-input" id="a_recovered" type="number" value="0"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Промежуточный счёт (описание)</label><input class="form-input" id="a_intermediate" placeholder="Банк, номер счёта..."></div>
+        </div>
+
+        <div class="adm-section">
+          <h3 class="adm-section-title">📊 Статус</h3>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Этап</label>
+              <select class="form-input" id="a_stage"><option>Заявка</option><option>Анализ</option><option>Претензия</option><option>Чарджбэк</option><option>Суд</option><option>Возврат</option><option>Завершено</option></select>
+            </div>
+            <div class="form-group"><label class="form-label">Прогресс %</label><input class="form-input" id="a_progress" type="number" value="10" min="0" max="100"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Статус</label>
+            <select class="form-input" id="a_status"><option>На рассмотрении</option><option>В работе</option><option>Ожидание ответа</option><option>Завершено</option></select>
+          </div>
+        </div>
+
+        <div class="adm-section">
+          <h3 class="adm-section-title">💬 Комментарий</h3>
+          <div class="form-group"><textarea class="form-input" id="a_comment" rows="3" placeholder="Первый комментарий к делу..."></textarea></div>
+        </div>
+
         <div style="display:flex;gap:8px">
           <button onclick="showTab('list')" class="btn btn-outline" style="flex:1">Отмена</button>
           <button onclick="addClient()" class="btn btn-primary" style="flex:2">Добавить клиента</button>
@@ -84,10 +134,9 @@
 
     <!-- IMPORT -->
     <div id="importTab" class="hidden">
-      <div class="card card-lg">
+      <div class="adm-form">
         <h2 style="font-size:18px;font-weight:700;margin-bottom:12px">Импорт данных</h2>
-        <p style="color:var(--muted);font-size:13px;margin-bottom:16px">Вставьте JSON-данные для импорта клиентов</p>
-        <textarea class="form-input" id="importData" rows="10" placeholder='[{"num":"AF-2606-1234","fullName":"Иванов Иван",...}]' style="font-family:monospace;font-size:12px"></textarea>
+        <textarea class="form-input" id="importData" rows="10" placeholder='[{"num":"AF-2606-1234",...}]' style="font-family:monospace;font-size:12px"></textarea>
         <button onclick="importData()" class="btn btn-primary" style="width:100%;margin-top:12px">Импортировать</button>
       </div>
     </div>
@@ -96,243 +145,248 @@
 </div>
 
 <!-- EDIT MODAL -->
-<div class="modal-overlay" id="editModal" style="display:none" onclick="closeEdit(event)">
-  <div class="modal" onclick="event.stopPropagation()" style="max-height:90vh">
-    <div class="modal-handle"></div>
+<div class="ck-modal-overlay hidden" id="editModal">
+  <div class="ck-modal" onclick="event.stopPropagation()" style="max-height:92vh">
+    <div class="ck-modal-handle"></div>
     <div id="editContent"></div>
   </div>
 </div>
 
 <script src="js/common.js"></script>
 <script>
-const PASSWORD = '1304';
-const STAGES = ['Заявка','Анализ','Претензия','Чарджбэк','Суд','Возврат','Завершено'];
+const PASSWORD='1304';
+const STAGES=['Заявка','Анализ','Претензия','Чарджбэк','Суд','Возврат','Завершено'];
+const STATUS_LIST=['На рассмотрении','В работе','Ожидание ответа','Завершено'];
+const ORG_LIST=['АРРФР','НБ РК','МВД РК','FinCEN','FCA','SEC','FBI','BaFin','CySEC','ASIC','Интерпол','FATF'];
 
-function checkPwd() {
-  if (document.getElementById('pwdInput').value === PASSWORD) {
+document.getElementById('a_platform').addEventListener('change',function(){
+  document.getElementById('a_platformCustomWrap').classList.toggle('hidden',this.value!=='__custom');
+});
+
+function checkPwd(){
+  if(document.getElementById('pwdInput').value===PASSWORD){
     document.getElementById('gate').classList.add('hidden');
     document.getElementById('panel').classList.remove('hidden');
     renderList();
-  } else {
-    document.getElementById('pwdError').style.display = 'block';
-    setTimeout(() => document.getElementById('pwdError').style.display = 'none', 2000);
+  }else{
+    document.getElementById('pwdError').style.display='block';
+    setTimeout(()=>document.getElementById('pwdError').style.display='none',2000);
   }
 }
-document.getElementById('pwdInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPwd(); });
+document.getElementById('pwdInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkPwd();});
 
-function showTab(t) {
-  ['list','add','import'].forEach(id => document.getElementById(id+'Tab').classList.add('hidden'));
+function showTab(t){
+  ['list','add','import'].forEach(id=>document.getElementById(id+'Tab').classList.add('hidden'));
   document.getElementById(t+'Tab').classList.remove('hidden');
-  document.querySelectorAll('.admin-tab').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.admin-tab').forEach(el=>el.classList.remove('active'));
   event?.target?.classList?.add('active');
 }
 
-function renderList(filter) {
-  const cases = getCases();
-  let entries = Object.entries(cases);
-  if (filter) {
-    const q = filter.toLowerCase();
-    entries = entries.filter(([n,c]) => c.fullName?.toLowerCase().includes(q) || n.toLowerCase().includes(q) || c.platform?.toLowerCase().includes(q));
-  }
-  document.getElementById('clientCount').textContent = entries.length;
-  const list = document.getElementById('clientsList');
-
-  if (!entries.length) {
-    list.innerHTML = '<div class="card text-center" style="padding:32px;color:var(--muted)">Нет клиентов. Нажмите «Добавить».</div>';
-    return;
-  }
-
-  list.innerHTML = entries.map(([num, c]) => {
-    const si = STAGES.indexOf(c.stage);
-    const pct = c.progress || 0;
-    const color = pct >= 80 ? 'var(--green)' : pct >= 40 ? 'var(--blue)' : 'var(--gold)';
-    return `
-    <div class="card" style="padding:14px;margin-bottom:8px;cursor:pointer" onclick="editClient('${num}')">
-      <div style="display:flex;align-items:center;gap:12px">
-        <div style="width:42px;height:42px;border-radius:12px;background:${color}15;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:${color};flex-shrink:0">${num.slice(-4)}</div>
-        <div style="flex:1;min-width:0">
-          <div style="font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.fullName || 'Без имени'}</div>
-          <div style="font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.platform || '?'} · ${c.stage || '?'} · ${pct}%</div>
-        </div>
-        <div style="text-align:right;flex-shrink:0">
-          <div style="font-size:11px;padding:3px 8px;border-radius:6px;background:${color}15;color:${color};font-weight:600">${c.status || 'На рассмотрении'}</div>
-          ${c.amount ? `<div style="font-size:11px;color:var(--muted);margin-top:4px">${Number(c.amount).toLocaleString()} ₸</div>` : ''}
+function renderList(filter){
+  const cases=getCases();
+  let entries=Object.entries(cases);
+  if(filter){const q=filter.toLowerCase();entries=entries.filter(([n,c])=>c.fullName?.toLowerCase().includes(q)||n.toLowerCase().includes(q)||c.platform?.toLowerCase().includes(q));}
+  document.getElementById('clientCount').textContent=entries.length;
+  const list=document.getElementById('clientsList');
+  if(!entries.length){list.innerHTML='<div class="card text-center" style="padding:32px;color:var(--muted)">Нет клиентов. Нажмите «Добавить».</div>';return;}
+  list.innerHTML=entries.map(([num,c])=>{
+    const pct=c.progress||0;
+    const color=pct>=80?'var(--green)':pct>=40?'var(--blue)':'var(--gold)';
+    return`<div class="adm-client-card" onclick="editClient('${num}')">
+      <div class="adm-client-left">
+        <div class="adm-client-avatar" style="background:${color}15;color:${color}">${num.slice(-4)}</div>
+        <div class="adm-client-info">
+          <div class="adm-client-name">${c.fullName||'Без имени'}</div>
+          <div class="adm-client-meta">${c.platform||'?'} · ${c.stage||'?'} · ${pct}%</div>
+          ${c.orgs?.length?`<div class="adm-client-orgs">${c.orgs.join(', ')}</div>`:''}
         </div>
       </div>
-      <div style="margin-top:8px">
-        <div class="progress-bar" style="height:3px"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div>
+      <div class="adm-client-right">
+        <span class="adm-client-status" style="background:${color}15;color:${color}">${c.status||'На рассмотрении'}</span>
+        ${c.amount?`<div class="adm-client-amount">${Number(c.amount).toLocaleString()} ₸</div>`:''}
       </div>
     </div>`;
   }).join('');
 }
 
-function filterClients() { renderList(document.getElementById('searchInput').value); }
+function filterClients(){renderList(document.getElementById('searchInput').value);}
 
-function editClient(num) {
-  const c = getCases()[num];
-  if (!c) return;
+function editClient(num){
+  const c=getCases()[num];
+  if(!c)return;
+  const si=STAGES.indexOf(c.stage);
+  const orgs=c.orgs||[];
 
-  const si = STAGES.indexOf(c.stage);
-  document.getElementById('editContent').innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <h2 style="font-size:18px;font-weight:800">Дело #${num}</h2>
-      <button onclick="document.getElementById('editModal').style.display='none'" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer">✕</button>
+  document.getElementById('editContent').innerHTML=`
+    <div class="adm-modal-head">
+      <h2>Дело #${num}</h2>
+      <button class="ck-mclose" onclick="closeEdit()">✕</button>
     </div>
 
-    <!-- STATUS & STAGE -->
-    <div class="card" style="padding:14px;margin-bottom:12px">
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <select class="form-input" id="e_stage" style="flex:1;font-size:13px;padding:10px">
-          ${STAGES.map(s => `<option ${s===c.stage?'selected':''}>${s}</option>`).join('')}
-        </select>
-        <input type="number" class="form-input" id="e_progress" value="${c.progress||0}" min="0" max="100" style="width:70px;font-size:13px;padding:10px">
-        <span style="color:var(--muted);font-size:13px;align-self:center">%</span>
+    <div class="adm-modal-body">
+      <!-- STAGE & PROGRESS -->
+      <div class="adm-card">
+        <h3 class="adm-card-title">📊 Этап и статус</h3>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Этап</label><select class="form-input" id="e_stage" style="font-size:13px">${STAGES.map(s=>`<option ${s===c.stage?'selected':''}>${s}</option>`).join('')}</select></div>
+          <div class="form-group"><label class="form-label">Прогресс %</label><input type="number" class="form-input" id="e_progress" value="${c.progress||0}" min="0" max="100" style="font-size:13px"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Статус</label><select class="form-input" id="e_status" style="font-size:13px">${STATUS_LIST.map(s=>`<option ${s===c.status?'selected':''}>${s}</option>`).join('')}</select></div>
+        <div class="adm-stages">${STAGES.map((s,i)=>`<div class="adm-stg"><div class="adm-stg-dot ${i<si?'done':i===si?'active':''}"></div><span>${s}</span></div>`).join('')}</div>
       </div>
-      <div class="case-stages" style="margin-bottom:0">
-        ${STAGES.map((s,i) => `<div class="case-stage"><div class="case-stage-dot ${i<si?'done':i===si?'active':''}"></div><span class="case-stage-label" style="font-size:9px">${s}</span></div>`).join('')}
-      </div>
-    </div>
 
-    <!-- CLIENT INFO -->
-    <div class="card" style="padding:14px;margin-bottom:12px">
-      <h3 style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--muted)">Данные клиента</h3>
-      <div class="form-group"><label class="form-label">ФИО</label><input class="form-input" id="e_name" value="${c.fullName||''}" style="font-size:14px;padding:10px"></div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Телефон</label><input class="form-input" id="e_phone" value="${c.phone||''}" style="font-size:14px;padding:10px"></div>
-        <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="e_email" value="${c.email||''}" style="font-size:14px;padding:10px"></div>
+      <!-- PERSONAL -->
+      <div class="adm-card">
+        <h3 class="adm-card-title">👤 Личные данные</h3>
+        <div class="form-group"><label class="form-label">ФИО</label><input class="form-input" id="e_name" value="${c.fullName||''}" style="font-size:13px"></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Телефон</label><input class="form-input" id="e_phone" value="${c.phone||''}" style="font-size:13px"></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="e_email" value="${c.email||''}" style="font-size:13px"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Город</label><input class="form-input" id="e_city" value="${c.city||''}" style="font-size:13px"></div>
       </div>
-      <div class="form-group"><label class="form-label">Платформа</label><input class="form-input" id="e_platform" value="${c.platform||''}" style="font-size:14px;padding:10px"></div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Потери (₸)</label><input class="form-input" id="e_amount" type="number" value="${c.amount||0}" style="font-size:14px;padding:10px"></div>
-        <div class="form-group"><label class="form-label">Возврат (₸)</label><input class="form-input" id="e_recovered" type="number" value="${c.recovered||0}" style="font-size:14px;padding:10px"></div>
-      </div>
-    </div>
 
-    <!-- COMMENTS -->
-    <div class="card" style="padding:14px;margin-bottom:12px">
-      <h3 style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--muted)">Комментарии и история</h3>
-      <div id="e_comments" style="max-height:200px;overflow-y:auto;margin-bottom:12px">
-        ${(c.comments||[]).map(cm => `
-          <div class="comment" style="margin-bottom:8px">
-            <div class="comment-date">${cm.date}</div>
-            <div class="comment-text">${cm.text}</div>
-          </div>
-        `).join('') || '<p style="color:var(--muted);font-size:13px">Нет комментариев</p>'}
+      <!-- PLATFORM & ORGANS -->
+      <div class="adm-card">
+        <h3 class="adm-card-title">📋 Платформа и органы</h3>
+        <div class="form-group"><label class="form-label">Платформа</label><input class="form-input" id="e_platform" value="${c.platform||''}" style="font-size:13px"></div>
+        <div class="form-group"><label class="form-label">Органы</label>
+          <div class="adm-chips">${ORG_LIST.map(o=>`<label class="adm-chip"><input type="checkbox" value="${o}" ${orgs.includes(o)?'checked':''}> ${o}</label>`).join('')}</div>
+        </div>
       </div>
-      <div style="display:flex;gap:8px">
-        <input class="form-input" id="e_newComment" placeholder="Новый комментарий..." style="flex:1;font-size:13px;padding:10px">
-        <button onclick="addComment('${num}')" class="btn btn-primary btn-sm" style="max-width:80px">+</button>
-      </div>
-    </div>
 
-    <!-- ACTIONS -->
-    <div style="display:flex;gap:8px;margin-bottom:12px">
-      <a href="/anti-fraud-portal/check.html?case=${num}" target="_blank" class="btn btn-outline" style="flex:1;font-size:13px">👁 Клиенту</a>
-      <button onclick="saveEdit('${num}')" class="btn btn-primary" style="flex:2;font-size:13px">💾 Сохранить</button>
-    </div>
-    <button onclick="deleteClient('${num}')" style="width:100%;background:none;border:1px solid rgba(239,68,68,0.3);color:var(--red);padding:10px;border-radius:10px;font-size:13px;cursor:pointer">🗑 Удалить клиента</button>
-  `;
-  document.getElementById('editModal').style.display = 'flex';
+      <!-- FINANCES -->
+      <div class="adm-card">
+        <h3 class="adm-card-title">💰 Финансы</h3>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Потери (₸)</label><input type="number" class="form-input" id="e_amount" value="${c.amount||0}" style="font-size:13px"></div>
+          <div class="form-group"><label class="form-label">Возврат (₸)</label><input type="number" class="form-input" id="e_recovered" value="${c.recovered||0}" style="font-size:13px"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Промежуточный счёт</label><input class="form-input" id="e_intermediate" value="${c.intermediate||''}" placeholder="Банк, номер счёта..." style="font-size:13px"></div>
+        <div class="adm-fund-preview">
+          <div class="adm-fund-node"><span>Платформа</span><strong style="color:var(--red)">${(c.amount||0).toLocaleString()} ₸</strong></div>
+          <div class="adm-fund-arrow">→</div>
+          <div class="adm-fund-node"><span>Промежут.</span><strong>${(c.amount||0).toLocaleString()} ₸</strong></div>
+          <div class="adm-fund-arrow">→</div>
+          <div class="adm-fund-node"><span>Клиент</span><strong style="color:var(--green)">${(c.recovered||0).toLocaleString()} ₸</strong></div>
+        </div>
+      </div>
+
+      <!-- COMMENTS -->
+      <div class="adm-card">
+        <h3 class="adm-card-title">💬 Комментарии</h3>
+        <div class="adm-comments" id="e_comments">
+          ${(c.comments||[]).map(cm=>`<div class="adm-comment"><div class="adm-comment-date">${cm.date}</div><div class="adm-comment-text">${cm.text}</div></div>`).join('')||'<p style="color:var(--muted);font-size:13px">Нет комментариев</p>'}
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <textarea class="form-input" id="e_newComment" rows="2" placeholder="Новый комментарий..." style="flex:1;font-size:13px;resize:none"></textarea>
+          <button onclick="addComment('${num}')" class="btn btn-primary btn-sm" style="align-self:flex-end">+</button>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="adm-actions">
+        <a href="/anti-fraud-portal/check.html?case=${num}" target="_blank" class="btn btn-outline" style="flex:1;font-size:13px">👁 Карточка клиента</a>
+        <button onclick="saveEdit('${num}')" class="btn btn-primary" style="flex:2;font-size:13px">💾 Сохранить</button>
+      </div>
+      <button onclick="deleteClient('${num}')" class="adm-delete-btn">🗑 Удалить клиента</button>
+    </div>`;
+
+  document.getElementById('editModal').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+  gsap.set('#editModal .ck-modal',{y:'100%'});
+  gsap.to('#editModal .ck-modal',{y:0,duration:0.4,ease:'power3.out'});
 }
 
-function closeEdit(e) { if (e.target === document.getElementById('editModal')) document.getElementById('editModal').style.display = 'none'; }
+function closeEdit(){
+  gsap.to('#editModal .ck-modal',{y:'100%',duration:0.3,ease:'power3.in',onComplete:()=>{
+    document.getElementById('editModal').classList.add('hidden');
+    document.body.style.overflow='';
+  }});
+}
 
-function addComment(num) {
-  const input = document.getElementById('e_newComment');
-  const text = input.value.trim();
-  if (!text) return;
-  const cases = getCases();
-  if (!cases[num].comments) cases[num].comments = [];
-  cases[num].comments.push({ date: new Date().toLocaleString('ru-RU'), text });
+function addComment(num){
+  const ta=document.getElementById('e_newComment');
+  const text=ta.value.trim();
+  if(!text)return;
+  const cases=getCases();
+  if(!cases[num].comments)cases[num].comments=[];
+  cases[num].comments.push({date:new Date().toLocaleString('ru-RU'),text});
   saveCases(cases);
-  input.value = '';
+  ta.value='';
   editClient(num);
 }
 
-function saveEdit(num) {
-  const cases = getCases();
-  const c = cases[num];
-  c.fullName = document.getElementById('e_name').value.trim();
-  c.phone = document.getElementById('e_phone').value.trim();
-  c.email = document.getElementById('e_email').value.trim();
-  c.platform = document.getElementById('e_platform').value.trim();
-  c.stage = document.getElementById('e_stage').value;
-  c.progress = parseInt(document.getElementById('e_progress').value) || 0;
-  c.amount = parseInt(document.getElementById('e_amount').value) || 0;
-  c.recovered = parseInt(document.getElementById('e_recovered').value) || 0;
-  c.status = c.progress >= 80 ? 'Завершено' : c.progress >= 40 ? 'В работе' : 'На рассмотрении';
+function saveEdit(num){
+  const cases=getCases();
+  const c=cases[num];
+  c.fullName=document.getElementById('e_name').value.trim();
+  c.phone=document.getElementById('e_phone').value.trim();
+  c.email=document.getElementById('e_email').value.trim();
+  c.city=document.getElementById('e_city').value.trim();
+  c.platform=document.getElementById('e_platform').value.trim();
+  c.stage=document.getElementById('e_stage').value;
+  c.progress=parseInt(document.getElementById('e_progress').value)||0;
+  c.status=document.getElementById('e_status').value;
+  c.amount=parseInt(document.getElementById('e_amount').value)||0;
+  c.recovered=parseInt(document.getElementById('e_recovered').value)||0;
+  c.intermediate=document.getElementById('e_intermediate').value.trim();
+  c.orgs=Array.from(document.querySelectorAll('#editContent .adm-chip input:checked')).map(cb=>cb.value);
   saveCases(cases);
-  document.getElementById('editModal').style.display = 'none';
+  closeEdit();
   renderList();
   showToast('Сохранено');
 }
 
-function deleteClient(num) {
-  if (!confirm('Удалить клиента ' + num + '?')) return;
-  const cases = getCases();
-  delete cases[num];
-  saveCases(cases);
-  document.getElementById('editModal').style.display = 'none';
-  renderList();
-  showToast('Удалено');
+function deleteClient(num){
+  if(!confirm('Удалить клиента '+num+'?'))return;
+  const cases=getCases();delete cases[num];saveCases(cases);
+  closeEdit();renderList();showToast('Удалено');
 }
 
-function addClient() {
-  const name = document.getElementById('a_name').value.trim();
-  const platform = document.getElementById('a_platform').value.trim();
-  if (!name || !platform) { showToast('Заполните ФИО и платформу', 'error'); return; }
-
-  const now = new Date();
-  const y = now.getFullYear().toString().slice(-2);
-  const m = String(now.getMonth()+1).padStart(2,'0');
-  const seq = String(Math.floor(Math.random()*9000)+1000);
-  const num = `AF-${y}${m}-${seq}`;
-
-  const cases = getCases();
-  cases[num] = {
-    fullName: name,
-    phone: document.getElementById('a_phone').value.trim(),
-    email: document.getElementById('a_email').value.trim(),
+function addClient(){
+  const name=document.getElementById('a_name').value.trim();
+  const platform=document.getElementById('a_platform').value==='__custom'?document.getElementById('a_platformCustom').value.trim():document.getElementById('a_platform').value;
+  if(!name||!platform){showToast('Заполните ФИО и платформу','error');return;}
+  const now=new Date();
+  const y=now.getFullYear().toString().slice(-2);
+  const m=String(now.getMonth()+1).padStart(2,'0');
+  const seq=String(Math.floor(Math.random()*9000)+1000);
+  const num=`AF-${y}${m}-${seq}`;
+  const cases=getCases();
+  cases[num]={
+    fullName:name,
+    phone:document.getElementById('a_phone').value.trim(),
+    email:document.getElementById('a_email').value.trim(),
+    city:document.getElementById('a_city').value.trim(),
     platform,
-    amount: parseInt(document.getElementById('a_amount').value) || 0,
-    recovered: parseInt(document.getElementById('a_recovered').value) || 0,
-    stage: document.getElementById('a_stage').value,
-    progress: parseInt(document.getElementById('a_progress').value) || 10,
-    status: 'На рассмотрении',
-    source: '',
-    contact: '',
-    comments: [{
-      date: now.toLocaleString('ru-RU'),
-      text: document.getElementById('a_comment').value.trim() || 'Клиент добавлен в систему'
-    }],
-    time: now.toISOString()
+    amount:parseInt(document.getElementById('a_amount').value)||0,
+    recovered:parseInt(document.getElementById('a_recovered').value)||0,
+    intermediate:document.getElementById('a_intermediate')?.value?.trim()||'',
+    stage:document.getElementById('a_stage').value,
+    progress:parseInt(document.getElementById('a_progress').value)||10,
+    status:document.getElementById('a_status').value,
+    orgs:Array.from(document.querySelectorAll('#a_orgs input:checked')).map(cb=>cb.value),
+    comments:[{date:now.toLocaleString('ru-RU'),text:document.getElementById('a_comment').value.trim()||'Клиент добавлен в систему'}],
+    time:now.toISOString()
   };
   saveCases(cases);
-  showToast('Клиент добавлен: ' + num);
-  ['a_name','a_phone','a_email','a_platform','a_amount','a_recovered','a_comment'].forEach(id => document.getElementById(id).value = '');
-  showTab('list');
-  renderList();
+  showToast('Клиент добавлен: '+num);
+  document.querySelectorAll('#addTab .form-input,#addTab textarea').forEach(el=>{if(el.type==='checkbox')el.checked=false;else el.value='';});
+  document.querySelectorAll('#a_orgs input').forEach(cb=>cb.checked=false);
+  showTab('list');renderList();
 }
 
-function exportData() {
-  const data = JSON.stringify(getCases(), null, 2);
-  const blob = new Blob([data], {type: 'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'antifrog-clients.json'; a.click();
+function exportData(){
+  const data=JSON.stringify(getCases(),null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='antifrog-clients.json';a.click();
   showToast('Данные экспортированы');
 }
 
-function importData() {
-  try {
-    const data = JSON.parse(document.getElementById('importData').value);
-    const cases = getCases();
-    Object.assign(cases, data);
-    saveCases(cases);
-    showToast('Импортировано: ' + Object.keys(data).length + ' клиентов');
-    showTab('list');
-    renderList();
-  } catch(e) { showToast('Ошибка JSON: ' + e.message, 'error'); }
+function importData(){
+  try{const data=JSON.parse(document.getElementById('importData').value);const cases=getCases();Object.assign(cases,data);saveCases(cases);showToast('Импортировано: '+Object.keys(data).length+' клиентов');showTab('list');renderList();}
+  catch(e){showToast('Ошибка JSON: '+e.message,'error');}
 }
 </script>
 </body>

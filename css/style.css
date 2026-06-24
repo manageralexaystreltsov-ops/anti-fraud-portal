@@ -659,6 +659,56 @@ textarea.form-input { resize: vertical; min-height: 100px; }
 .svc-pay-opt.active { background: rgba(16,185,129,0.1); border-color: var(--green); color: var(--green); }
 .svc-secure { text-align: center; font-size: 11px; color: var(--muted); margin-top: 12px; }
 
+/* ===== ADMIN PANEL ===== */
+.adm-search { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 6px 14px; margin-bottom: 16px; display: flex; align-items: center; }
+.adm-form { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+.adm-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.adm-section:last-of-type { border-bottom: none; }
+.adm-section-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+.adm-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.adm-chip { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); background: transparent; font-size: 12px; cursor: pointer; transition: all .2s; color: var(--muted); }
+.adm-chip:hover { border-color: var(--green); color: var(--green); }
+.adm-chip:has(input:checked) { background: rgba(16,185,129,0.1); border-color: var(--green); color: var(--green); }
+.adm-chip input { display: none; }
+
+/* Admin client cards */
+.adm-client-card { display: flex; align-items: center; justify-content: space-between; padding: 14px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 8px; cursor: pointer; transition: all .2s; gap: 12px; }
+.adm-client-card:hover { border-color: rgba(16,185,129,0.3); background: var(--card-hover); }
+.adm-client-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.adm-client-avatar { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; flex-shrink: 0; }
+.adm-client-info { flex: 1; min-width: 0; }
+.adm-client-name { font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.adm-client-meta { font-size: 11px; color: var(--muted); }
+.adm-client-orgs { font-size: 10px; color: var(--green); margin-top: 2px; }
+.adm-client-right { text-align: right; flex-shrink: 0; }
+.adm-client-status { font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600; white-space: nowrap; }
+.adm-client-amount { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* Admin modal */
+.adm-modal-head { display: flex; justify-content: space-between; align-items: center; padding: 0 16px; margin-bottom: 12px; }
+.adm-modal-head h2 { font-size: 17px; font-weight: 800; }
+.adm-modal-body { padding: 0 16px 20px; }
+.adm-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+.adm-card-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+.adm-stages { display: flex; justify-content: space-between; margin-top: 12px; overflow-x: auto; padding-bottom: 4px; }
+.adm-stg { display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 36px; }
+.adm-stg-dot { width: 8px; height: 8px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); }
+.adm-stg-dot.done { border-color: var(--green); background: var(--green); }
+.adm-stg-dot.active { border-color: var(--green); background: var(--green); box-shadow: 0 0 0 3px rgba(16,185,129,0.3); }
+.adm-stg span { font-size: 8px; color: var(--muted); text-align: center; }
+.adm-fund-preview { display: flex; align-items: center; gap: 6px; margin-top: 12px; padding: 12px; background: rgba(255,255,255,0.02); border-radius: 10px; }
+.adm-fund-node { text-align: center; flex: 1; }
+.adm-fund-node span { display: block; font-size: 10px; color: var(--muted); }
+.adm-fund-node strong { font-size: 12px; }
+.adm-fund-arrow { color: var(--muted); font-size: 14px; }
+.adm-comments { max-height: 250px; overflow-y: auto; padding-right: 4px; }
+.adm-comment { padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px; margin-bottom: 6px; border-left: 2px solid rgba(16,185,129,0.3); }
+.adm-comment-date { font-size: 10px; color: var(--muted); margin-bottom: 2px; }
+.adm-comment-text { font-size: 12px; color: var(--text); word-break: break-word; white-space: pre-wrap; }
+.adm-actions { display: flex; gap: 8px; margin-bottom: 12px; }
+.adm-delete-btn { width: 100%; background: none; border: 1px solid rgba(239,68,68,0.3); color: var(--red); padding: 10px; border-radius: 10px; font-size: 13px; cursor: pointer; font-family: inherit; transition: all .2s; }
+.adm-delete-btn:hover { background: rgba(239,68,68,0.1); }
+
 /* ===== RESPONSIVE CHECK — TABLET+ ===== */
 @media (min-width: 768px) {
   .ck-title { font-size: 36px; }

@@ -155,28 +155,29 @@ const STATUS_STYLES={
   'Возврат средств':{bg:'rgba(16,185,129,0.12)',c:'#10b981',dot:'#10b981'},
 };
 const COLORS=['#10b981','#3b82f6','#8b5cf6','#f59e0b','#ef4444','#ec4899','#06b6d4','#84cc16'];
-const F=['Айбек','Айдар','Айгуль','Айжан','Акмарал','Акылбек','Алмаз','Алтунай','Альфия','Андрей','Анна','Ануар','Арман','Артем','Асель','Асхат','Бакыт','Бауыржан','Бегимай','Берик','Ботагоз','Вадим','Валерия','Виктор','Габит','Галия','Геннадий','Гульмира','Данияр','Дарига','Даурен','Денис','Диана','Дмитрий','Елена','Ержан','Ерлан','Ермек','Жадыра','Жанат','Жанна','Жаныбек','Забир','Зарина','Зинаида','Ибрагим','Игорь','Ирина','Кайрат','Камар','Канат','Карина','Куаныш','Лариса','Лаура','Мадина','Марал','Мария','Марат','Мирас','Назгуль','Назирбек','Наталья','Олег','Ольга','Павел','Раиса','Рамазан','Ренат','Ринат','Роза','Рустам','Сагынай','Самат','Сания','Светлана','Серик','Сергей','София','Султан','Тимур','Улжан','Улан','Фарид','Фатима','Шынар','Эльвира','Эльдар','Юлия','Яна'];
-const L=['Абдуллаев','Айтматов','Акбаев','Алиев','Амреев','Андреев','Арапов','Ахметов','Баймуратов','Бакиров','Балтабаев','Бектемиров','Бердиев','Бородин','Булатов','Васильев','Виноградов','Гаврилов','Голубев','Григорьев','Гусейнов','Давыдов','Джумабаев','Дмитриев','Ержанов','Ермекбаев','Жаксылыков','Жанайдаров','Жумабаев','Закиров','Ибрагимов','Иванов','Ильясов','Имангалиев','Кадыров','Калыков','Каменских','Капезов','Каримов','Касенов','Кенжетаев','Ким','Козлов','Колесников','Кондратьев','Кузнецов','Кулов','Ларионов','Лебедев','Магомедов','Макаров','Мамбетов','Мамыров','Масимов','Мендыбаев','Меркушев','Мешков','Михайлов','Молдагалиев','Муканов','Назаров','Наумов','Нурбаев','Омаров','Павлов','Петров','Поляков','Рахимов','Рогов','Рожков','Романов','Рыбаков','Сагинбаев','Садыков','Сапарбаев','Семёнов','Сергеев','Серикбаев','Сизов','Смирнов','Соколов','Соловьев','Тажиев','Токарев','Толеуов','Трофимов','Туленов','Уалиев','Уразов','Усенов','Фёдоров','Фомин','Хамитов','Чернов','Чесноков','Шарипов','Шевченко','Шипилов','Шульгин','Юсупов','Яковлев'];
-const P=['TradePro Global','InvestMarket24','CryptoInvest KZ','GlobalFX Trading','Premium Binary','AlgoTrade 360','SmartInvest Pro','Quantum Capital','Titan FX Group','EuroTrade Solutions','CryptoHarvest','Royal Forex Club','SwiftTrade Pro','Astana Digital Bank','Digital Assets Kazakhstan'];
-const C=['Алматы','Астана','Шымкент','Караганда','Актобе','Павлодар','Усть-Каменогорск','Семей','Атырау','Костанай'];
 
-function genAll(){
-  const arr=[];
+function loadClients(){
   const cases=getCases();
-  Object.entries(cases).forEach(([n,c])=>{
-    arr.push({num:n,fullName:c.fullName||'Без имени',phone:c.phone||'',platform:c.platform||'',stage:c.stage||'Заявка',status:c.status||'На рассмотрении',progress:c.progress||0,city:'',amount:c.amount||0,date:c.time?new Date(c.time).toLocaleDateString('ru-RU'):'',comments:c.comments||[],_real:true});
-  });
-  for(let i=arr.length;i<1200;i++){
-    const f=F[~~(Math.random()*F.length)],l=L[~~(Math.random()*L.length)];
-    const p='+7 ('+(700+~~(Math.random()*100))+') '+String(~~(1e6+Math.random()*9e6)).replace(/(\d{3})(\d{2})(\d{2})/,'$1-$2-$3');
-    const pr=~~(Math.random()*100);
-    const st=pr>=80?'Завершено':pr>=40?'В работе':Object.keys(STATUS_STYLES)[~~(Math.random()*3)];
-    arr.push({num:'AF-'+String(1000+i).padStart(4,'0')+String.fromCharCode(65+~~(Math.random()*6))+String.fromCharCode(65+~~(Math.random()*6)),fullName:l+' '+f+' '+F[~~(Math.random()*F.length)]+'ович',phone:p,platform:P[~~(Math.random()*P.length)],stage:STAGES[~~(Math.random()*STAGES.length)],status:st,progress:pr,city:C[~~(Math.random()*C.length)],amount:~~(15e5+Math.random()*4985e5),date:new Date(2025,~~(Math.random()*12),1+~~(Math.random()*28)).toLocaleDateString('ru-RU'),comments:[{date:new Date().toLocaleDateString('ru-RU'),text:'Заявка получена'}]});
-  }
-  return arr;
+  return Object.entries(cases).map(([num,c])=>({
+    num,
+    fullName:c.fullName||'Без имени',
+    phone:c.phone||'',
+    email:c.email||'',
+    city:c.city||'',
+    platform:c.platform||'',
+    stage:c.stage||'Заявка',
+    status:c.status||'На рассмотрении',
+    progress:c.progress||0,
+    amount:c.amount||0,
+    recovered:c.recovered||0,
+    intermediate:c.intermediate||'',
+    orgs:c.orgs||[],
+    comments:c.comments||[],
+    time:c.time||''
+  }));
 }
 
-let ALL=genAll(), FILTERED=ALL, curFilter='all';
+let ALL=loadClients(), FILTERED=ALL, curFilter='all';
 let clientIndex={};
 
 function maskName(n){const p=n.split(' ');return p.length<2?n:p[0]+' '+p[1][0]+'.'+(p[2]?' '+p[2][0]+'.':'');}
@@ -376,9 +377,10 @@ function switchTab(tab,btn){
           <div class="ck-field"><span>Телефон</span><strong>${maskPhone(c.phone)}</strong></div>
           <div class="ck-field"><span>Платформа</span><strong>${c.platform}</strong></div>
           <div class="ck-field"><span>Город</span><strong>${c.city||'—'}</strong></div>
-          <div class="ck-field"><span>Сумма</span><strong style="color:var(--gold)">${c.amount.toLocaleString()} ₸</strong></div>
+          <div class="ck-field"><span>Сумма вложений</span><strong style="color:var(--gold)">${c.amount.toLocaleString()} ₸</strong></div>
           <div class="ck-field"><span>Этап</span><strong>${c.stage}</strong></div>
         </div>
+        ${c.orgs?.length?`<div style="margin-top:12px"><div style="font-size:12px;color:var(--muted);margin-bottom:6px">Органы:</div><div style="display:flex;flex-wrap:wrap;gap:4px">${c.orgs.map(o=>`<span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(16,185,129,0.1);color:var(--green)">${o}</span>`).join('')}</div></div>`:''}
       </div>`;
     const rec=getRecommended(c);
     body.innerHTML+=`
@@ -397,22 +399,22 @@ function switchTab(tab,btn){
   }
 
   if(tab==='funds'){
-    const ret=~~(c.amount*(0.3+Math.random()*0.5));
-    const pct=~~(ret/c.amount*100);
+    const ret=c.recovered||0;
+    const pct=c.amount?Math.round(ret/c.amount*100):0;
     body.innerHTML=`
       <div class="ck-section">
         <h3>💰 Движение средств</h3>
         <div class="ck-flow">
           <div class="ck-flow-node miss"><div class="ck-flow-ico">🏦</div><div class="ck-flow-lbl">Мошенническая платформа</div><div class="ck-flow-amt" style="color:var(--red)">${c.amount.toLocaleString()} ₸</div></div>
           <div class="ck-flow-arrow">→</div>
-          <div class="ck-flow-node mid"><div class="ck-flow-ico">🔄</div><div class="ck-flow-lbl">Промежуточные счета</div><div class="ck-flow-amt">${c.amount.toLocaleString()} ₸</div></div>
+          <div class="ck-flow-node mid"><div class="ck-flow-ico">🔄</div><div class="ck-flow-lbl">${c.intermediate||'Промежуточные счета'}</div><div class="ck-flow-amt">${c.amount.toLocaleString()} ₸</div></div>
           <div class="ck-flow-arrow">→</div>
           <div class="ck-flow-node ret"><div class="ck-flow-ico">💳</div><div class="ck-flow-lbl">Карта клиента</div><div class="ck-flow-amt" style="color:var(--green)">${ret.toLocaleString()} ₸</div></div>
         </div>
         <div class="ck-flow-summary">
           <div class="ck-fsum"><span>Вложено</span><strong>${c.amount.toLocaleString()} ₸</strong></div>
           <div class="ck-fsum"><span>Возвращено</span><strong style="color:var(--green)">${ret.toLocaleString()} ₸</strong></div>
-          <div class="ck-fsum"><span>Процент</span><strong style="color:var(--green)">${pct}%</strong></div>
+          <div class="ck-fsum"><span>Процент возврата</span><strong style="color:var(--green)">${pct}%</strong></div>
         </div>
       </div>`;
     if(c.status==='Завершено'||c.status==='Возврат средств') setTimeout(fireConfetti,400);
