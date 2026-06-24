@@ -16,7 +16,7 @@
 <section class="ck-hero">
   <div class="ck-hero-glow"></div>
   <div class="container ck-hero-inner">
-    <div class="ck-badge">🛡️ База AntiFrog • <span id="totalBadge">1200+</span> активных дел</div>
+    <div class="ck-badge">🛡️ База AntiFrog</div>
     <h1 class="ck-title">Проверка дела</h1>
     <p class="ck-sub">Введите номер дела, ФИО или ИНН для поиска в международных реестрах</p>
     <div class="ck-search">
@@ -26,15 +26,6 @@
     </div>
   </div>
 </section>
-
-<!-- STATS BAR -->
-<div class="ck-stats">
-  <div class="container ck-stats-inner">
-    <div class="ck-stat"><span class="ck-stat-num" data-count="1247">0</span><span class="ck-stat-lbl">дел в базе</span></div>
-    <div class="ck-stat"><span class="ck-stat-num" data-count="892">0</span><span class="ck-stat-lbl">в работе</span></div>
-    <div class="ck-stat"><span class="ck-stat-num" data-count="355">0</span><span class="ck-stat-lbl">завершено</span></div>
-  </div>
-</div>
 
 <!-- SEARCH LOADING -->
 <div class="ck-loading hidden" id="searchLoading">
@@ -153,36 +144,18 @@ function genAll(){
 }
 
 let ALL=genAll(), FILTERED=ALL, curFilter='all';
+let clientIndex={};
 
 function maskName(n){const p=n.split(' ');return p.length<2?n:p[0]+' '+p[1][0]+'.'+(p[2]?' '+p[2][0]+'.':'');}
 function maskPhone(p){
   if(!p)return'***';
   const d=p.replace(/\D/g,'');
-  if(d.length<=7)return p;
-  const keep=d.length-4;
-  let r='',m=0;
-  for(let i=0;i<p.length;i++){
-    if(/\d/.test(p[i])){
-      if(m<keep-1){r+=p[i];m++;}
-      else if(m>=keep)r+=p[i];
-      else{r+='*';m++;}
-    }else r+=p[i];
-  }
-  return r;
-}
-
-// COUNTER
-function animateCounters(){
-  document.querySelectorAll('.ck-stat-num[data-count]').forEach(el=>{
-    const t=+el.dataset.count;
-    const s=performance.now();
-    function u(now){
-      const p=Math.min((now-s)/2000,1);
-      el.textContent=Math.floor(t*(1-Math.pow(1-p,3))).toLocaleString();
-      if(p<1)requestAnimationFrame(u);
-    }
-    requestAnimationFrame(u);
-  });
+  if(d.length<=4)return p;
+  const first4=d.substring(0,4);
+  const last3=d.substring(d.length-3);
+  const midLen=d.length-7;
+  const mid=midLen>0?'*'.repeat(midLen):'';
+  return first4+mid+last3;
 }
 
 // SEARCH
@@ -248,11 +221,12 @@ function renderCards(list){
 function renderMobile(list){
   document.getElementById('tableWrap').classList.add('hidden');
   document.getElementById('clientsCards').classList.remove('hidden');
+  clientIndex={};
   document.getElementById('clientsCards').innerHTML=list.slice(0,80).map((c,i)=>{
+    clientIndex[i]=c;
     const sc=STATUS_STYLES[c.status]||STATUS_STYLES['На рассмотрении'];
-    const col=COLORS[i%COLORS.length];
     const ini=c.fullName.split(' ').slice(0,2).map(n=>n[0]).join('');
-    return`<div class="ck-card" onclick='openDetail(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
+    return`<div class="ck-card" onclick="openDetailByIndex(${i})">
       <div class="ck-card-top">
         <div class="ck-card-avatar" style="background:${sc.bg};color:${sc.c}">${ini}</div>
         <div class="ck-card-info">
@@ -272,13 +246,14 @@ function renderMobile(list){
 function renderDesktop(list){
   document.getElementById('clientsCards').classList.add('hidden');
   document.getElementById('tableWrap').classList.remove('hidden');
+  clientIndex={};
   document.getElementById('tableBody').innerHTML=list.slice(0,80).map((c,i)=>{
+    clientIndex[i]=c;
     const sc=STATUS_STYLES[c.status]||STATUS_STYLES['На рассмотрении'];
-    const col=COLORS[i%COLORS.length];
     const ini=c.fullName.split(' ').slice(0,2).map(n=>n[0]).join('');
-    return`<tr onclick='openDetail(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
+    return`<tr onclick="openDetailByIndex(${i})">
       <td><span class="ck-tnum">#${c.num}</span></td>
-      <td><div class="ck-tclient"><div class="ck-tav" style="background:${col}20;color:${col}">${ini}</div><div><div class="ck-tn">${maskName(c.fullName)}</div><div class="ck-tp">${maskPhone(c.phone)}</div></div></div></td>
+      <td><div class="ck-tclient"><div class="ck-tav" style="background:${COLORS[i%COLORS.length]}20;color:${COLORS[i%COLORS.length]}">${ini}</div><div><div class="ck-tn">${maskName(c.fullName)}</div><div class="ck-tp">${maskPhone(c.phone)}</div></div></div></td>
       <td><span class="ck-tplat">${c.platform}</span></td>
       <td class="ck-th-hide"><span class="ck-tcity">${c.city||'—'}</span></td>
       <td><span class="ck-tstatus" style="background:${sc.bg};color:${sc.c}"><span class="ck-dot" style="background:${sc.dot}"></span>${c.status}</span></td>
@@ -289,6 +264,7 @@ function renderDesktop(list){
 
 // DETAIL MODAL
 let curCase=null;
+function openDetailByIndex(i){openDetail(clientIndex[i]);}
 function openDetail(c){
   curCase=c;
   const sc=STATUS_STYLES[c.status]||STATUS_STYLES['На рассмотрении'];
@@ -454,8 +430,7 @@ if(urlQ){document.getElementById('searchInput').value=urlQ;startSearch();}
 else{
   renderCards(ALL);
   document.getElementById('filtersBar').classList.remove('hidden');
-  document.getElementById('resultText').textContent='В базе: '+ALL.length+' дел';
-  animateCounters();
+  document.getElementById('resultText').textContent='';
 }
 
 window.addEventListener('resize',()=>renderCards(FILTERED));
