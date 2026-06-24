@@ -16,24 +16,25 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-particles" id="particles"></div>
-  <div class="container">
-    <div class="hero-badge">🌍 Международная компания · Работаем в 40+ странах</div>
-    <h1>Возврат активов<br><span class="hl">из мошеннических платформ</span></h1>
-    <p class="hero-sub">Компания AntiFrog объединяет юристов, регуляторы и банки по всему миру для возврата средств пострадавшим от финансового мошенничества.</p>
-    <div class="hero-checks">
-      <div class="check">✓ Работаем по результату — оплата после возврата</div>
-      <div class="check">✓ Сотрудничаем с АРРФР, НБК, FinCEN, FCA и 50+ регуляторами</div>
-      <div class="check">✓ 228 000+ клиентов по всему миру</div>
+  <canvas id="networkCanvas"></canvas>
+  <div class="hero-glow"></div>
+  <div class="container" style="position:relative;z-index:2">
+    <div class="hero-badge" id="heroBadge">🌍 Международная компания · Работаем в 40+ странах</div>
+    <h1 id="heroTitle">Возврат активов<br><span class="hl">из мошеннических платформ</span></h1>
+    <p class="hero-sub" id="heroSub">Компания AntiFrog объединяет юристов, регуляторы и банки по всему миру для возврата средств пострадавшим от финансового мошенничества.</p>
+    <div class="hero-checks" id="heroChecks">
+      <div class="check"><span class="check-icon">✓</span> Работаем по результату — оплата после возврата</div>
+      <div class="check"><span class="check-icon">✓</span> Сотрудничаем с АРРФР, НБК, FinCEN, FCA и 50+ регуляторами</div>
+      <div class="check"><span class="check-icon">✓</span> 228 000+ клиентов по всему миру</div>
     </div>
-    <div class="hero-actions">
-      <a href="/anti-fraud-portal/apply.html" class="btn btn-primary btn-lg">📝 Оставить заявку</a>
-      <a href="/anti-fraud-portal/check.html" class="btn btn-outline btn-lg">📋 Проверить дело</a>
+    <div class="hero-actions" id="heroActions">
+      <a href="/anti-fraud-portal/apply.html" class="btn btn-primary btn-lg"><span class="btn-ripple"></span>📝 Оставить заявку</a>
+      <a href="/anti-fraud-portal/check.html" class="btn btn-outline btn-lg"><span class="btn-ripple"></span>📋 Проверить дело</a>
     </div>
-    <div class="hero-trust">
-      <span>🛡️ $1.4 млрд возвращено</span>
-      <span>🏆 94% успешных дел</span>
-      <span>⚡ Ответ за 24 часа</span>
+    <div class="hero-trust" id="heroTrust">
+      <div class="trust-item"><span class="trust-icon">🛡️</span><span class="trust-num">$1.4 млрд</span><span class="trust-label">возвращено</span></div>
+      <div class="trust-item"><span class="trust-icon">🏆</span><span class="trust-num">94%</span><span class="trust-label">успешных дел</span></div>
+      <div class="trust-item"><span class="trust-icon">⚡</span><span class="trust-num">24ч</span><span class="trust-label">ответ</span></div>
     </div>
   </div>
 </section>
@@ -41,79 +42,108 @@
 <!-- STATS -->
 <section class="stats">
   <div class="container stats-grid">
-    <div class="stat"><div class="stat-num counter" data-target="228000">0</div><div class="stat-lbl">Клиентов по миру</div></div>
-    <div class="stat"><div class="stat-num">$1.4 млрд</div><div class="stat-lbl">Возвращено средств</div></div>
-    <div class="stat"><div class="stat-num">94%</div><div class="stat-lbl">Успешных дел</div></div>
-    <div class="stat"><div class="stat-num">40+</div><div class="stat-lbl">Стран присутствия</div></div>
+    <div class="stat" data-anim="stat">
+      <div class="stat-icon">👥</div>
+      <div class="stat-num counter" data-target="228000">0</div>
+      <div class="stat-lbl">Клиентов по миру</div>
+    </div>
+    <div class="stat" data-anim="stat">
+      <div class="stat-icon">💰</div>
+      <div class="stat-num">$1.4 млрд</div>
+      <div class="stat-lbl">Возвращено средств</div>
+    </div>
+    <div class="stat" data-anim="stat">
+      <div class="stat-icon">✅</div>
+      <div class="stat-num counter" data-target="94" data-suffix="%">0</div>
+      <div class="stat-lbl">Успешных дел</div>
+    </div>
+    <div class="stat" data-anim="stat">
+      <div class="stat-icon">🌐</div>
+      <div class="stat-num">40+</div>
+      <div class="stat-lbl">Стран присутствия</div>
+    </div>
   </div>
 </section>
 
 <!-- ORGS -->
 <section class="section">
   <div class="container">
-    <h2 class="section-title">С кем мы работаем</h2>
-    <p class="section-sub">Сотрудничаем с регуляторами, банками и организациями по всему миру</p>
-
-    <h3 style="font-size:14px;font-weight:700;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px">Казахстан</h3>
-    <div class="orgs-grid" style="margin-bottom:24px">
-      <div class="org-card">🏛️ <strong>АРРФР</strong><br><span>ardfm.gov.kz</span></div>
-      <div class="org-card">🏦 <strong>НБ РК</strong><br><span>nationalbank.kz</span></div>
-      <div class="org-card">💰 <strong>КГД МФ РК</strong><br><span>kgd.gov.kz</span></div>
-      <div class="org-card">👮 <strong>МВД РК</strong><br><span>mvd.gov.kz</span></div>
-      <div class="org-card">🔒 <strong>АФМ РК</strong><br><span>afm.gov.kz</span></div>
-      <div class="org-card">⚖️ <strong>Верховный суд</strong><br><span>supcourt.kz</span></div>
-      <div class="org-card">📋 <strong>Реестр адвокатов</strong><br><span>rka.kz</span></div>
-      <div class="org-card">🏦 <strong>КДИФ</strong><br><span>kdif.kz</span></div>
+    <div class="section-header" data-anim="fade">
+      <h2 class="section-title">С кем мы работаем</h2>
+      <p class="section-sub">Сотрудничаем с регуляторами, банками и организациями по всему миру</p>
     </div>
 
-    <h3 style="font-size:14px;font-weight:700;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px">Международные</h3>
-    <div class="orgs-grid" style="margin-bottom:24px">
-      <div class="org-card">🇺🇸 <strong>SEC</strong><br><span>США</span></div>
-      <div class="org-card">🇺🇸 <strong>FinCEN</strong><br><span>США</span></div>
-      <div class="org-card">🇺🇸 <strong>CFTC</strong><br><span>США</span></div>
-      <div class="org-card">🇺🇸 <strong>FINRA</strong><br><span>США</span></div>
-      <div class="org-card">🇺🇸 <strong>FBI</strong><br><span>США</span></div>
-      <div class="org-card">🇬🇧 <strong>FCA</strong><br><span>Великобритания</span></div>
-      <div class="org-card">🇬🇧 <strong>Bank of England</strong><br><span>Великобритания</span></div>
-      <div class="org-card">🇪🇺 <strong>ESMA</strong><br><span>ЕС</span></div>
-      <div class="org-card">🇪🇺 <strong>EBA</strong><br><span>ЕС</span></div>
-      <div class="org-card">🇩🇪 <strong>BaFin</strong><br><span>Германия</span></div>
-      <div class="org-card">🇫🇷 <strong>AMF</strong><br><span>Франция</span></div>
-      <div class="org-card">🇨🇭 <strong>FINMA</strong><br><span>Швейцария</span></div>
-      <div class="org-card">🇨🇾 <strong>CySEC</strong><br><span>Кипр</span></div>
-      <div class="org-card">🇦🇺 <strong>ASIC</strong><br><span>Австралия</span></div>
-      <div class="org-card">🇸🇬 <strong>MAS</strong><br><span>Сингапур</span></div>
-      <div class="org-card">🇯🇵 <strong>FSA</strong><br><span>Япония</span></div>
-      <div class="org-card">🇦🇪 <strong>DFSA</strong><br><span>Дубай</span></div>
-      <div class="org-card">🇮🇳 <strong>SEBI</strong><br><span>Индия</span></div>
+    <div class="org-tabs" data-anim="fade">
+      <button class="org-tab active" onclick="showOrgTab('kz')">🇰🇿 Казахстан</button>
+      <button class="org-tab" onclick="showOrgTab('intl')">🌍 Международные</button>
+      <button class="org-tab" onclick="showOrgTab('cis')">🏛️ СНГ / ЕАЭС</button>
+      <button class="org-tab" onclick="showOrgTab('global')">🌐 Глобальные</button>
     </div>
 
-    <h3 style="font-size:14px;font-weight:700;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px">СНГ и ЕАЭС</h3>
-    <div class="orgs-grid" style="margin-bottom:24px">
-      <div class="org-card">🇷🇺 <strong>ЦБ РФ</strong><br><span>Россия</span></div>
-      <div class="org-card">🇧🇾 <strong>Нацбанк РБ</strong><br><span>Беларусь</span></div>
-      <div class="org-card">🇰🇬 <strong>Нацбанк КР</strong><br><span>Кыргызстан</span></div>
-      <div class="org-card">🇺🇿 <strong>ЦБ РУз</strong><br><span>Узбекистан</span></div>
-      <div class="org-card">🇦🇲 <strong>ЦБ Армении</strong><br><span>Армения</span></div>
-      <div class="org-card">🇦🇿 <strong>ЦБ Азербайджана</strong><br><span>Азербайджан</span></div>
-      <div class="org-card">🇬🇪 <strong>НБ Грузии</strong><br><span>Грузия</span></div>
-      <div class="org-card">🇪🇺 <strong>ЕАБР</strong><br><span>Евразия</span></div>
+    <div class="org-tab-content" id="orgTab-kz">
+      <div class="orgs-grid">
+        <div class="org-card" data-anim="card"><div class="org-icon">🏛️</div><strong>АРРФР</strong><span>ardfm.gov.kz</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🏦</div><strong>НБ РК</strong><span>nationalbank.kz</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">💰</div><strong>КГД МФ РК</strong><span>kgd.gov.kz</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">👮</div><strong>МВД РК</strong><span>mvd.gov.kz</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🔒</div><strong>АФМ РК</strong><span>afm.gov.kz</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">⚖️</div><strong>Верховный суд</strong><span>supcourt.kz</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">📋</div><strong>Реестр адвокатов</strong><span>rka.kz</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🏦</div><strong>КДИФ</strong><span>kdif.kz</span></div>
+      </div>
     </div>
 
-    <h3 style="font-size:14px;font-weight:700;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px">Глобальные организации</h3>
-    <div class="orgs-grid">
-      <div class="org-card">🌍 <strong>МВФ</strong><br><span>imf.org</span></div>
-      <div class="org-card">🌍 <strong>Всемирный банк</strong><br><span>worldbank.org</span></div>
-      <div class="org-card">🌍 <strong>FATF</strong><br><span>fatf-gafi.org</span></div>
-      <div class="org-card">🌍 <strong>Интерпол</strong><br><span>interpol.int</span></div>
-      <div class="org-card">🌍 <strong>Европол</strong><br><span>europol.europa.eu</span></div>
-      <div class="org-card">🌍 <strong>ООН / UNODC</strong><br><span>unodc.org</span></div>
-      <div class="org-card">🌍 <strong>IOSCO</strong><br><span>iosco.org</span></div>
-      <div class="org-card">🌍 <strong>БМР (BIS)</strong><br><span>bis.org</span></div>
-      <div class="org-card">🌍 <strong>ЕБРР</strong><br><span>ebrd.com</span></div>
-      <div class="org-card">🌍 <strong>ОЭСР</strong><br><span>oecd.org</span></div>
-      <div class="org-card">🌍 <strong>G20</strong><br><span>g20.org</span></div>
-      <div class="org-card">🌍 <strong>SWIFT</strong><br><span>swift.com</span></div>
+    <div class="org-tab-content hidden" id="orgTab-intl">
+      <div class="orgs-grid">
+        <div class="org-card" data-anim="card"><div class="org-icon">🇺🇸</div><strong>SEC</strong><span>США</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇺🇸</div><strong>FinCEN</strong><span>США</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇺🇸</div><strong>CFTC</strong><span>США</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇺🇸</div><strong>FINRA</strong><span>США</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇺🇸</div><strong>FBI</strong><span>США</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇬🇧</div><strong>FCA</strong><span>Великобритания</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇬🇧</div><strong>Bank of England</strong><span>Великобритания</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇪🇺</div><strong>ESMA</strong><span>ЕС</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇪🇺</div><strong>EBA</strong><span>ЕС</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇩🇪</div><strong>BaFin</strong><span>Германия</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇫🇷</div><strong>AMF</strong><span>Франция</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇨🇭</div><strong>FINMA</strong><span>Швейцария</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇨🇾</div><strong>CySEC</strong><span>Кипр</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇦🇺</div><strong>ASIC</strong><span>Австралия</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇸🇬</div><strong>MAS</strong><span>Сингапур</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇯🇵</div><strong>FSA</strong><span>Япония</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇦🇪</div><strong>DFSA</strong><span>Дубай</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇮🇳</div><strong>SEBI</strong><span>Индия</span></div>
+      </div>
+    </div>
+
+    <div class="org-tab-content hidden" id="orgTab-cis">
+      <div class="orgs-grid">
+        <div class="org-card" data-anim="card"><div class="org-icon">🇷🇺</div><strong>ЦБ РФ</strong><span>Россия</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇧🇾</div><strong>Нацбанк РБ</strong><span>Беларусь</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇰🇬</div><strong>Нацбанк КР</strong><span>Кыргызстан</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇺🇿</div><strong>ЦБ РУз</strong><span>Узбекистан</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇦🇲</div><strong>ЦБ Армении</strong><span>Армения</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇦🇿</div><strong>ЦБ Азербайджана</strong><span>Азербайджан</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇬🇪</div><strong>НБ Грузии</strong><span>Грузия</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🇪🇺</div><strong>ЕАБР</strong><span>Евразия</span></div>
+      </div>
+    </div>
+
+    <div class="org-tab-content hidden" id="orgTab-global">
+      <div class="orgs-grid">
+        <div class="org-card" data-anim="card"><div class="org-icon">🌍</div><strong>МВФ</strong><span>imf.org</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🌍</div><strong>Всемирный банк</strong><span>worldbank.org</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🌍</div><strong>FATF</strong><span>fatf-gafi.org</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🌍</div><strong>Интерпол</strong><span>interpol.int</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🌍</div><strong>Европол</strong><span>europol.europa.eu</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🌍</div><strong>ООН / UNODC</strong><span>unodc.org</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🌍</div><strong>IOSCO</strong><span>iosco.org</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🌍</div><strong>БМР (BIS)</strong><span>bis.org</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🌍</div><strong>ЕБРР</strong><span>ebrd.com</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🌍</div><strong>ОЭСР</strong><span>oecd.org</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🌍</div><strong>G20</strong><span>g20.org</span></div>
+        <div class="org-card" data-anim="card"><div class="org-icon">🌍</div><strong>SWIFT</strong><span>swift.com</span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -121,25 +151,60 @@
 <!-- HOW -->
 <section class="section section-dark">
   <div class="container">
-    <h2 class="section-title">Как мы работаем</h2>
-    <div class="steps">
-      <div class="step"><div class="step-num">1</div><h3>Заявка</h3><p>Вы оставляете заявку на сайте. Наш специалист свяжется с вами в течение 24 часов.</p></div>
-      <div class="step"><div class="step-num">2</div><h3>Анализ</h3><p>Анализируем ситуацию, определяем стадию, собираем доказательства.</p></div>
-      <div class="step"><div class="step-num">3</div><h3>Процесс</h3><p>Запускаем юридический процесс через банки, регуляторы и суд.</p></div>
-      <div class="step"><div class="step-num">4</div><h3>Возврат</h3><p>Возвращаем ваши деньги. Оплата我们的 услуг — только после результата.</p></div>
+    <div class="section-header" data-anim="fade">
+      <h2 class="section-title">Как мы работаем</h2>
+      <p class="section-sub">Прозрачный процесс от заявки до возврата средств</p>
     </div>
-    <div class="center"><a href="/anti-fraud-portal/apply.html" class="btn btn-primary">📝 Начать сейчас</a></div>
+    <div class="timeline">
+      <div class="timeline-line"></div>
+      <div class="timeline-item" data-anim="timeline">
+        <div class="timeline-dot"><div class="timeline-dot-inner">1</div></div>
+        <div class="timeline-content">
+          <div class="timeline-icon">📝</div>
+          <h3>Заявка</h3>
+          <p>Вы оставляете заявку на сайте. Наш специалист свяжется с вами в течение 24 часов.</p>
+        </div>
+      </div>
+      <div class="timeline-item" data-anim="timeline">
+        <div class="timeline-dot"><div class="timeline-dot-inner">2</div></div>
+        <div class="timeline-content">
+          <div class="timeline-icon">🔍</div>
+          <h3>Анализ</h3>
+          <p>Анализируем ситуацию, определяем стадию, собираем доказательства.</p>
+        </div>
+      </div>
+      <div class="timeline-item" data-anim="timeline">
+        <div class="timeline-dot"><div class="timeline-dot-inner">3</div></div>
+        <div class="timeline-content">
+          <div class="timeline-icon">⚖️</div>
+          <h3>Процесс</h3>
+          <p>Запускаем юридический процесс через банки, регуляторы и суд.</p>
+        </div>
+      </div>
+      <div class="timeline-item" data-anim="timeline">
+        <div class="timeline-dot"><div class="timeline-dot-inner">4</div></div>
+        <div class="timeline-content">
+          <div class="timeline-icon">💰</div>
+          <h3>Возврат</h3>
+          <p>Возвращаем ваши деньги. Оплата наших услуг — только после результата.</p>
+        </div>
+      </div>
+    </div>
+    <div class="center" data-anim="fade"><a href="/anti-fraud-portal/apply.html" class="btn btn-primary">📝 Начать сейчас</a></div>
   </div>
 </section>
 
 <!-- QUIZ PROMO -->
 <section class="section">
   <div class="container">
-    <div class="quiz-promo">
-      <div class="quiz-promo-icon">🧪</div>
-      <h2>Узнали ли вас?</h2>
-      <p>Ответьте на 7 вопросов и узнайте, попали ли вы в мошенническую схему. Это бесплатно и анонимно.</p>
-      <a href="/anti-fraud-portal/apply.html" class="btn btn-primary btn-lg">📝 Пройти тест</a>
+    <div class="quiz-promo" data-anim="fade">
+      <div class="quiz-promo-glow"></div>
+      <div class="quiz-promo-content">
+        <div class="quiz-promo-icon">🧪</div>
+        <h2>Узнали ли вас?</h2>
+        <p>Ответьте на 7 вопросов и узнайте, попали ли вы в мошенническую схему. Это бесплатно и анонимно.</p>
+        <a href="/anti-fraud-portal/apply.html" class="btn btn-primary btn-lg"><span class="btn-ripple"></span>📝 Пройти тест</a>
+      </div>
     </div>
   </div>
 </section>
@@ -147,48 +212,163 @@
 <!-- CTA -->
 <section class="section cta-section">
   <div class="container text-center">
-    <h2>Готовы вернуть свои деньги?</h2>
-    <p>Оставьте заявку — мы свяжемся с вами в ближайшее время</p>
-    <a href="/anti-fraud-portal/apply.html" class="btn btn-primary btn-xl">📝 Оставить заявку</a>
+    <div class="cta-content" data-anim="fade">
+      <h2>Готовы вернуть свои деньги?</h2>
+      <p>Оставьте заявку — мы свяжемся с вами в ближайшее время</p>
+      <a href="/anti-fraud-portal/apply.html" class="btn btn-primary btn-xl"><span class="btn-ripple"></span>📝 Оставить заявку</a>
+    </div>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer class="footer">
-  <div class="container footer-inner">
-    <p>© 2026 AntiFrog. Все права защищены.</p>
-    <p>Международная компания по возврату активов</p>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">🛡️ AntiFrog</div>
+        <p>Международная компания по возврату активов из мошеннических платформ.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Навигация</h4>
+        <a href="/anti-fraud-portal/">Главная</a>
+        <a href="/anti-fraud-portal/services.html">Услуги</a>
+        <a href="/anti-fraud-portal/check.html">Проверить дело</a>
+        <a href="/anti-fraud-portal/apply.html">Оставить заявку</a>
+      </div>
+      <div class="footer-links">
+        <h4>Контакты</h4>
+        <a href="#">support@antifrog.com</a>
+        <a href="#">Telegram: @antifrog</a>
+        <a href="#">WhatsApp</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 AntiFrog. Все права защищены.</p>
+      <p class="footer-disclaimer">AntiFrog не гарантирует возврат средств в каждом конкретном случае. Результат зависит от обстоятельств дела. Информация на сайте не является публичной офертой.</p>
+    </div>
   </div>
 </footer>
 
 <script src="js/common.js"></script>
 <script>
-// Particles
+// Network canvas
 (function(){
-  const c=document.getElementById('particles');
-  for(let i=0;i<20;i++){
-    const p=document.createElement('div');
-    p.style.cssText=`position:absolute;width:${Math.random()*3+1}px;height:${Math.random()*3+1}px;background:rgba(16,185,129,${Math.random()*.3+.1});border-radius:50%;left:${Math.random()*100}%;top:${Math.random()*100}%;animation:float ${Math.random()*6+4}s ease-in-out infinite ${Math.random()*4}s;pointer-events:none`;
-    c.appendChild(p);
+  const canvas = document.getElementById('networkCanvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [];
+
+  function resize() {
+    w = canvas.width = canvas.parentElement.offsetWidth;
+    h = canvas.height = canvas.parentElement.offsetHeight;
   }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * w;
+      this.y = Math.random() * h;
+      this.vx = (Math.random() - 0.5) * 0.4;
+      this.vy = (Math.random() - 0.5) * 0.4;
+      this.r = Math.random() * 2 + 1;
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > w) this.vx *= -1;
+      if (this.y < 0 || this.y > h) this.vy *= -1;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(16,185,129,0.4)';
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 60; i++) particles.push(new Particle());
+
+  function animate() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach(p => { p.update(); p.draw(); });
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 150) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(16,185,129,${0.15 * (1 - dist / 150)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
 })();
 
+// Hero entrance
+gsap.from('#heroBadge', { opacity: 0, y: 20, duration: 0.8, delay: 0.2 });
+gsap.from('#heroTitle', { opacity: 0, y: 30, duration: 0.8, delay: 0.4 });
+gsap.from('#heroSub', { opacity: 0, y: 20, duration: 0.8, delay: 0.6 });
+gsap.from('#heroChecks .check', { opacity: 0, x: -20, duration: 0.5, stagger: 0.15, delay: 0.8 });
+gsap.from('#heroActions', { opacity: 0, y: 20, duration: 0.8, delay: 1.2 });
+gsap.from('#heroTrust .trust-item', { opacity: 0, y: 15, duration: 0.5, stagger: 0.1, delay: 1.5 });
+
 // Counter animation
-document.querySelectorAll('.counter').forEach(el=>{
-  const target=parseInt(el.dataset.target),dur=2000,start=performance.now();
-  function update(now){
-    const p=Math.min((now-start)/dur,1),e=1-Math.pow(1-p,3);
-    el.textContent=Math.floor(target*e).toLocaleString();
-    if(p<1)requestAnimationFrame(update);
-  }
-  requestAnimationFrame(update);
-});
+const counters = document.querySelectorAll('.counter');
+const counterObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseInt(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      const dur = 2000;
+      const start = performance.now();
+      function update(now) {
+        const p = Math.min((now - start) / dur, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.floor(target * ease).toLocaleString() + suffix;
+        if (p < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+      counterObs.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+counters.forEach(c => counterObs.observe(c));
 
 // Scroll animations
 gsap.registerPlugin(ScrollTrigger);
-gsap.utils.toArray('.step,.org-card,.stat').forEach((el,i)=>{
-  gsap.from(el,{opacity:0,y:30,duration:.5,delay:i*.05,scrollTrigger:{trigger:el,start:'top 90%'}});
+
+gsap.utils.toArray('[data-anim="fade"]').forEach(el => {
+  gsap.from(el, { opacity: 0, y: 30, duration: 0.6, scrollTrigger: { trigger: el, start: 'top 85%' } });
 });
+
+gsap.utils.toArray('[data-anim="stat"]').forEach((el, i) => {
+  gsap.from(el, { opacity: 0, y: 40, scale: 0.95, duration: 0.5, delay: i * 0.1, scrollTrigger: { trigger: el, start: 'top 90%' } });
+});
+
+gsap.utils.toArray('[data-anim="card"]').forEach((el, i) => {
+  gsap.from(el, { opacity: 0, y: 20, duration: 0.4, delay: (i % 4) * 0.08, scrollTrigger: { trigger: el, start: 'top 90%' } });
+});
+
+gsap.utils.toArray('[data-anim="timeline"]').forEach((el, i) => {
+  gsap.from(el, { opacity: 0, x: i % 2 === 0 ? -40 : 40, duration: 0.6, delay: i * 0.15, scrollTrigger: { trigger: el, start: 'top 85%' } });
+});
+
+// Org tabs
+function showOrgTab(tab) {
+  document.querySelectorAll('.org-tab-content').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.org-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('orgTab-' + tab).classList.remove('hidden');
+  event.target.classList.add('active');
+  gsap.from('#orgTab-' + tab + ' .org-card', { opacity: 0, y: 15, duration: 0.3, stagger: 0.03 });
+}
 </script>
 </body>
 </html>
