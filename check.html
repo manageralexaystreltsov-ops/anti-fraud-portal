@@ -6,117 +6,172 @@
 <title>Проверить дело — AntiFrog</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 <body>
 
 <section class="section" style="padding-top:24px">
-  <div class="container" style="max-width:700px">
-    <div class="text-center" style="margin-bottom:20px">
-      <h1 style="font-size:24px;font-weight:900">📋 Проверка дела</h1>
+  <div class="container" style="max-width:1100px">
+
+    <div class="section-header" style="margin-bottom:24px">
+      <h1 style="font-size:clamp(22px,4vw,32px);font-weight:900">📋 Проверка дела</h1>
       <p style="color:var(--muted);font-size:14px">Введите номер дела, ФИО или ИНН</p>
     </div>
 
-    <div class="card" style="display:flex;gap:8px;padding:8px;margin-bottom:16px">
-      <input type="text" class="form-input" id="searchInput" placeholder="Поиск по делу..." style="border:none;background:none;flex:1;font-size:16px">
-      <button onclick="search()" class="btn btn-primary btn-sm" style="max-width:100px">Найти</button>
+    <!-- SEARCH -->
+    <div class="search-block" id="searchBlock">
+      <div class="search-input-wrap">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="Номер дела, ФИО, ИНН...">
+        <button onclick="startSearch()" class="search-btn" id="searchBtn">Найти</button>
+      </div>
     </div>
 
-    <div style="display:flex;gap:8px;margin-bottom:16px;font-size:12px;color:var(--muted)">
-      <span id="totalCount"></span>
-      <span>·</span>
-      <span id="filterInfo">Показаны все</span>
+    <!-- SEARCH ANIMATION -->
+    <div class="search-loading hidden" id="searchLoading">
+      <div class="loading-header">
+        <div class="loading-spinner"></div>
+        <span id="loadingText">Подключение к базам данных...</span>
+      </div>
+      <div class="loading-steps" id="loadingSteps"></div>
+      <div class="progress-bar"><div class="progress-fill" id="loadingProgress" style="width:0%"></div></div>
     </div>
 
-    <div class="clients-grid" id="clientsGrid"></div>
+    <!-- RESULTS INFO -->
+    <div class="results-info hidden" id="resultsInfo">
+      <span id="resultCount"></span>
+      <div class="filter-chips" id="filterChips">
+        <button class="filter-chip active" onclick="filterByStatus('all',this)">Все</button>
+        <button class="filter-chip" onclick="filterByStatus('На рассмотрении',this)">⏳ На рассмотрении</button>
+        <button class="filter-chip" onclick="filterByStatus('В работе',this)">🔵 В работе</button>
+        <button class="filter-chip" onclick="filterByStatus('Завершено',this)">✅ Завершено</button>
+      </div>
+    </div>
+
+    <!-- CLIENTS TABLE -->
+    <div class="clients-table-wrap hidden" id="clientsTable">
+      <table class="clients-table">
+        <thead>
+          <tr>
+            <th>Дело</th>
+            <th>Клиент</th>
+            <th>Платформа</th>
+            <th class="th-hide">Город</th>
+            <th>Статус</th>
+            <th class="th-hide">Прогресс</th>
+          </tr>
+        </thead>
+        <tbody id="clientsBody"></tbody>
+      </table>
+    </div>
+
+    <!-- SKELETON -->
+    <div class="skeleton-list hidden" id="skeletonList">
+      <div class="skeleton-row"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div><div class="skeleton-badge"></div></div>
+      <div class="skeleton-row"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line w70"></div><div class="skeleton-line w30"></div></div><div class="skeleton-badge"></div></div>
+      <div class="skeleton-row"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line w50"></div><div class="skeleton-line w45"></div></div><div class="skeleton-badge"></div></div>
+      <div class="skeleton-row"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line w65"></div><div class="skeleton-line w35"></div></div><div class="skeleton-badge"></div></div>
+      <div class="skeleton-row"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line w55"></div><div class="skeleton-line w40"></div></div><div class="skeleton-badge"></div></div>
+    </div>
+
   </div>
 </section>
 
-<!-- Detail Modal -->
-<div class="modal-overlay" id="modal" style="display:none" onclick="closeModal(event)">
-  <div class="modal" onclick="event.stopPropagation()">
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal" style="display:none" onclick="closeDetail(event)">
+  <div class="detail-modal" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
-    <div id="modalContent"></div>
-  </div>
-  <div style="position:fixed;bottom:0;left:0;right:0;padding:12px 16px;background:rgba(5,10,18,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);z-index:2001">
-    <a href="/anti-fraud-portal/apply.html" class="btn btn-primary" style="max-width:600px;margin:0 auto">📝 Обратиться</a>
+
+    <!-- HEADER -->
+    <div class="detail-header" id="detailHeader"></div>
+
+    <!-- TABS -->
+    <div class="detail-tabs" id="detailTabs">
+      <button class="detail-tab active" onclick="showDetailTab('overview',this)">📊 Обзор</button>
+      <button class="detail-tab" onclick="showDetailTab('funds',this)">💰 Движение средств</button>
+      <button class="detail-tab" onclick="showDetailTab('docs',this)">📄 Документы</button>
+      <button class="detail-tab" onclick="showDetailTab('finance',this)">📈 Итоги</button>
+      <button class="detail-tab" onclick="showDetailTab('comments',this)">💬 История</button>
+    </div>
+
+    <!-- TAB CONTENT -->
+    <div class="detail-content" id="detailContent"></div>
+
+    <!-- FOOTER -->
+    <div class="detail-footer">
+      <div class="security-badges">
+        <span class="sec-badge">🔒 256-bit SSL</span>
+        <span class="sec-badge">🛡️ GDPR Compliant</span>
+      </div>
+    </div>
   </div>
 </div>
 
 <script src="js/common.js"></script>
 <script>
-// ===== GENERATE 1000+ FAKE CLIENTS =====
+const STAGES = ['Заявка','Анализ','Претензия','Чарджбэк','Суд','Возврат','Завершено'];
+const STATUSES_COLORS = {
+  'На рассмотрении': { bg: 'rgba(245,158,11,0.12)', color: '#f59e0b', dot: '#f59e0b' },
+  'В работе': { bg: 'rgba(59,130,246,0.12)', color: '#3b82f6', dot: '#3b82f6' },
+  'Ожидание ответа': { bg: 'rgba(139,92,246,0.12)', color: '#8b5cf6', dot: '#8b5cf6' },
+  'Завершено': { bg: 'rgba(16,185,129,0.12)', color: '#10b981', dot: '#10b981' },
+  'Возврат средств': { bg: 'rgba(16,185,129,0.12)', color: '#10b981', dot: '#10b981' },
+};
+const AVATAR_COLORS = ['#10b981','#3b82f6','#8b5cf6','#f59e0b','#ef4444','#ec4899','#06b6d4','#84cc16'];
+
+// Generate fake data
 const FIRST_NAMES = ['Айбек','Айдар','Айгуль','Айжан','Акмарал','Акылбек','Алмаз','Алтунай','Альфия','Андрей','Анна','Ануар','Арман','Артем','Асель','Асхат','Аяулым','Бакыт','Бауыржан','Бегимай','Берик','Ботагоз','Вадим','Валерия','Виктор','Габит','Галия','Геннадий','Гульмира','Данияр','Дарига','Даурен','Денис','Диана','Дмитрий','Елена','Ержан','Ерлан','Ермек','Жадыра','Жанат','Жанна','Жаныбек','Забир','Зарина','Зинаида','Ибрагим','Игорь','Ирина','Кайрат','Камар','Канат','Карина','Куаныш','Лариса','Лаура','Мадина','Марал','Мария','Марат','Мирас','Назгуль','Назирбек','Наталья','Нигора','Николай','Олег','Ольга','Оразбек','Павел','Раиса','Рамазан','Рауль','Ренат','Ринат','Роза','Рустам','Сагынай','Самат','Сания','Светлана','Серик','Сергей','София','Султан','Тагир','Тамара','Тимур','Турсун','Улжан','Улан','Фарид','Фатима','Халида','Шынар','Эльвира','Эльдар','Эрмек','Юлия','Яна'];
 const LAST_NAMES = ['Абдуллаев','Абдрахманов','Абикенов','Айтматов','Акбаев','Акжолов','Аксенов','Алиев','Алпысов','Амреев','Андреев','Арапов','Аргынбаев','Ахметов','Баймуратов','Бакиров','Балтабаев','Бектемиров','Бердиев','Биримжанов','Божко','Бородин','Булатов','Васильев','Виноградов','Гаврилов','Голубев','Григорьев','Гусейнов','Давыдов','Данияров','Джумабаев','Дмитриев','Досмурзаев','Ержанов','Ермекбаев','Есенбаев','Жаксылыков','Жанайдаров','Жарылгапов','Жумабаев','Закиров','Зверев','Ибрагимов','Иванов','Ильясов','Имангалиев','Исабаев','Кадыров','Кажегельдин','Калыков','Каменских','Канапьянов','Капезов','Каримов','Касенов','Кенжетаев','Ким','Козлов','Колесников','Кондратьев','Коптелов','Корнеев','Кравцов','Кузнецов','Кулов','Ларионов','Лебедев','Магомедов','Макаров','Мамбетов','Мамыров','Масимов','Мендыбаев','Меркушев','Мешков','Михайлов','Молдагалиев','Муканов','Назарбаев','Назаров','Нартов','Наумов','Несипбаев','Нурбаев','Нурланов','Омаров','Оразалин','Павлов','Петров','Поляков','Пономарёв','Рахимов','Рогов','Рожков','Романов','Рыбаков','Сагинбаев','Садыков','Сапарбаев','Сатпаев','Семёнов','Сергеев','Серикбаев','Сизов','Скворцов','Смирнов','Соколов','Соловьев','Сугуралиев','Тажиев','Тасмагамбетов','Токарев','Толеуов','Трофимов','Туленов','Уалиев','Уразов','Усенов','Фёдоров','Фомин','Хабаров','Хамитов','Чернов','Чесноков','Шаимов','Шарипов','Шевченко','Шипилов','Шокпаров','Шульгин','Юсупов','Яковлев'];
-const PLATFORMS = ['TradePro Global','InvestMarket24','CryptoInvest KZ','GlobalFX Trading','Premium Binary','AlgoTrade 360','SmartInvest Pro','Quantum Capital','Titan FX Group','EuroTrade Solutions','Nordic Invest Bank','CryptoHarvest','AsiaPacific Markets','Royal Forex Club','Prime Capital Group','SwiftTrade Pro','Global Crypto Alliance','Elite Financial Hub','AutoTrade Robot','Phoenix Invest','Digital Assets Kazakhstan','Binario Premium','MegaFX Global','TrustFund Capital','Alpha Trading Group','SilverLine Markets','Zenith Crypto Fund','ProFX International','Golden Eagle Finance','Vanguard Crypto','MatrixTrade AI','EuroPacific Securities','CryptoSphere Global','Atlas Financial Corp','Quantum Leap Trading','Sunrise Capital KZ','NordFX Solutions','Baltic Trade House','Pacific Wealth Group','Crown Forex Academy','Horizon Digital Assets','Caspian Invest Group','Nomad Crypto Fund','Steppe Capital KZ','Astana Digital Bank'];
-const STAGES = ['Заявка','Анализ','Претензия','Возврат'];
-const STATUSES = ['На рассмотрении','В работе','Ожидание ответа','Претензионная работа','Возврат средств','Завершено'];
-const CITIES = ['Алматы','Астана','Шымкент','Караганда','Актобе','Павлодар','Усть-Каменогорск','Семей','Атырау','Костанай','Петропавловск','Актау','Туркестан','Тараз','Кызылорда','Экибастуз','Рудный','Темиртау','Жезказган','Балхаш'];
+const PLATFORMS = ['TradePro Global','InvestMarket24','CryptoInvest KZ','GlobalFX Trading','Premium Binary','AlgoTrade 360','SmartInvest Pro','Quantum Capital','Titan FX Group','EuroTrade Solutions','Nordic Invest Bank','CryptoHarvest','AsiaPacific Markets','Royal Forex Club','Prime Capital Group','SwiftTrade Pro','Digital Assets Kazakhstan','Astana Digital Bank'];
+const CITIES = ['Алматы','Астана','Шымкент','Караганда','Актобе','Павлодар','Усть-Каменогорск','Семей','Атырау','Костанай'];
 
-function generateClients(count) {
-  const clients = [];
-  for (let i = 0; i < count; i++) {
-    const first = FIRST_NAMES[Math.floor(Math.random() * FIRST_NAMES.length)];
-    const last = LAST_NAMES[Math.floor(Math.random() * LAST_NAMES.length)];
-    const father = FIRST_NAMES[Math.floor(Math.random() * FIRST_NAMES.length)] + 'ович' + (Math.random() > 0.5 ? '' : '');
-    const iin = String(Math.floor(100000000000 + Math.random() * 899999999999));
-    const phone = '+7 (' + (700 + Math.floor(Math.random() * 100)) + ') ' + String(Math.floor(1000000 + Math.random() * 9000000)).replace(/(\d{3})(\d{2})(\d{2})/, '$1-$2-$3');
-    const platform = PLATFORMS[Math.floor(Math.random() * PLATFORMS.length)];
-    const stage = STAGES[Math.floor(Math.random() * STAGES.length)];
-    const status = STATUSES[Math.floor(Math.random() * STATUSES.length)];
-    const progress = Math.floor(Math.random() * 100);
-    const city = CITIES[Math.floor(Math.random() * CITIES.length)];
-    const amount = Math.floor(1500000 + Math.random() * 498500000);
-    const date = new Date(2025, Math.floor(Math.random() * 12), Math.floor(1 + Math.random() * 28));
-    const num = 'AF-' + String(1000 + i).padStart(4, '0') + String.fromCharCode(65 + Math.floor(Math.random() * 6)) + String.fromCharCode(65 + Math.floor(Math.random() * 6));
-
-    clients.push({
-      num, fullName: `${last} ${first} ${father}`, iin, phone, platform,
-      stage, status, progress, city, amount,
-      date: date.toLocaleDateString('ru-RU'),
-      comments: [
-        { date: date.toLocaleDateString('ru-RU'), text: 'Заявка получена' },
-        ...(progress > 30 ? [{ date: new Date(date.getTime() + 86400000 * 3).toLocaleDateString('ru-RU'), text: 'Начат анализ ситуации' }] : []),
-        ...(progress > 60 ? [{ date: new Date(date.getTime() + 86400000 * 7).toLocaleDateString('ru-RU'), text: 'Подана претензия в банк' }] : []),
-        ...(progress >= 90 ? [{ date: new Date(date.getTime() + 86400000 * 14).toLocaleDateString('ru-RU'), text: 'Средства возвращены клиенту' }] : [])
-      ]
-    });
-  }
-  return clients;
-}
-
-function loadRealClients() {
+function genClients(count) {
+  const arr = [];
   const cases = getCases();
-  return Object.entries(cases).map(([num, c]) => ({
-    num,
-    fullName: c.fullName || 'Без имени',
-    iin: '',
-    phone: c.phone || '',
-    platform: c.platform || '',
-    stage: c.stage || 'Заявка',
-    status: c.status || 'На рассмотрении',
-    progress: c.progress || 0,
-    city: '',
-    amount: c.amount || 0,
-    recovered: c.recovered || 0,
-    date: c.time ? new Date(c.time).toLocaleDateString('ru-RU') : '',
-    comments: c.comments || []
-  }));
-}
-
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+  Object.entries(cases).forEach(([num, c]) => {
+    arr.push({
+      num, fullName: c.fullName || 'Без имени',
+      phone: c.phone || '', platform: c.platform || '',
+      stage: c.stage || 'Заявка', status: c.status || 'На рассмотрении',
+      progress: c.progress || 0, city: '', amount: c.amount || 0,
+      date: c.time ? new Date(c.time).toLocaleDateString('ru-RU') : '',
+      comments: c.comments || [], _real: true
+    });
+  });
+  for (let i = arr.length; i < count; i++) {
+    const f = FIRST_NAMES[Math.floor(Math.random()*FIRST_NAMES.length)];
+    const l = LAST_NAMES[Math.floor(Math.random()*LAST_NAMES.length)];
+    const p = '+7 (' + (700+Math.floor(Math.random()*100)) + ') ' + String(Math.floor(1000000+Math.random()*9000000)).replace(/(\d{3})(\d{2})(\d{2})/,'$1-$2-$3');
+    const st = STATUSES_COLORS;
+    const keys = Object.keys(st);
+    const prog = Math.floor(Math.random()*100);
+    const status = prog>=80?'Завершено':prog>=40?'В работе':keys[Math.floor(Math.random()*keys.length)];
+    const amount = Math.floor(1500000+Math.random()*498500000);
+    arr.push({
+      num: 'AF-'+String(1000+i).padStart(4,'0')+String.fromCharCode(65+Math.floor(Math.random()*6))+String.fromCharCode(65+Math.floor(Math.random()*6)),
+      fullName: l+' '+f+' '+FIRST_NAMES[Math.floor(Math.random()*FIRST_NAMES.length)]+'ович',
+      phone: p, platform: PLATFORMS[Math.floor(Math.random()*PLATFORMS.length)],
+      stage: STAGES[Math.floor(Math.random()*STAGES.length)],
+      status, progress: prog, city: CITIES[Math.floor(Math.random()*CITIES.length)],
+      amount, date: new Date(2025,Math.floor(Math.random()*12),1+Math.floor(Math.random()*28)).toLocaleDateString('ru-RU'),
+      comments: [{date:new Date().toLocaleDateString('ru-RU'),text:'Заявка получена'}]
+    });
   }
   return arr;
 }
 
-const REAL_CLIENTS = loadRealClients();
-const FAKE_CLIENTS = generateClients(1200);
-const ALL_CLIENTS = shuffle([...REAL_CLIENTS, ...FAKE_CLIENTS]);
-document.getElementById('totalCount').textContent = `В базе: ${ALL_CLIENTS.length} дел`;
+let ALL_CLIENTS = [];
+let filteredClients = [];
+let currentFilter = 'all';
+
+function maskFullName(name) {
+  const parts = name.split(' ');
+  if (parts.length < 2) return name;
+  return parts[0] + ' ' + parts[1][0] + '.' + (parts[2] ? ' ' + parts[2][0] + '.' : '');
+}
 
 function maskPhone(p) {
   if (!p) return '***';
@@ -134,78 +189,313 @@ function maskPhone(p) {
   return result;
 }
 
-const AVATAR_COLORS = ['#10b981','#3b82f6','#8b5cf6','#f59e0b','#ef4444','#ec4899','#06b6d4','#84cc16'];
+function maskEmail(e) {
+  if (!e) return '';
+  const [user, domain] = e.split('@');
+  return user[0] + '*****@' + (domain || '***');
+}
 
-function renderClients(list) {
-  const grid = document.getElementById('clientsGrid');
-  document.getElementById('filterInfo').textContent = list.length === ALL_CLIENTS.length ? 'Показаны все' : `Найдено: ${list.length}`;
+// SEARCH
+function startSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (!q) { renderTable(ALL_CLIENTS); return; }
 
-  grid.innerHTML = list.slice(0, 100).map((c, i) => {
+  document.getElementById('clientsTable').classList.add('hidden');
+  document.getElementById('resultsInfo').classList.add('hidden');
+  document.getElementById('searchLoading').classList.remove('hidden');
+  document.getElementById('loadingSteps').innerHTML = '';
+  document.getElementById('loadingProgress').style.width = '0%';
+
+  const steps = [
+    { text: 'Подключение к АРРФР...', time: 600 },
+    { text: 'Запрос в FinCEN базы...', time: 800 },
+    { text: 'Проверка blockchain транзакций...', time: 700 },
+    { text: 'Сверка с реестрами регуляторов...', time: 500 },
+    { text: 'Анализ данных...', time: 400 },
+  ];
+
+  let i = 0;
+  function nextStep() {
+    if (i >= steps.length) {
+      const found = ALL_CLIENTS.filter(c =>
+        c.num.toLowerCase().includes(q.toLowerCase()) ||
+        c.fullName.toLowerCase().includes(q.toLowerCase()) ||
+        c.platform.toLowerCase().includes(q.toLowerCase())
+      );
+      setTimeout(() => {
+        document.getElementById('searchLoading').classList.add('hidden');
+        filteredClients = found;
+        currentFilter = 'all';
+        renderTable(found);
+        document.getElementById('resultsInfo').classList.remove('hidden');
+        document.getElementById('resultCount').textContent = `Найдено: ${found.length} дел`;
+      }, 300);
+      return;
+    }
+    const s = steps[i];
+    document.getElementById('loadingText').textContent = s.text;
+    document.getElementById('loadingSteps').innerHTML += `<div class="loading-step"><span class="step-ok">✓</span> ${s.text}</div>`;
+    document.getElementById('loadingProgress').style.width = ((i+1)/steps.length*100)+'%';
+    i++;
+    setTimeout(nextStep, s.time);
+  }
+  nextStep();
+}
+
+function filterByStatus(status, btn) {
+  currentFilter = status;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  const list = status === 'all' ? filteredClients : filteredClients.filter(c => c.status === status);
+  renderTable(list);
+}
+
+function renderTable(list) {
+  const tbody = document.getElementById('clientsBody');
+  document.getElementById('clientsTable').classList.remove('hidden');
+  tbody.innerHTML = list.slice(0, 50).map((c, i) => {
     const color = AVATAR_COLORS[i % AVATAR_COLORS.length];
-    const initials = c.fullName.split(' ').slice(0, 2).map(n => n[0]).join('');
-    const statusClass = c.progress >= 80 ? 'done' : c.progress >= 40 ? 'active' : 'pending';
-    return `
-    <div class="client-card" onclick='showDetail(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
-      <div class="client-avatar" style="background:${color}20;color:${color}">${initials}</div>
-      <div class="client-info">
-        <div class="client-name">${c.fullName}</div>
-        <div class="client-meta">${c.platform}${c.city ? ' · ' + c.city : ''} · #${c.num}</div>
-      </div>
-      <div class="client-status ${statusClass}">${c.status}</div>
-    </div>`;
+    const initials = c.fullName.split(' ').slice(0,2).map(n=>n[0]).join('');
+    const sc = STATUSES_COLORS[c.status] || STATUSES_COLORS['На рассмотрении'];
+    return `<tr onclick='openDetail(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
+      <td><span class="td-num">#${c.num}</span></td>
+      <td>
+        <div class="td-client">
+          <div class="td-avatar" style="background:${color}20;color:${color}">${initials}</div>
+          <div><div class="td-name">${maskFullName(c.fullName)}</div><div class="td-phone">${maskPhone(c.phone)}</div></div>
+        </div>
+      </td>
+      <td><span class="td-platform">${c.platform}</span></td>
+      <td class="td-hide"><span class="td-city">${c.city || '—'}</span></td>
+      <td><span class="td-status" style="background:${sc.bg};color:${sc.color}"><span class="td-status-dot" style="background:${sc.dot}"></span>${c.status}</span></td>
+      <td class="td-hide"><div class="td-progress"><div class="td-progress-bar"><div class="td-progress-fill" style="width:${c.progress}%"></div></div><span>${c.progress}%</span></div></td>
+    </tr>`;
   }).join('');
+
+  gsap.from('#clientsBody tr', { opacity: 0, y: 15, duration: 0.3, stagger: 0.04 });
 }
 
-function search() {
-  const q = document.getElementById('searchInput').value.trim().toLowerCase();
-  if (!q) { renderClients(ALL_CLIENTS); return; }
-  const found = ALL_CLIENTS.filter(c =>
-    c.num.toLowerCase().includes(q) || c.fullName.toLowerCase().includes(q) || c.iin.includes(q) || c.platform.toLowerCase().includes(q)
-  );
-  renderClients(found);
-}
+// DETAIL MODAL
+let currentDetail = null;
 
-function showDetail(c) {
-  const color = AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)];
+function openDetail(c) {
+  currentDetail = c;
+  const color = AVATAR_COLORS[Math.floor(Math.random()*AVATAR_COLORS.length)];
+  const sc = STATUSES_COLORS[c.status] || STATUSES_COLORS['На рассмотрении'];
   const si = STAGES.indexOf(c.stage);
-  document.getElementById('modalContent').innerHTML = `
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
-      <div class="client-avatar" style="width:48px;height:48px;font-size:18px;background:${color}20;color:${color}">${c.fullName.split(' ').slice(0,2).map(n=>n[0]).join('')}</div>
-      <div>
-        <h2 style="font-size:18px;font-weight:700">${c.fullName}</h2>
-        <p style="font-size:12px;color:var(--muted)">Дело #${c.num} · ${c.date}</p>
+
+  document.getElementById('detailHeader').innerHTML = `
+    <div class="detail-top">
+      <div class="detail-avatar" style="background:${sc.bg};color:${sc.color}">${c.fullName.split(' ').slice(0,2).map(n=>n[0]).join('')}</div>
+      <div class="detail-info">
+        <h2>${maskFullName(c.fullName)}</h2>
+        <div class="detail-meta">
+          <span class="detail-num">#${c.num}</span>
+          <button class="copy-btn" onclick="copyNum('${c.num}')">📋</button>
+          <span class="detail-date">${c.date}</span>
+        </div>
       </div>
+      <button class="detail-close" onclick="closeDetail()">✕</button>
     </div>
-    <div class="case-progress" style="margin-bottom:16px">
-      <div class="case-progress-header"><span>Прогресс</span><span>${c.progress}%</span></div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${c.progress}%"></div></div>
+    <div class="detail-status-bar">
+      <span class="detail-status-badge" style="background:${sc.bg};color:${sc.color}"><span class="td-status-dot" style="background:${sc.dot}"></span>${c.status}</span>
+      <span class="detail-platform">📋 ${c.platform}</span>
+      ${c.city ? `<span class="detail-city">📍 ${c.city}</span>` : ''}
     </div>
-    <div class="case-stages" style="margin-bottom:16px">
-      ${STAGES.map((s,i) => `<div class="case-stage"><div class="case-stage-dot ${i<si?'done':i===si?'active':''}"></div><span class="case-stage-label">${s}</span></div>`).join('')}
+    <div class="detail-stages">
+      ${STAGES.map((s,i) => `<div class="dstage"><div class="dstage-dot ${i<si?'done':i===si?'active':''}"></div><span>${s}</span></div>`).join('')}
     </div>
-    <div class="case-details" style="margin-bottom:16px">
-      <div class="case-detail"><div class="case-detail-label">ФИО</div><div class="case-detail-value">${c.fullName}</div></div>
-      <div class="case-detail"><div class="case-detail-label">Телефон</div><div class="case-detail-value">${maskPhone(c.phone)}</div></div>
-      <div class="case-detail"><div class="case-detail-label">Город</div><div class="case-detail-value">${c.city}</div></div>
-    </div>
-    <div class="case-detail" style="margin-bottom:16px"><div class="case-detail-label">Платформа</div><div class="case-detail-value">${c.platform}</div></div>
-    <div class="case-detail" style="margin-bottom:16px"><div class="case-detail-label">Сумма</div><div class="case-detail-value" style="color:var(--green)">${c.amount.toLocaleString()} ₸</div></div>
-    <div class="case-comments" style="margin-bottom:60px"><h4>Комментарии</h4>
-      ${c.comments.map(cm => `<div class="comment"><div class="comment-date">${cm.date}</div><div class="comment-text">${cm.text}</div></div>`).join('')}
-    </div>`;
-  document.getElementById('modal').style.display = 'flex';
+  `;
+
+  showDetailTab('overview', document.querySelector('.detail-tab'));
+  document.getElementById('detailModal').style.display = 'flex';
+  gsap.from('.detail-modal', { y: '100%', duration: 0.4, ease: 'power3.out' });
 }
 
-function closeModal(e) { if (e.target === document.getElementById('modal')) document.getElementById('modal').style.display = 'none'; }
+function closeDetail(e) {
+  if (e && e.target !== document.getElementById('detailModal')) return;
+  gsap.to('.detail-modal', { y: '100%', duration: 0.3, ease: 'power3.in', onComplete: () => {
+    document.getElementById('detailModal').style.display = 'none';
+  }});
+}
 
-document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
+function copyNum(num) {
+  navigator.clipboard.writeText(num);
+  showToast('Номер скопирован');
+}
+
+function showDetailTab(tab, btn) {
+  document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const c = currentDetail;
+  const content = document.getElementById('detailContent');
+
+  if (tab === 'overview') {
+    const si = STAGES.indexOf(c.stage);
+    content.innerHTML = `
+      <div class="detail-section">
+        <h3>📊 Timeline дела</h3>
+        <div class="detail-timeline">
+          ${STAGES.slice(0, si+1).map((s,i) => {
+            const icons = ['📝','🔍','📨','💳','⚖️','💰','✅'];
+            const descs = ['Заявка подана','Анализ документов','Претензия подана','Чарджбэк инициирован','Судебный процесс','Средства возвращены','Дело закрыто'];
+            const dates = [c.date, '15.01.2026', '02.02.2026', '18.02.2026', '05.03.2026', '20.03.2026', '28.03.2026'];
+            return `<div class="dt-item ${i<si?'done':'current'}">
+              <div class="dt-icon">${icons[i]}</div>
+              <div class="dt-info">
+                <div class="dt-title">${s}</div>
+                <div class="dt-desc">${descs[i]}</div>
+                <div class="dt-date">${dates[i] || '—'}</div>
+              </div>
+              ${i<si?'<div class="dt-check">✓</div>':''}
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      <div class="detail-section">
+        <h3>📋 Информация</h3>
+        <div class="detail-grid">
+          <div class="detail-field"><span class="df-label">ФИО</span><span class="df-value">${maskFullName(c.fullName)}</span></div>
+          <div class="detail-field"><span class="df-label">Телефон</span><span class="df-value">${maskPhone(c.phone)}</span></div>
+          <div class="detail-field"><span class="df-label">Платформа</span><span class="df-value">${c.platform}</span></div>
+          <div class="detail-field"><span class="df-label">Город</span><span class="df-value">${c.city || '—'}</span></div>
+          <div class="detail-field"><span class="df-label">Сумма вложений</span><span class="df-value" style="color:var(--gold)">${c.amount.toLocaleString()} ₸</span></div>
+          <div class="detail-field"><span class="df-label">Этап</span><span class="df-value">${c.stage}</span></div>
+        </div>
+      </div>`;
+  }
+
+  if (tab === 'funds') {
+    const returned = Math.floor(c.amount * (0.3 + Math.random()*0.5));
+    const pct = Math.round(returned/c.amount*100);
+    content.innerHTML = `
+      <div class="detail-section">
+        <h3>💰 Движение средств</h3>
+        <div class="fund-flow">
+          <div class="fund-node fund-miss">
+            <div class="fund-icon">🏦</div>
+            <div class="fund-label">Мошенническая платформа</div>
+            <div class="fund-amount" style="color:var(--red)">${c.amount.toLocaleString()} ₸</div>
+          </div>
+          <div class="fund-arrow"><div class="fund-arrow-line"></div><span>→</span></div>
+          <div class="fund-node fund-mid">
+            <div class="fund-icon">🔄</div>
+            <div class="fund-label">Промежуточные счета</div>
+            <div class="fund-amount">${c.amount.toLocaleString()} ₸</div>
+          </div>
+          <div class="fund-arrow"><div class="fund-arrow-line"></div><span>→</span></div>
+          <div class="fund-node fund-return">
+            <div class="fund-icon">💳</div>
+            <div class="fund-label">Карта клиента</div>
+            <div class="fund-amount" style="color:var(--green)">${returned.toLocaleString()} ₸</div>
+          </div>
+        </div>
+        <div class="fund-summary">
+          <div class="fund-stat"><span>Вложено</span><strong>${c.amount.toLocaleString()} ₸</strong></div>
+          <div class="fund-stat"><span>Возвращено</span><strong style="color:var(--green)">${returned.toLocaleString()} ₸</strong></div>
+          <div class="fund-stat"><span>Процент возврата</span><strong style="color:var(--green)">${pct}%</strong></div>
+        </div>
+      </div>`;
+  }
+
+  if (tab === 'docs') {
+    const docs = [
+      { name: 'Заявка на возврат.pdf', status: 'Принято', date: c.date, org: 'АРРФР' },
+      { name: 'Выписка по счету.pdf', status: 'Принято', date: '15.01.2026', org: 'Банк' },
+      { name: 'Скриншоты переписки.pdf', status: 'Принято', date: '18.01.2026', org: 'АРРФР' },
+      { name: 'Претензия в банк.docx', status: 'Отправлено', date: '02.02.2026', org: 'Bank of England' },
+      { name: 'Решение суда.pdf', status: 'Ожидание', date: '05.03.2026', org: 'Верховный суд' },
+    ];
+    content.innerHTML = `
+      <div class="detail-section">
+        <h3>📄 Документы и переписка</h3>
+        <div class="doc-list">
+          ${docs.map(d => {
+            const st = d.status==='Принято'?'done':d.status==='Отправлено'?'active':'pending';
+            return `<div class="doc-item">
+              <div class="doc-icon">📄</div>
+              <div class="doc-info">
+                <div class="doc-name">${d.name}</div>
+                <div class="doc-meta">${d.org} · ${d.date}</div>
+              </div>
+              <span class="doc-status ${st}">${d.status}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+  }
+
+  if (tab === 'finance') {
+    const returned = Math.floor(c.amount * (0.3 + Math.random()*0.5));
+    const fee = Math.floor(returned * 0.15);
+    content.innerHTML = `
+      <div class="detail-section">
+        <h3>📈 Финансовые результаты</h3>
+        <div class="finance-table">
+          <div class="fin-row"><span>Сумма вложений</span><strong>${c.amount.toLocaleString()} ₸</strong></div>
+          <div class="fin-row"><span>Возвращено клиенту</span><strong style="color:var(--green)">${returned.toLocaleString()} ₸</strong></div>
+          <div class="fin-row"><span>Комиссия сервиса</span><strong>${fee.toLocaleString()} ₸</strong></div>
+          <div class="fin-row"><span>Дата зачисления</span><strong>**** **** **** ${String(Math.floor(1000+Math.random()*9000))}</strong></div>
+        </div>
+      </div>`;
+  }
+
+  if (tab === 'comments') {
+    const comments = c.comments || [];
+    content.innerHTML = `
+      <div class="detail-section">
+        <h3>💬 Комментарии и история</h3>
+        <div class="comments-list">
+          ${comments.map(cm => `<div class="comment-item">
+            <div class="comment-avatar">👨‍💼</div>
+            <div class="comment-body">
+              <div class="comment-header">
+                <span class="comment-author">Менеджер AntiFrog</span>
+                <span class="comment-date">${cm.date}</span>
+              </div>
+              <div class="comment-text">${cm.text}</div>
+            </div>
+          </div>`).join('')}
+        </div>
+        <div class="comment-input">
+          <input type="text" class="form-input" id="newComment" placeholder="Добавить комментарий...">
+          <button onclick="addDetailComment()" class="btn btn-primary btn-sm">+</button>
+        </div>
+      </div>`;
+  }
+
+  gsap.from('#detailContent > *', { opacity: 0, y: 15, duration: 0.3 });
+}
+
+function addDetailComment() {
+  const input = document.getElementById('newComment');
+  const text = input.value.trim();
+  if (!text || !currentDetail) return;
+  const cases = getCases();
+  if (cases[currentDetail.num]) {
+    if (!cases[currentDetail.num].comments) cases[currentDetail.num].comments = [];
+    cases[currentDetail.num].comments.push({ date: new Date().toLocaleString('ru-RU'), text });
+    saveCases(cases);
+  }
+  currentDetail.comments.push({ date: new Date().toLocaleString('ru-RU'), text });
+  showDetailTab('comments', document.querySelector('.detail-tab:last-child'));
+  input.value = '';
+}
+
+// INIT
+ALL_CLIENTS = genClients(1200);
+filteredClients = ALL_CLIENTS;
+
+document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key==='Enter') startSearch(); });
 
 const urlCase = new URLSearchParams(location.search).get('case');
 if (urlCase) {
   document.getElementById('searchInput').value = urlCase;
-  search();
+  startSearch();
 } else {
-  renderClients(ALL_CLIENTS);
+  renderTable(ALL_CLIENTS);
+  document.getElementById('resultsInfo').classList.remove('hidden');
+  document.getElementById('resultCount').textContent = `В базе: ${ALL_CLIENTS.length} дел`;
 }
 </script>
 </body>
