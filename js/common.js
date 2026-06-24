@@ -5,7 +5,7 @@ const NAV_HTML = `
   <div class="topnav-inner">
     <a href="${BASE}/" class="topnav-logo">
       <span class="topnav-logo-icon">🛡️</span>
-      <span class="topnav-logo-text">AntiFrog</span>
+      <span class="topnav-logo-text">Aegis Recovery</span>
     </a>
     <button class="topnav-burger" id="burgerBtn" aria-label="Меню">
       <span></span><span></span><span></span>
