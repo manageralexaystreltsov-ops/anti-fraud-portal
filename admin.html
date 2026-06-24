@@ -273,15 +273,22 @@ function editClient(num){
         </div>
       </div>
 
+      <!-- NEXT ACTIONS -->
+      <div class="adm-card">
+        <h3 class="adm-card-title">📌 Следующие действия</h3>
+        <p style="font-size:11px;color:var(--muted);margin-bottom:8px">Это увидит клиент в своей карточке. Что ему нужно сделать сейчас.</p>
+        <div class="form-group"><textarea class="form-input" id="e_nextActions" rows="3" placeholder="Например: Подготовить выписку по счёту, отправить скриншоты переписки на email..." style="font-size:13px;resize:vertical">${c.nextActions||''}</textarea></div>
+      </div>
+
       <!-- COMMENTS -->
       <div class="adm-card">
-        <h3 class="adm-card-title">💬 Комментарии и действия</h3>
-        <div class="form-group"><label class="form-label">Следующие действия (видно клиенту в обзоре)</label><textarea class="form-input" id="e_nextActions" rows="2" placeholder="Что должен сделать клиент сейчас..." style="font-size:13px;resize:none">${c.nextActions||''}</textarea></div>
+        <h3 class="adm-card-title">💬 Внутренние комментарии</h3>
+        <p style="font-size:11px;color:var(--muted);margin-bottom:8px">Заметки для команды. История действий по делу.</p>
         <div class="adm-comments" id="e_comments">
           ${(c.comments||[]).map(cm=>`<div class="adm-comment"><div class="adm-comment-date">${cm.date}</div><div class="adm-comment-text">${cm.text}</div></div>`).join('')||'<p style="color:var(--muted);font-size:13px">Нет комментариев</p>'}
         </div>
         <div style="display:flex;gap:8px;margin-top:12px">
-          <textarea class="form-input" id="e_newComment" rows="2" placeholder="Новый комментарий..." style="flex:1;font-size:13px;resize:none"></textarea>
+          <textarea class="form-input" id="e_newComment" rows="2" placeholder="Добавить комментарий..." style="flex:1;font-size:13px;resize:none"></textarea>
           <button onclick="addComment('${num}')" class="btn btn-primary btn-sm" style="align-self:flex-end">+</button>
         </div>
       </div>

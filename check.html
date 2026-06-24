@@ -8,26 +8,23 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
 
-<!-- HERO -->
 <section class="ck-hero">
   <div class="ck-hero-glow"></div>
   <div class="container ck-hero-inner">
     <div class="ck-badge">🛡️ База AntiFrog</div>
     <h1 class="ck-title">Проверка дела</h1>
-    <p class="ck-sub">Введите номер дела, ФИО или ИНН для поиска в международных реестрах</p>
+    <p class="ck-sub">Введите номер дела, ФИО или платформу</p>
     <div class="ck-search">
       <svg class="ck-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-      <input type="text" class="ck-search-input" id="searchInput" placeholder="Номер дела, ФИО, ИНН..." inputmode="search">
-      <button class="ck-search-btn" id="searchBtn" onclick="startSearch()">Найти</button>
+      <input type="text" class="ck-search-input" id="searchInput" placeholder="Номер дела, ФИО, платформа..." inputmode="search">
+      <button class="ck-search-btn" onclick="doSearch()">Найти</button>
     </div>
   </div>
 </section>
 
-<!-- SEARCH LOADING -->
 <div class="ck-loading hidden" id="searchLoading">
   <div class="container">
     <div class="ck-loading-card">
@@ -39,68 +36,42 @@
   </div>
 </div>
 
-<!-- FILTERS -->
 <div class="ck-filters hidden" id="filtersBar">
   <div class="container">
     <div class="ck-filters-row">
       <span class="ck-result-text" id="resultText"></span>
-      <div class="ck-chips" id="filterChips">
-        <button class="ck-chip active" onclick="filterStatus('all',this)">Все</button>
-        <button class="ck-chip" onclick="filterStatus('На рассмотрении',this)">⏳ Ожидание</button>
-        <button class="ck-chip" onclick="filterStatus('В работе',this)">🔵 В работе</button>
-        <button class="ck-chip" onclick="filterStatus('Завершено',this)">✅ Готово</button>
+      <div class="ck-chips">
+        <button class="ck-chip active" onclick="filterSt('all',this)">Все</button>
+        <button class="ck-chip" onclick="filterSt('На рассмотрении',this)">⏳ Ожидание</button>
+        <button class="ck-chip" onclick="filterSt('В работе',this)">🔵 В работе</button>
+        <button class="ck-chip" onclick="filterSt('Завершено',this)">✅ Готово</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- CLIENTS LIST -->
 <section class="ck-list-section" id="listSection">
   <div class="container">
-    <!-- Mobile cards -->
     <div class="ck-cards" id="clientsCards"></div>
-    <!-- Desktop table -->
     <div class="ck-table-wrap hidden" id="tableWrap">
-      <table class="ck-table">
-        <thead><tr>
-          <th>Дело</th><th>Клиент</th><th>Платформа</th><th class="ck-th-hide">Город</th><th>Статус</th><th class="ck-th-hide">%</th>
-        </tr></thead>
-        <tbody id="tableBody"></tbody>
-      </table>
+      <table class="ck-table"><thead><tr>
+        <th>Дело</th><th>Клиент</th><th>Платформа</th><th class="ck-th-hide">Город</th><th>Статус</th>
+      </tr></thead><tbody id="tableBody"></tbody></table>
     </div>
   </div>
 </section>
 
-<!-- SKELETON -->
-<div class="ck-skeleton-section hidden" id="skeletonSection">
-  <div class="container">
-    <div class="ck-skeleton-card"><div class="sk-avatar"></div><div class="sk-lines"><div class="sk-line w60"></div><div class="sk-line w40"></div></div></div>
-    <div class="ck-skeleton-card"><div class="sk-avatar"></div><div class="sk-lines"><div class="sk-line w70"></div><div class="sk-line w30"></div></div></div>
-    <div class="ck-skeleton-card"><div class="sk-avatar"></div><div class="sk-lines"><div class="sk-line w50"></div><div class="sk-line w45"></div></div></div>
-    <div class="ck-skeleton-card"><div class="sk-avatar"></div><div class="sk-lines"><div class="sk-line w65"></div><div class="sk-line w35"></div></div></div>
-  </div>
-</div>
-
-<!-- DETAIL MODAL -->
 <div class="ck-modal-overlay hidden" id="modalOverlay" onclick="closeModal()">
   <div class="ck-modal" onclick="event.stopPropagation()">
     <div class="ck-modal-handle"></div>
-
-    <!-- HEADER -->
-    <div class="ck-modal-head" id="modalHead"></div>
-
-    <!-- TABS -->
-    <div class="ck-modal-tabs" id="modalTabs">
-      <button class="ck-mtab active" data-tab="overview" onclick="switchTab('overview',this)">📊 Обзор</button>
-      <button class="ck-mtab" data-tab="funds" onclick="switchTab('funds',this)">💰 Средства</button>
-      <button class="ck-mtab" data-tab="docs" onclick="switchTab('docs',this)">📄 Документы</button>
-      <button class="ck-mtab" data-tab="comments" onclick="switchTab('comments',this)">💬 История</button>
+    <div id="modalHead"></div>
+    <div class="ck-modal-tabs">
+      <button class="ck-mtab active" onclick="showTab('overview',this)">📊 Обзор</button>
+      <button class="ck-mtab" onclick="showTab('funds',this)">💰 Средства</button>
+      <button class="ck-mtab" onclick="showTab('docs',this)">📄 Документы</button>
+      <button class="ck-mtab" onclick="showTab('comments',this)">💬 История</button>
     </div>
-
-    <!-- CONTENT -->
     <div class="ck-modal-body" id="modalBody"></div>
-
-    <!-- FOOTER -->
     <div class="ck-modal-foot">
       <span class="ck-sec-badge">🔒 256-bit SSL</span>
       <span class="ck-sec-badge">🛡️ Закон РК о ПДн</span>
@@ -108,413 +79,302 @@
   </div>
 </div>
 
-<!-- CONFETTI CANVAS -->
-<canvas id="confettiCanvas" style="position:fixed;inset:0;pointer-events:none;z-index:9999"></canvas>
-
-<!-- SERVICE ORDER MODAL -->
-<div class="ck-modal-overlay hidden" id="serviceModal" onclick="closeServiceModal()">
+<div class="ck-modal-overlay hidden" id="svcModal" onclick="closeSvcModal()">
   <div class="ck-modal" onclick="event.stopPropagation()" style="max-height:85vh">
     <div class="ck-modal-handle"></div>
-    <div class="ck-smodal-head">
-      <h2 id="svcTitle"></h2>
-      <button class="ck-mclose" onclick="closeServiceModal()">✕</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:0 16px;margin-bottom:16px">
+      <h2 id="svcTitle" style="font-size:18px;font-weight:800"></h2>
+      <button class="ck-mclose" onclick="closeSvcModal()">✕</button>
     </div>
-    <div class="ck-smodal-body">
-      <div class="svc-price-block">
-        <div class="svc-price" id="svcPrice"></div>
-        <div class="svc-note">Оплата после оказания услуги</div>
-      </div>
+    <div style="padding:0 16px 20px">
+      <div class="svc-price-block"><div class="svc-price" id="svcPrice"></div><div class="svc-note">Оплата после оказания услуги</div></div>
       <div class="svc-form">
         <div class="form-group"><label class="form-label">Ваше имя *</label><input class="form-input" id="svcName" placeholder="Фамилия Имя"></div>
         <div class="form-group"><label class="form-label">Телефон *</label><input class="form-input" id="svcPhone" placeholder="+7 (7__) ___-__-__"></div>
-        <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="svcEmail" placeholder="email@example.com"></div>
-        <div class="form-group"><label class="form-label">Комментарий</label><textarea class="form-input" id="svcComment" rows="3" placeholder="Опишите вашу ситуацию..."></textarea></div>
+        <div class="form-group"><label class="form-label">Комментарий</label><textarea class="form-input" id="svcComment" rows="3" placeholder="Опишите ситуацию..."></textarea></div>
       </div>
       <div class="svc-pay-methods">
         <div class="svc-pay-title">Способ оплаты</div>
         <div class="svc-pay-options">
-          <button class="svc-pay-opt active" onclick="selectPay(this)">💳 Карта</button>
-          <button class="svc-pay-opt" onclick="selectPay(this)">📱 SBP</button>
-          <button class="svc-pay-opt" onclick="selectPay(this)">🏦 Счёт</button>
+          <button class="svc-pay-opt active" onclick="pickPay(this)">💳 Карта</button>
+          <button class="svc-pay-opt" onclick="pickPay(this)">📱 SBP</button>
+          <button class="svc-pay-opt" onclick="pickPay(this)">🏦 Счёт</button>
         </div>
       </div>
-      <button class="btn btn-primary btn-lg" style="width:100%;margin-top:16px" onclick="submitService()">Оплатить и заказать</button>
+      <button class="btn btn-primary btn-lg" style="width:100%;margin-top:16px" onclick="orderSvc()">Оплатить и заказать</button>
       <div class="svc-secure">🔒 Безопасная оплата · SSL · 3-D Secure</div>
     </div>
   </div>
 </div>
 
+<canvas id="confettiCanvas" style="position:fixed;inset:0;pointer-events:none;z-index:9999"></canvas>
+
 <script src="js/common.js"></script>
 <script>
-const STAGES=['Заявка','Анализ','Претензия','Чарджбэк','Суд','Возврат','Завершено'];
-const STATUS_STYLES={
+var STAGES=['Заявка','Анализ','Претензия','Чарджбэк','Суд','Возврат','Завершено'];
+var SS={
   'На рассмотрении':{bg:'rgba(245,158,11,0.12)',c:'#f59e0b',dot:'#f59e0b'},
   'В работе':{bg:'rgba(59,130,246,0.12)',c:'#3b82f6',dot:'#3b82f6'},
   'Ожидание ответа':{bg:'rgba(139,92,246,0.12)',c:'#8b5cf6',dot:'#8b5cf6'},
   'Завершено':{bg:'rgba(16,185,129,0.12)',c:'#10b981',dot:'#10b981'},
-  'Возврат средств':{bg:'rgba(16,185,129,0.12)',c:'#10b981',dot:'#10b981'},
+  'Возврат средств':{bg:'rgba(16,185,129,0.12)',c:'#10b981',dot:'#10b981'}
 };
-const COLORS=['#10b981','#3b82f6','#8b5cf6','#f59e0b','#ef4444','#ec4899','#06b6d4','#84cc16'];
-const F=['Айбек','Айдар','Айгуль','Айжан','Акмарал','Акылбек','Алмаз','Алтунай','Альфия','Андрей','Анна','Ануар','Арман','Артем','Асель','Асхат','Бакыт','Бауыржан','Бегимай','Берик','Ботагоз','Вадим','Валерия','Виктор','Габит','Галия','Геннадий','Гульмира','Данияр','Дарига','Даурен','Денис','Диана','Дмитрий','Елена','Ержан','Ерлан','Ермек','Жадыра','Жанат','Жанна','Жаныбек','Забир','Зарина','Зинаида','Ибрагим','Игорь','Ирина','Кайрат','Камар','Канат','Карина','Куаныш','Лариса','Лаура','Мадина','Марал','Мария','Марат','Мирас','Назгуль','Назирбек','Наталья','Олег','Ольга','Павел','Раиса','Рамазан','Ренат','Ринат','Роза','Рустам','Сагынай','Самат','Сания','Светлана','Серик','Сергей','София','Султан','Тимур','Улжан','Улан','Фарид','Фатима','Шынар','Эльвира','Эльдар','Юлия','Яна'];
-const L=['Абдуллаев','Айтматов','Акбаев','Алиев','Амреев','Андреев','Арапов','Ахметов','Баймуратов','Бакиров','Балтабаев','Бектемиров','Бердиев','Бородин','Булатов','Васильев','Виноградов','Гаврилов','Голубев','Григорьев','Гусейнов','Давыдов','Джумабаев','Дмитриев','Ержанов','Ермекбаев','Жаксылыков','Жанайдаров','Жумабаев','Закиров','Ибрагимов','Иванов','Ильясов','Имангалиев','Кадыров','Калыков','Каменских','Капезов','Каримов','Касенов','Кенжетаев','Ким','Козлов','Колесников','Кондратьев','Кузнецов','Кулов','Ларионов','Лебедев','Магомедов','Макаров','Мамбетов','Мамыров','Масимов','Мендыбаев','Меркушев','Мешков','Михайлов','Молдагалиев','Муканов','Назаров','Наумов','Нурбаев','Омаров','Павлов','Петров','Поляков','Рахимов','Рогов','Рожков','Романов','Рыбаков','Сагинбаев','Садыков','Сапарбаев','Семёнов','Сергеев','Серикбаев','Сизов','Смирнов','Соколов','Соловьев','Тажиев','Токарев','Толеуов','Трофимов','Туленов','Уалиев','Уразов','Усенов','Фёдоров','Фомин','Хамитов','Чернов','Чесноков','Шарипов','Шевченко','Шипилов','Шульгин','Юсупов','Яковлев'];
-const P=['TradePro Global','InvestMarket24','CryptoInvest KZ','GlobalFX Trading','Premium Binary','AlgoTrade 360','SmartInvest Pro','Quantum Capital','Titan FX Group','EuroTrade Solutions','CryptoHarvest','Royal Forex Club','SwiftTrade Pro','Astana Digital Bank','Digital Assets Kazakhstan'];
-const C=['Алматы','Астана','Шымкент','Караганда','Актобе','Павлодар','Усть-Каменогорск','Семей','Атырау','Костанай'];
+var COL=['#10b981','#3b82f6','#8b5cf6','#f59e0b','#ef4444','#ec4899','#06b6d4','#84cc16'];
+var FA=['Айбек','Айдар','Айгуль','Айжан','Акмарал','Акылбек','Алмаз','Алтунай','Альфия','Андрей','Анна','Ануар','Арман','Артем','Асель','Бакыт','Бауыржан','Бегимай','Берик','Ботагоз','Вадим','Валерия','Виктор','Габит','Галия','Данияр','Дарига','Даурен','Денис','Диана','Дмитрий','Елена','Ержан','Ерлан','Жадыра','Жанат','Зарина','Ибрагим','Игорь','Ирина','Кайрат','Канат','Карина','Куаныш','Лариса','Лаура','Мадина','Марал','Мария','Марат','Мирас','Назгуль','Олег','Ольга','Павел','Раиса','Ренат','Ринат','Роза','Рустам','Самат','Сания','Серик','Сергей','София','Султан','Тимур','Улжан','Фарид','Фатима','Шынар','Эльвира','Эльдар','Юлия','Яна'];
+var LA=['Абдуллаев','Айтматов','Акбаев','Алиев','Амреев','Андреев','Арапов','Ахметов','Баймуратов','Бакиров','Балтабаев','Бектемиров','Бердиев','Бородин','Булатов','Васильев','Виноградов','Гаврилов','Голубев','Григорьев','Давыдов','Джумабаев','Дмитриев','Ержанов','Ермекбаев','Жаксылыков','Жанайдаров','Жумабаев','Закиров','Ибрагимов','Иванов','Ильясов','Имангалиев','Кадыров','Калыков','Капезов','Каримов','Касенов','Кенжетаев','Ким','Козлов','Колесников','Кондратьев','Кузнецов','Кулов','Ларионов','Лебедев','Магомедов','Макаров','Мамбетов','Мамыров','Масимов','Меркушев','Мешков','Михайлов','Молдагалиев','Муканов','Назаров','Наумов','Нурбаев','Омаров','Павлов','Петров','Поляков','Рахимов','Рогов','Рожков','Романов','Рыбаков','Сагинбаев','Садыков','Сапарбаев','Семёнов','Сергеев','Смирнов','Соколов','Соловьев','Тажиев','Токарев','Толеуов','Трофимов','Туленов','Уалиев','Уразов','Усенов','Фёдоров','Фомин','Хамитов','Чернов','Чесноков','Шарипов','Шевченко','Шипилов','Шульгин','Юсупов','Яковлев'];
+var PL=['TradePro Global','InvestMarket24','CryptoInvest KZ','GlobalFX Trading','Premium Binary','AlgoTrade 360','SmartInvest Pro','Quantum Capital','Titan FX Group','CryptoHarvest','Royal Forex Club','SwiftTrade Pro','Astana Digital Bank','Digital Assets Kazakhstan'];
+var CI=['Алматы','Астана','Шымкент','Караганда','Актобе','Павлодар','Семей','Атырау','Костанай'];
+
+function rnd(a){return a[~~(Math.random()*a.length)];}
 
 function genFake(){
-  const arr=[];
-  for(let i=0;i<300;i++){
-    const f=F[~~(Math.random()*F.length)],l=L[~~(Math.random()*L.length)];
-    const p='+7 ('+(700+~~(Math.random()*100))+') '+String(~~(1e6+Math.random()*9e6)).replace(/(\d{3})(\d{2})(\d{2})/,'$1-$2-$3');
-    const pr=~~(Math.random()*100);
-    const st=pr>=80?'Завершено':pr>=40?'В работе':Object.keys(STATUS_STYLES)[~~(Math.random()*3)];
-    arr.push({num:'AF-'+String(1000+i).padStart(4,'0')+String.fromCharCode(65+~~(Math.random()*6))+String.fromCharCode(65+~~(Math.random()*6)),fullName:l+' '+f+' '+F[~~(Math.random()*F.length)]+'ович',phone:p,email:'',city:C[~~(Math.random()*C.length)],platform:P[~~(Math.random()*P.length)],stage:STAGES[~~(Math.random()*STAGES.length)],status:st,progress:pr,amount:~~(15e5+Math.random()*4985e5),recovered:0,intermediate:'',orgs:[],nextActions:'',comments:[{date:new Date().toLocaleDateString('ru-RU'),text:'Заявка получена'}],time:''});
+  var arr=[];
+  for(var i=0;i<300;i++){
+    var pr=~~(Math.random()*100);
+    arr.push({
+      num:'AF-'+String(1000+i).padStart(4,'0')+String.fromCharCode(65+~~(Math.random()*6))+String.fromCharCode(65+~~(Math.random()*6)),
+      fullName:rnd(LA)+' '+rnd(FA)+' '+rnd(FA)+'ович',
+      phone:'+7 ('+(700+~~(Math.random()*100))+') '+String(~~(1e6+Math.random()*9e6)).replace(/(\d{3})(\d{2})(\d{2})/,'$1-$2-$3'),
+      email:'',city:rnd(CI),platform:rnd(PL),
+      stage:rnd(STAGES),status:pr>=80?'Завершено':pr>=40?'В работе':rnd(['На рассмотрении','Ожидание ответа']),
+      progress:pr,amount:~~(15e5+Math.random()*4985e5),recovered:0,intermediate:'',orgs:[],nextActions:'',
+      comments:[{date:new Date().toLocaleDateString('ru-RU'),text:'Заявка получена'}],time:''
+    });
   }
   return arr;
 }
 
-function loadClients(){
-  const cases=getCases();
-  const real=Object.entries(cases).map(([num,c])=>({
-    num,fullName:c.fullName||'Без имени',phone:c.phone||'',email:c.email||'',city:c.city||'',platform:c.platform||'',stage:c.stage||'Заявка',status:c.status||'На рассмотрении',progress:c.progress||0,amount:c.amount||0,recovered:c.recovered||0,intermediate:c.intermediate||'',orgs:c.orgs||[],nextActions:c.nextActions||'',comments:c.comments||[],time:c.time||''
-  }));
-  return [...real,...genFake()];
+function loadAll(){
+  var c=getCases();
+  var real=Object.keys(c).map(function(n){
+    var v=c[n];
+    return{num:n,fullName:v.fullName||'Без имени',phone:v.phone||'',email:v.email||'',city:v.city||'',platform:v.platform||'',stage:v.stage||'Заявка',status:v.status||'На рассмотрении',progress:v.progress||0,amount:v.amount||0,recovered:v.recovered||0,intermediate:v.intermediate||'',orgs:v.orgs||[],nextActions:v.nextActions||'',comments:v.comments||[],time:v.time||''};
+  });
+  return real.concat(genFake());
 }
 
-let ALL=loadClients(), FILTERED=ALL, curFilter='all';
-let clientIndex={};
+var ALL=loadAll(),FILTERED=ALL,idx={};
 
-function maskName(n){const p=n.split(' ');return p.length<2?n:p[0]+' '+p[1][0]+'.'+(p[2]?' '+p[2][0]+'.':'');}
-function maskPhone(p){
+function maskN(n){var p=n.split(' ');return p.length<2?n:p[0]+' '+p[1][0]+'.'+(p[2]?' '+p[2][0]+'.':'');}
+function maskP(p){
   if(!p)return'***';
-  const d=p.replace(/\D/g,'');
+  var d=p.replace(/\D/g,'');
   if(d.length<=4)return p;
-  const first4=d.substring(0,4);
-  const last3=d.substring(d.length-3);
-  const midLen=d.length-7;
-  const mid=midLen>0?'*'.repeat(midLen):'';
-  return first4+mid+last3;
+  var f4=d.substring(0,4),l3=d.substring(d.length-3);
+  var ml=d.length-7;
+  return f4+(ml>0?'*'.repeat(ml):'')+l3;
 }
 
-// SEARCH
-function startSearch(){
-  const q=document.getElementById('searchInput').value.trim();
-  if(!q){renderCards(ALL);return;}
-  hideAll();
-  document.getElementById('searchLoading').classList.remove('hidden');
+function doSearch(){
+  var q=document.getElementById('searchInput').value.trim().toLowerCase();
+  if(!q){showList(FILTERED);return;}
+  hide('listSection');show('searchLoading');
   document.getElementById('loadingSteps').innerHTML='';
   document.getElementById('loadingFill').style.width='0%';
-
-  const steps=[
-    {t:'Соединение с АРРФР...',d:500},
-    {t:'Запрос в FinCEN (США)...',d:600},
-    {t:'Проверка blockchain...',d:500},
-    {t:'Сверка с НБК...',d:400},
-    {t:'Анализ данных...',d:300},
-  ];
-  let i=0;
+  var steps=[{t:'Соединение с АРРФР...',d:500},{t:'Запрос в FinCEN...',d:600},{t:'Проверка blockchain...',d:500},{t:'Сверка с НБК...',d:400},{t:'Анализ данных...',d:300}];
+  var i=0;
   function next(){
     if(i>=steps.length){
-      const found=ALL.filter(c=>c.num.toLowerCase().includes(q.toLowerCase())||c.fullName.toLowerCase().includes(q.toLowerCase())||c.platform.toLowerCase().includes(q.toLowerCase()));
-      setTimeout(()=>{
-        document.getElementById('searchLoading').classList.add('hidden');
-        FILTERED=found;curFilter='all';
-        renderCards(found);
-        document.getElementById('filtersBar').classList.remove('hidden');
-        document.getElementById('resultText').textContent='Найдено: '+found.length+' дел';
-        gsap.from('.ck-card',{opacity:0,y:20,stagger:0.03,duration:0.3});
-      },200);
+      var found=ALL.filter(function(c){return c.num.toLowerCase().indexOf(q)>=0||c.fullName.toLowerCase().indexOf(q)>=0||c.platform.toLowerCase().indexOf(q)>=0;});
+      setTimeout(function(){hide('searchLoading');FILTERED=found;showList(found);show('filtersBar');document.getElementById('resultText').textContent='Найдено: '+found.length;},200);
       return;
     }
-    const s=steps[i];
-    document.getElementById('loadingTitle').textContent=s.t;
-    document.getElementById('loadingSteps').innerHTML+=`<div class="ck-lstep"><span>✓</span> ${s.t}</div>`;
+    document.getElementById('loadingTitle').textContent=steps[i].t;
+    document.getElementById('loadingSteps').innerHTML+='<div class="ck-lstep"><span>✓</span> '+steps[i].t+'</div>';
     document.getElementById('loadingFill').style.width=((i+1)/steps.length*100)+'%';
-    i++;
-    setTimeout(next,s.d);
+    i++;setTimeout(next,steps[i-1].d);
   }
   next();
 }
 
-function filterStatus(st,btn){
-  curFilter=st;
-  document.querySelectorAll('.ck-chip').forEach(c=>c.classList.remove('active'));
+function filterSt(s,btn){
+  document.querySelectorAll('.ck-chip').forEach(function(c){c.classList.remove('active');});
   btn.classList.add('active');
-  const list=st==='all'?FILTERED:FILTERED.filter(c=>c.status===st);
-  renderCards(list);
+  showList(s==='all'?FILTERED:FILTERED.filter(function(c){return c.status===s;}));
 }
 
-function hideAll(){
-  ['searchLoading','filtersBar','listSection','skeletonSection'].forEach(id=>document.getElementById(id).classList.add('hidden'));
-}
+function hide(id){document.getElementById(id).classList.add('hidden');}
+function show(id){document.getElementById(id).classList.remove('hidden');}
 
-function renderCards(list){
-  hideAll();
-  document.getElementById('listSection').classList.remove('hidden');
-  const isMobile=window.innerWidth<768;
-  if(isMobile) renderMobile(list);
-  else renderDesktop(list);
+function showList(list){
+  hide('searchLoading');hide('listSection');show('listSection');
+  if(window.innerWidth<768)renderMobile(list);else renderDesktop(list);
 }
 
 function renderMobile(list){
-  document.getElementById('tableWrap').classList.add('hidden');
-  document.getElementById('clientsCards').classList.remove('hidden');
-  clientIndex={};
-  document.getElementById('clientsCards').innerHTML=list.slice(0,80).map((c,i)=>{
-    clientIndex[i]=c;
-    const sc=STATUS_STYLES[c.status]||STATUS_STYLES['На рассмотрении'];
-    const ini=c.fullName.split(' ').slice(0,2).map(n=>n[0]).join('');
-    return`<div class="ck-card" onclick="openDetailByIndex(${i})">
-      <div class="ck-card-top">
-        <div class="ck-card-avatar" style="background:${sc.bg};color:${sc.c}">${ini}</div>
-        <div class="ck-card-info">
-          <div class="ck-card-name">${maskName(c.fullName)}</div>
-          <div class="ck-card-phone">${maskPhone(c.phone)}</div>
-        </div>
-        <span class="ck-card-status" style="background:${sc.bg};color:${sc.c}"><span class="ck-dot" style="background:${sc.dot}"></span>${c.status}</span>
-      </div>
-      <div class="ck-card-bottom">
-        <span class="ck-card-meta">${c.platform}</span>
-        <span class="ck-card-num">#${c.num}</span>
-      </div>
-    </div>`;
+  hide('tableWrap');show('clientsCards');
+  idx={};
+  document.getElementById('clientsCards').innerHTML=list.slice(0,80).map(function(c,i){
+    idx[i]=c;
+    var sc=SS[c.status]||SS['На рассмотрении'];
+    var ini=c.fullName.split(' ').slice(0,2).map(function(n){return n[0];}).join('');
+    return '<div class="ck-card" onclick="openCase('+i+')">'+
+      '<div class="ck-card-top">'+
+        '<div class="ck-card-avatar" style="background:'+sc.bg+';color:'+sc.c+'">'+ini+'</div>'+
+        '<div class="ck-card-info"><div class="ck-card-name">'+maskN(c.fullName)+'</div><div class="ck-card-phone">'+maskP(c.phone)+'</div></div>'+
+        '<span class="ck-card-status" style="background:'+sc.bg+';color:'+sc.c+'"><span class="ck-dot" style="background:'+sc.dot+'"></span>'+c.status+'</span>'+
+      '</div>'+
+      '<div class="ck-card-bottom"><span class="ck-card-meta">'+c.platform+'</span><span class="ck-card-num">#'+c.num+'</span></div>'+
+    '</div>';
   }).join('');
 }
 
 function renderDesktop(list){
-  document.getElementById('clientsCards').classList.add('hidden');
-  document.getElementById('tableWrap').classList.remove('hidden');
-  clientIndex={};
-  document.getElementById('tableBody').innerHTML=list.slice(0,80).map((c,i)=>{
-    clientIndex[i]=c;
-    const sc=STATUS_STYLES[c.status]||STATUS_STYLES['На рассмотрении'];
-    const ini=c.fullName.split(' ').slice(0,2).map(n=>n[0]).join('');
-    return`<tr onclick="openDetailByIndex(${i})">
-      <td><span class="ck-tnum">#${c.num}</span></td>
-      <td><div class="ck-tclient"><div class="ck-tav" style="background:${COLORS[i%COLORS.length]}20;color:${COLORS[i%COLORS.length]}">${ini}</div><div><div class="ck-tn">${maskName(c.fullName)}</div><div class="ck-tp">${maskPhone(c.phone)}</div></div></div></td>
-      <td><span class="ck-tplat">${c.platform}</span></td>
-      <td class="ck-th-hide"><span class="ck-tcity">${c.city||'—'}</span></td>
-      <td><span class="ck-tstatus" style="background:${sc.bg};color:${sc.c}"><span class="ck-dot" style="background:${sc.dot}"></span>${c.status}</span></td>
-      <td class="ck-th-hide"><div class="ck-tprog"><div class="ck-tprog-bar"><div class="ck-tprog-fill" style="width:${c.progress}%"></div></div>${c.progress}%</div></td>
-    </tr>`;
+  hide('clientsCards');show('tableWrap');
+  idx={};
+  document.getElementById('tableBody').innerHTML=list.slice(0,80).map(function(c,i){
+    idx[i]=c;
+    var sc=SS[c.status]||SS['На рассмотрении'];
+    var ini=c.fullName.split(' ').slice(0,2).map(function(n){return n[0];}).join('');
+    return '<tr onclick="openCase('+i+')">'+
+      '<td><span class="ck-tnum">#'+c.num+'</span></td>'+
+      '<td><div class="ck-tclient"><div class="ck-tav" style="background:'+COL[i%COL.length]+'20;color:'+COL[i%COL.length]+'">'+ini+'</div><div><div class="ck-tn">'+maskN(c.fullName)+'</div><div class="ck-tp">'+maskP(c.phone)+'</div></div></div></td>'+
+      '<td><span class="ck-tplat">'+c.platform+'</span></td>'+
+      '<td class="ck-th-hide"><span class="ck-tcity">'+(c.city||'—')+'</span></td>'+
+      '<td><span class="ck-tstatus" style="background:'+sc.bg+';color:'+sc.c+'">'+c.status+'</span></td>'+
+    '</tr>';
   }).join('');
 }
 
-// DETAIL MODAL
-let curCase=null;
-function openDetailByIndex(i){openDetail(clientIndex[i]);}
-function openDetail(c){
-  curCase=c;
-  const sc=STATUS_STYLES[c.status]||STATUS_STYLES['На рассмотрении'];
-  const ini=c.fullName.split(' ').slice(0,2).map(n=>n[0]).join('');
-  const si=STAGES.indexOf(c.stage);
+var curC=null;
+function openCase(i){curC=idx[i];if(!curC)return;showModal();renderOverview();}
+function closeModal(){hide('modalOverlay');document.body.style.overflow='';}
+function copyN(n){navigator.clipboard.writeText(n);showToast('Скопировано');}
 
-  document.getElementById('modalHead').innerHTML=`
-    <div class="ck-mhead-top">
-      <div class="ck-mhead-avatar" style="background:${sc.bg};color:${sc.c}">${ini}</div>
-      <div class="ck-mhead-info">
-        <h2>${maskName(c.fullName)}</h2>
-        <div class="ck-mhead-meta"><span class="ck-mhead-num">#${c.num}</span><button class="ck-copy" onclick="copyCase('${c.num}')">📋</button><span class="ck-mhead-date">${c.date}</span></div>
-      </div>
-      <button class="ck-mclose" onclick="closeModal()">✕</button>
-    </div>
-    <div class="ck-mhead-bar">
-      <span class="ck-mhead-badge" style="background:${sc.bg};color:${sc.c}"><span class="ck-dot" style="background:${sc.dot}"></span>${c.status}</span>
-      <span class="ck-mhead-plat">📋 ${c.platform}</span>
-    </div>
-    <div class="ck-stages">
-      ${STAGES.map((s,i)=>`<div class="ck-stg"><div class="ck-stg-dot ${i<si?'done':i===si?'active':''}"></div><span>${s}</span></div>`).join('')}
-    </div>`;
-  document.getElementById('modalOverlay').classList.remove('hidden');
-  document.body.style.overflow='hidden';
-  gsap.set('.ck-modal',{y:'100%'});
-  gsap.to('.ck-modal',{y:0,duration:0.4,ease:'power3.out'});
-  switchTab('overview',document.querySelector('.ck-mtab'));
+function showModal(){
+  var c=curC,sc=SS[c.status]||SS['На рассмотрении'];
+  var ini=c.fullName.split(' ').slice(0,2).map(function(n){return n[0];}).join('');
+  var si=STAGES.indexOf(c.stage);
+  document.getElementById('modalHead').innerHTML=
+    '<div class="ck-mhead-top">'+
+      '<div class="ck-mhead-avatar" style="background:'+sc.bg+';color:'+sc.c+'">'+ini+'</div>'+
+      '<div class="ck-mhead-info"><h2>'+maskN(c.fullName)+'</h2>'+
+        '<div class="ck-mhead-meta"><span class="ck-mhead-num">#'+c.num+'</span><button class="ck-copy" onclick="copyN(\''+c.num+'\')">📋</button><span class="ck-mhead-date">'+c.time+'</span></div>'+
+      '</div>'+
+      '<button class="ck-mclose" onclick="closeModal()">✕</button>'+
+    '</div>'+
+    '<div class="ck-mhead-bar"><span class="ck-mhead-badge" style="background:'+sc.bg+';color:'+sc.c+'">'+c.status+'</span><span class="ck-mhead-plat">'+c.platform+'</span></div>'+
+    '<div class="ck-stages">'+STAGES.map(function(s,i){return '<div class="ck-stg"><div class="ck-stg-dot '+(i<si?'done':i===si?'active':'')+'"></div><span>'+s+'</span></div>';}).join('')+'</div>';
+  show('modalOverlay');document.body.style.overflow='hidden';
 }
 
-function closeModal(){
-  gsap.to('.ck-modal',{y:'100%',duration:0.3,ease:'power3.in',onComplete:()=>{
-    document.getElementById('modalOverlay').classList.add('hidden');
-    document.body.style.overflow='';
-    gsap.set('.ck-modal',{y:'100%'});
-  }});
+function renderOverview(){
+  var c=curC,si=STAGES.indexOf(c.stage);
+  var icons=['📝','🔍','📨','💳','⚖️','💰','✅'];
+  var descs=['Заявка подана','Анализ документов','Претензия подана','Чарджбэк инициирован','Судебный процесс','Средства возвращены','Дело закрыто'];
+  var html='<div class="ck-section"><h3>📊 Timeline</h3><div class="ck-timeline">';
+  for(var i=0;i<=si;i++){
+    html+='<div class="ck-tl-item '+(i<si?'done':'current')+'"><div class="ck-tl-left"><div class="ck-tl-icon">'+icons[i]+'</div>'+(i<si?'<div class="ck-tl-line"></div>':'')+'</div><div class="ck-tl-right"><div class="ck-tl-title">'+STAGES[i]+'</div><div class="ck-tl-desc">'+descs[i]+'</div></div>'+(i<si?'<div class="ck-tl-check">✓</div>':'')+'</div>';
+  }
+  html+='</div></div>';
+  html+='<div class="ck-section"><h3>📋 Данные</h3><div class="ck-fields">';
+  html+='<div class="ck-field"><span>ФИО</span><strong>'+maskN(c.fullName)+'</strong></div>';
+  html+='<div class="ck-field"><span>Телефон</span><strong>'+maskP(c.phone)+'</strong></div>';
+  html+='<div class="ck-field"><span>Платформа</span><strong>'+c.platform+'</strong></div>';
+  html+='<div class="ck-field"><span>Город</span><strong>'+(c.city||'—')+'</strong></div>';
+  html+='<div class="ck-field"><span>Потери</span><strong style="color:#f59e0b">'+c.amount.toLocaleString()+' ₸</strong></div>';
+  html+='<div class="ck-field"><span>Этап</span><strong>'+c.stage+'</strong></div>';
+  html+='</div>';
+  if(c.orgs&&c.orgs.length){html+='<div style="margin-top:12px"><div style="font-size:12px;color:#6b7280;margin-bottom:6px">Органы:</div><div style="display:flex;flex-wrap:wrap;gap:4px">';c.orgs.forEach(function(o){html+='<span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(16,185,129,0.1);color:#10b981">'+o+'</span>';});html+='</div></div>';}
+  html+='</div>';
+  if(c.nextActions){html+='<div class="ck-section"><h3>📌 Следующие действия</h3><div class="ck-next-actions">'+c.nextActions+'</div></div>';}
+  var rec=getRec(c);
+  html+='<div class="ck-section"><h3>💡 Рекомендуемая услуга</h3><div class="ck-rec" onclick="openSvc(\''+esc(rec.title)+'\',\''+esc(rec.price)+'\')"><div class="ck-rec-icon">'+rec.icon+'</div><div class="ck-rec-info"><div class="ck-rec-title">'+rec.title+'</div><div class="ck-rec-desc">'+rec.desc+'</div><div class="ck-rec-price">'+rec.price+'</div></div><div class="ck-rec-btn">'+rec.act+' →</div></div></div>';
+  document.getElementById('modalBody').innerHTML=html;
 }
-function copyCase(n){navigator.clipboard.writeText(n);showToast('Скопировано');}
 
-function getRecommended(c){
-  const st=c.stage, pr=c.progress, amt=c.amount;
-  if(st==='Заявка') return {icon:'📋',title:'Первичная консультация',desc:'Бесплатный разбор ситуации за 15 минут',price:'Бесплатно',action:'Записаться бесплатно'};
-  if(st==='Анализ') return {icon:'🔍',title:'Аналитический отчёт',desc:'Письменный анализ шансов на возврат',price:'от 35 000 ₸',action:'Заказать отчёт'};
-  if(st==='Претензия') return {icon:'⚖️',title:'Претензия в банк',desc:'Жалоба на действия банка при блокировке',price:'от 25 000 ₸',action:'Подать претензию'};
-  if(st==='Чарджбэк') return {icon:'💰',title:'Сопровождение чарджбэк',desc:'Полное ведение процедуры чарджбэк',price:'от 70 000 ₸',action:'Заказать сопровождение'};
-  if(st==='Суд') return {icon:'⚖️',title:'Судебное сопровождение',desc:'Представительство в суде',price:'от 150 000 ₸',action:'Заказать представительство'};
-  if(st==='Возврат'||st==='Завершено') return {icon:'🛡️',title:'Полное сопровождение дела',desc:'Ведение дела от заявки до возврата',price:'Гонорар успеха',action:'Обсудить'};
-  return {icon:'💬',title:'Юридическая консультация',desc:'Детальный разбор дела с юристом',price:'от 20 000 ₸',action:'Записаться'};
+function renderFunds(){
+  var c=curC,ret=c.recovered||0,pct=c.amount?Math.round(ret/c.amount*100):0;
+  var html='<div class="ck-section"><h3>💰 Движение средств</h3><div class="ck-flow">';
+  html+='<div class="ck-flow-node miss"><div class="ck-flow-ico">🏦</div><div class="ck-flow-lbl">Платформа</div><div class="ck-flow-amt" style="color:#ef4444">'+c.amount.toLocaleString()+' ₸</div></div>';
+  html+='<div class="ck-flow-arrow">→</div>';
+  html+='<div class="ck-flow-node mid"><div class="ck-flow-ico">🔄</div><div class="ck-flow-lbl">'+(c.intermediate||'Промежуточные')+'</div><div class="ck-flow-amt">'+c.amount.toLocaleString()+' ₸</div></div>';
+  html+='<div class="ck-flow-arrow">→</div>';
+  html+='<div class="ck-flow-node ret"><div class="ck-flow-ico">💳</div><div class="ck-flow-lbl">Клиент</div><div class="ck-flow-amt" style="color:#10b981">'+ret.toLocaleString()+' ₸</div></div>';
+  html+='</div><div class="ck-flow-summary">';
+  html+='<div class="ck-fsum"><span>Вложено</span><strong>'+c.amount.toLocaleString()+' ₸</strong></div>';
+  html+='<div class="ck-fsum"><span>Возвращено</span><strong style="color:#10b981">'+ret.toLocaleString()+' ₸</strong></div>';
+  html+='<div class="ck-fsum"><span>Процент</span><strong style="color:#10b981">'+pct+'%</strong></div>';
+  html+='</div></div>';
+  document.getElementById('modalBody').innerHTML=html;
+  if(c.status==='Завершено'||c.status==='Возврат средств')setTimeout(fireConfetti,400);
 }
 
-function switchTab(tab,btn){
-  document.querySelectorAll('.ck-mtab').forEach(t=>t.classList.remove('active'));
+function renderDocs(){
+  var docs=[
+    {n:'Заявка на возврат.pdf',s:'Принято',o:'АРРФР'},
+    {n:'Выписка по счету.pdf',s:'Принято',o:'Банк'},
+    {n:'Скриншоты переписки.pdf',s:'Принято',o:'АРРФР'},
+    {n:'Претензия в банк.docx',s:'Отправлено',o:'Bank of England'},
+    {n:'Решение суда.pdf',s:'Ожидание',o:'Суд'}
+  ];
+  var html='<div class="ck-section"><h3>📄 Документы</h3><div class="ck-docs">';
+  docs.forEach(function(d){
+    var st=d.s==='Принято'?'done':d.s==='Отправлено'?'active':'pending';
+    html+='<div class="ck-doc"><div class="ck-doc-ico">📄</div><div class="ck-doc-info"><div class="ck-doc-name">'+d.n+'</div><div class="ck-doc-meta">'+d.o+'</div></div><span class="ck-doc-st '+st+'">'+d.s+'</span></div>';
+  });
+  html+='</div></div>';
+  document.getElementById('modalBody').innerHTML=html;
+}
+
+function renderComments(){
+  var cms=curC.comments||[];
+  var html='<div class="ck-section"><h3>💬 История</h3><div class="ck-cmts">';
+  cms.forEach(function(cm){
+    html+='<div class="ck-cmt"><div class="ck-cmt-av">👨‍💼</div><div class="ck-cmt-body"><div class="ck-cmt-head"><span>Менеджер</span><span>'+cm.date+'</span></div><div class="ck-cmt-text">'+cm.text+'</div></div></div>';
+  });
+  html+='</div><div class="ck-cmt-input"><input type="text" class="form-input" id="cmtInput" placeholder="Комментарий..."><button onclick="addCmt()" class="ck-cmt-btn">+</button></div></div>';
+  document.getElementById('modalBody').innerHTML=html;
+}
+
+function showTab(t,btn){
+  document.querySelectorAll('.ck-mtab').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
-  const c=curCase,body=document.getElementById('modalBody');
-
-  if(tab==='overview'){
-    const si=STAGES.indexOf(c.stage);
-    const icons=['📝','🔍','📨','💳','⚖️','💰','✅'];
-    const descs=['Заявка подана','Анализ документов','Претензия подана','Чарджбэк инициирован','Судебный процесс','Средства возвращены','Дело закрыто'];
-    const dates=[c.date,'15.01.2026','02.02.2026','18.02.2026','05.03.2026','20.03.2026','28.03.2026'];
-    const orgsHtml=c.orgs&&c.orgs.length?'<div style="margin-top:12px"><div style="font-size:12px;color:var(--muted);margin-bottom:6px">Органы:</div><div style="display:flex;flex-wrap:wrap;gap:4px">'+c.orgs.map(function(o){return '<span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(16,185,129,0.1);color:var(--green)">'+o+'</span>';}).join('')+'</div></div>':'';
-    const nextHtml=c.nextActions?'<div class="ck-section"><h3>📌 Следующие действия</h3><div class="ck-next-actions">'+c.nextActions+'</div></div>':'';
-    const rec=getRecommended(c);
-    const recHtml='<div class="ck-section"><h3>💡 Рекомендуемая услуга</h3><div class="ck-rec" onclick="openServiceOrder(\''+rec.title.replace(/'/g,"\\'")+'\',\''+rec.price+'\',\''+rec.action.replace(/'/g,"\\'")+'\')"><div class="ck-rec-icon">'+rec.icon+'</div><div class="ck-rec-info"><div class="ck-rec-title">'+rec.title+'</div><div class="ck-rec-desc">'+rec.desc+'</div><div class="ck-rec-price">'+rec.price+'</div></div><div class="ck-rec-btn">'+rec.action+' →</div></div></div>';
-    body.innerHTML=
-      '<div class="ck-section">'+
-        '<h3>📊 Timeline дела</h3>'+
-        '<div class="ck-timeline">'+
-          STAGES.slice(0,si+1).map(function(s,i){
-            return '<div class="ck-tl-item '+(i<si?'done':'current')+'">'+
-              '<div class="ck-tl-left"><div class="ck-tl-icon">'+icons[i]+'</div>'+(i<si?'<div class="ck-tl-line"></div>':'')+'</div>'+
-              '<div class="ck-tl-right"><div class="ck-tl-title">'+s+'</div><div class="ck-tl-desc">'+descs[i]+'</div><div class="ck-tl-date">'+dates[i]+'</div></div>'+
-              (i<si?'<div class="ck-tl-check">✓</div>':'')+'</div>';
-          }).join('')+
-        '</div>'+
-      '</div>'+
-      '<div class="ck-section">'+
-        '<h3>📋 Данные</h3>'+
-        '<div class="ck-fields">'+
-          '<div class="ck-field"><span>ФИО</span><strong>'+maskName(c.fullName)+'</strong></div>'+
-          '<div class="ck-field"><span>Телефон</span><strong>'+maskPhone(c.phone)+'</strong></div>'+
-          '<div class="ck-field"><span>Платформа</span><strong>'+c.platform+'</strong></div>'+
-          '<div class="ck-field"><span>Город</span><strong>'+(c.city||'—')+'</strong></div>'+
-          '<div class="ck-field"><span>Сумма вложений</span><strong style="color:var(--gold)">'+c.amount.toLocaleString()+' ₸</strong></div>'+
-          '<div class="ck-field"><span>Этап</span><strong>'+c.stage+'</strong></div>'+
-        '</div>'+
-        orgsHtml+
-      '</div>'+
-      nextHtml+
-      recHtml;
-  }
-
-  if(tab==='funds'){
-    const ret=c.recovered||0;
-    const pct=c.amount?Math.round(ret/c.amount*100):0;
-    body.innerHTML=`
-      <div class="ck-section">
-        <h3>💰 Движение средств</h3>
-        <div class="ck-flow">
-          <div class="ck-flow-node miss"><div class="ck-flow-ico">🏦</div><div class="ck-flow-lbl">Мошенническая платформа</div><div class="ck-flow-amt" style="color:var(--red)">${c.amount.toLocaleString()} ₸</div></div>
-          <div class="ck-flow-arrow">→</div>
-          <div class="ck-flow-node mid"><div class="ck-flow-ico">🔄</div><div class="ck-flow-lbl">${c.intermediate||'Промежуточные счета'}</div><div class="ck-flow-amt">${c.amount.toLocaleString()} ₸</div></div>
-          <div class="ck-flow-arrow">→</div>
-          <div class="ck-flow-node ret"><div class="ck-flow-ico">💳</div><div class="ck-flow-lbl">Карта клиента</div><div class="ck-flow-amt" style="color:var(--green)">${ret.toLocaleString()} ₸</div></div>
-        </div>
-        <div class="ck-flow-summary">
-          <div class="ck-fsum"><span>Вложено</span><strong>${c.amount.toLocaleString()} ₸</strong></div>
-          <div class="ck-fsum"><span>Возвращено</span><strong style="color:var(--green)">${ret.toLocaleString()} ₸</strong></div>
-          <div class="ck-fsum"><span>Процент возврата</span><strong style="color:var(--green)">${pct}%</strong></div>
-        </div>
-      </div>`;
-    if(c.status==='Завершено'||c.status==='Возврат средств') setTimeout(fireConfetti,400);
-  }
-
-  if(tab==='docs'){
-    const docs=[
-      {n:'Заявка на возврат.pdf',s:'Принято',d:c.date,o:'АРРФР'},
-      {n:'Выписка по счету.pdf',s:'Принято',d:'15.01.2026',o:'Банк'},
-      {n:'Скриншоты переписки.pdf',s:'Принято',d:'18.01.2026',o:'АРРФР'},
-      {n:'Претензия в банк.docx',s:'Отправлено',d:'02.02.2026',o:'Bank of England'},
-      {n:'Решение суда.pdf',s:'Ожидание',d:'05.03.2026',o:'Суд'},
-    ];
-    body.innerHTML=`<div class="ck-section"><h3>📄 Документы</h3><div class="ck-docs">
-      ${docs.map(d=>{const st=d.s==='Принято'?'done':d.s==='Отправлено'?'active':'pending';
-        return`<div class="ck-doc"><div class="ck-doc-ico">📄</div><div class="ck-doc-info"><div class="ck-doc-name">${d.n}</div><div class="ck-doc-meta">${d.o} · ${d.d}</div></div><span class="ck-doc-st ${st}">${d.s}</span></div>`;
-      }).join('')}
-    </div></div>`;
-  }
-
-  if(tab==='comments'){
-    const cms=c.comments||[];
-    body.innerHTML=`
-      <div class="ck-section"><h3>💬 История</h3>
-        <div class="ck-cmts">
-          ${cms.map(cm=>`<div class="ck-cmt"><div class="ck-cmt-av">👨‍💼</div><div class="ck-cmt-body"><div class="ck-cmt-head"><span>Менеджер</span><span>${cm.date}</span></div><div class="ck-cmt-text">${cm.text}</div></div></div>`).join('')}
-        </div>
-        <div class="ck-cmt-input"><input type="text" class="form-input" id="cmtInput" placeholder="Комментарий..."><button onclick="addCmt()" class="ck-cmt-btn">+</button></div>
-      </div>`;
-  }
-
-  gsap.from('#modalBody > *',{opacity:0,y:10,duration:0.25});
+  if(t==='overview')renderOverview();
+  else if(t==='funds')renderFunds();
+  else if(t==='docs')renderDocs();
+  else if(t==='comments')renderComments();
 }
 
 function addCmt(){
-  const inp=document.getElementById('cmtInput'),t=inp.value.trim();
-  if(!t||!curCase)return;
-  const cs=getCases();
-  if(cs[curCase.num]){if(!cs[curCase.num].comments)cs[curCase.num].comments=[];cs[curCase.num].comments.push({date:new Date().toLocaleString('ru-RU'),text:t});saveCases(cs);}
-  curCase.comments.push({date:new Date().toLocaleString('ru-RU'),text:t});
-  switchTab('comments',document.querySelector('[data-tab="comments"]'));
-  inp.value='';
+  var inp=document.getElementById('cmtInput'),txt=inp.value.trim();
+  if(!txt||!curC)return;
+  var c=getCases();
+  if(c[curC.num]){if(!c[curC.num].comments)c[curC.num].comments=[];c[curC.num].comments.push({date:new Date().toLocaleString('ru-RU'),text:txt});saveCases(c);}
+  curC.comments.push({date:new Date().toLocaleString('ru-RU'),text:txt});
+  renderComments();
 }
 
-// SERVICE ORDER
-function openServiceOrder(title,price,action){
-  document.getElementById('svcTitle').textContent=title;
-  document.getElementById('svcPrice').textContent=price;
-  document.getElementById('serviceModal').classList.remove('hidden');
-  document.body.style.overflow='hidden';
-  gsap.set('#serviceModal .ck-modal',{y:'100%'});
-  gsap.to('#serviceModal .ck-modal',{y:0,duration:0.4,ease:'power3.out'});
-}
-function closeServiceModal(){
-  gsap.to('#serviceModal .ck-modal',{y:'100%',duration:0.3,ease:'power3.in',onComplete:()=>{
-    document.getElementById('serviceModal').classList.add('hidden');
-    document.body.style.overflow='';
-  }});
-}
-function selectPay(btn){document.querySelectorAll('.svc-pay-opt').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
-function submitService(){
-  const name=document.getElementById('svcName').value.trim();
-  const phone=document.getElementById('svcPhone').value.trim();
-  if(!name||!phone){showToast('Заполните имя и телефон','error');return;}
-  showToast('Заявка на услугу отправлена!');
-  closeServiceModal();
+function getRec(c){
+  var st=c.stage;
+  if(st==='Заявка')return{icon:'📋',title:'Первичная консультация',desc:'Бесплатный разбор за 15 мин',price:'Бесплатно',act:'Записаться'};
+  if(st==='Анализ')return{icon:'🔍',title:'Аналитический отчёт',desc:'Анализ шансов на возврат',price:'от 35 000 ₸',act:'Заказать'};
+  if(st==='Претензия')return{icon:'⚖️',title:'Претензия в банк',desc:'Жалоба на действия банка',price:'от 25 000 ₸',act:'Подать'};
+  if(st==='Чарджбэк')return{icon:'💰',title:'Сопровождение чарджбэк',desc:'Полное ведение процедуры',price:'от 70 000 ₸',act:'Заказать'};
+  if(st==='Суд')return{icon:'⚖️',title:'Судебное сопровождение',desc:'Представительство в суде',price:'от 150 000 ₸',act:'Заказать'};
+  return{icon:'💬',title:'Юридическая консультация',desc:'Разбор дела с юристом',price:'от 20 000 ₸',act:'Записаться'};
 }
 
-// CONFETTI
+function esc(s){return s.replace(/'/g,"\\'");}
+function openSvc(t,p){document.getElementById('svcTitle').textContent=t;document.getElementById('svcPrice').textContent=p;show('svcModal');document.body.style.overflow='hidden';}
+function closeSvcModal(){hide('svcModal');document.body.style.overflow='';}
+function pickPay(b){document.querySelectorAll('.svc-pay-opt').forEach(function(x){x.classList.remove('active');});b.classList.add('active');}
+function orderSvc(){var n=document.getElementById('svcName').value.trim(),p=document.getElementById('svcPhone').value.trim();if(!n||!p){showToast('Заполните имя и телефон','error');return;}showToast('Заявка отправлена!');closeSvcModal();}
+
 function fireConfetti(){
-  const canvas=document.getElementById('confettiCanvas');
-  const ctx=canvas.getContext('2d');
-  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
-  const parts=[];
-  for(let i=0;i<80;i++){
-    parts.push({x:Math.random()*canvas.width,y:-20-Math.random()*100,vx:(Math.random()-0.5)*4,vy:Math.random()*4+2,r:Math.random()*6+3,c:['#10b981','#3b82f6','#f59e0b','#ef4444','#8b5cf6'][~~(Math.random()*5)],rot:Math.random()*360,vr:(Math.random()-0.5)*10});
-  }
-  let frame=0;
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    parts.forEach(p=>{
-      p.x+=p.vx;p.y+=p.vy;p.vy+=0.08;p.rot+=p.vr;
-      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);
-      ctx.fillStyle=p.c;ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6);
-      ctx.restore();
-    });
-    frame++;
-    if(frame<120)requestAnimationFrame(draw);
-    else ctx.clearRect(0,0,canvas.width,canvas.height);
-  }
+  var cv=document.getElementById('confettiCanvas'),cx=cv.getContext('2d');
+  cv.width=window.innerWidth;cv.height=window.innerHeight;
+  var ps=[];
+  for(var i=0;i<60;i++)ps.push({x:Math.random()*cv.width,y:-20,vx:(Math.random()-0.5)*4,vy:Math.random()*4+2,r:Math.random()*6+3,c:['#10b981','#3b82f6','#f59e0b','#ef4444','#8b5cf6'][~~(Math.random()*5)]});
+  var f=0;
+  function draw(){cx.clearRect(0,0,cv.width,cv.height);ps.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=0.08;cx.fillStyle=p.c;cx.fillRect(p.x,p.y,p.r,p.r*0.6);});f++;if(f<90)requestAnimationFrame(draw);else cx.clearRect(0,0,cv.width,cv.height);}
   draw();
 }
 
-// INIT
-document.getElementById('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')startSearch();});
-
-const urlQ=new URLSearchParams(location.search).get('case');
-if(urlQ){document.getElementById('searchInput').value=urlQ;startSearch();}
-else{
-  renderCards(ALL);
-  document.getElementById('filtersBar').classList.remove('hidden');
-  document.getElementById('resultText').textContent='';
-}
-
-window.addEventListener('resize',()=>renderCards(FILTERED));
+document.getElementById('searchInput').addEventListener('keydown',function(e){if(e.key==='Enter')doSearch();});
+var uq=new URLSearchParams(location.search).get('case');
+if(uq){document.getElementById('searchInput').value=uq;doSearch();}
+else{showList(ALL);document.getElementById('filtersBar').classList.remove('hidden');document.getElementById('resultText').textContent='';}
 </script>
 </body>
 </html>
