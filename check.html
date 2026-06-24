@@ -289,7 +289,8 @@ function openDetail(c){
     </div>`;
   document.getElementById('modalOverlay').classList.remove('hidden');
   document.body.style.overflow='hidden';
-  gsap.from('.ck-modal',{y:'100%',duration:0.4,ease:'power3.out'});
+  gsap.set('.ck-modal',{y:'100%'});
+  gsap.to('.ck-modal',{y:0,duration:0.4,ease:'power3.out'});
   switchTab('overview',document.querySelector('.ck-mtab'));
 }
 
@@ -297,6 +298,7 @@ function closeModal(){
   gsap.to('.ck-modal',{y:'100%',duration:0.3,ease:'power3.in',onComplete:()=>{
     document.getElementById('modalOverlay').classList.add('hidden');
     document.body.style.overflow='';
+    gsap.set('.ck-modal',{y:'100%'});
   }});
 }
 function copyCase(n){navigator.clipboard.writeText(n);showToast('Скопировано');}
