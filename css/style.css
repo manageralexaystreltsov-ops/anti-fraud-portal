@@ -415,6 +415,9 @@ textarea.form-input { resize: vertical; min-height: 100px; }
 .service-title { font-weight: 700; font-size: 14px; }
 .service-desc { font-size: 12px; color: var(--muted); }
 .service-price { font-size: 13px; font-weight: 700; color: var(--green); white-space: nowrap; }
+.svc-clickable { cursor: pointer; transition: all .3s cubic-bezier(.16,1,.3,1); }
+.svc-clickable:hover { border-color: rgba(16,185,129,0.3); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+.svc-clickable:active { transform: scale(0.98); }
 
 /* ===== MODAL ===== */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2000; display: flex; align-items: flex-end; justify-content: center; }
@@ -628,6 +631,33 @@ textarea.form-input { resize: vertical; min-height: 100px; }
 /* Modal footer */
 .ck-modal-foot { padding: 12px 16px 20px; border-top: 1px solid var(--border); display: flex; gap: 6px; justify-content: center; }
 .ck-sec-badge { font-size: 10px; color: var(--muted); padding: 3px 8px; background: var(--card); border-radius: 5px; }
+
+/* Recommendation block */
+.ck-rec { background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(59,130,246,0.08)); border: 1px solid rgba(16,185,129,0.2); border-radius: 14px; padding: 16px; cursor: pointer; transition: all .3s; display: flex; align-items: center; gap: 12px; }
+.ck-rec:hover { border-color: var(--green); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(16,185,129,0.15); }
+.ck-rec:active { transform: scale(0.98); }
+.ck-rec-icon { font-size: 28px; flex-shrink: 0; }
+.ck-rec-info { flex: 1; min-width: 0; }
+.ck-rec-title { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+.ck-rec-desc { font-size: 11px; color: var(--muted); }
+.ck-rec-price { font-size: 13px; font-weight: 700; color: var(--green); margin-top: 4px; }
+.ck-rec-btn { padding: 8px 14px; border-radius: 8px; background: var(--green); color: #fff; font-size: 12px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+
+/* Service order modal */
+.ck-smodal-head { display: flex; justify-content: space-between; align-items: center; padding: 0 16px; margin-bottom: 16px; }
+.ck-smodal-head h2 { font-size: 18px; font-weight: 800; }
+.ck-smodal-body { padding: 0 16px 20px; }
+.svc-price-block { text-align: center; padding: 20px; background: var(--card); border-radius: 14px; margin-bottom: 20px; }
+.svc-price { font-size: 28px; font-weight: 900; color: var(--green); margin-bottom: 4px; }
+.svc-note { font-size: 12px; color: var(--muted); }
+.svc-form { margin-bottom: 20px; }
+.svc-pay-methods { margin-bottom: 16px; }
+.svc-pay-title { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 8px; }
+.svc-pay-options { display: flex; gap: 8px; }
+.svc-pay-opt { flex: 1; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; font-family: inherit; text-align: center; }
+.svc-pay-opt:hover { border-color: var(--green); color: var(--green); }
+.svc-pay-opt.active { background: rgba(16,185,129,0.1); border-color: var(--green); color: var(--green); }
+.svc-secure { text-align: center; font-size: 11px; color: var(--muted); margin-top: 12px; }
 
 /* ===== RESPONSIVE CHECK — TABLET+ ===== */
 @media (min-width: 768px) {

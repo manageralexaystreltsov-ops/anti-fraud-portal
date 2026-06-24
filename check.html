@@ -111,6 +111,39 @@
 <!-- CONFETTI CANVAS -->
 <canvas id="confettiCanvas" style="position:fixed;inset:0;pointer-events:none;z-index:9999"></canvas>
 
+<!-- SERVICE ORDER MODAL -->
+<div class="ck-modal-overlay hidden" id="serviceModal" onclick="closeServiceModal()">
+  <div class="ck-modal" onclick="event.stopPropagation()" style="max-height:85vh">
+    <div class="ck-modal-handle"></div>
+    <div class="ck-smodal-head">
+      <h2 id="svcTitle"></h2>
+      <button class="ck-mclose" onclick="closeServiceModal()">✕</button>
+    </div>
+    <div class="ck-smodal-body">
+      <div class="svc-price-block">
+        <div class="svc-price" id="svcPrice"></div>
+        <div class="svc-note">Оплата после оказания услуги</div>
+      </div>
+      <div class="svc-form">
+        <div class="form-group"><label class="form-label">Ваше имя *</label><input class="form-input" id="svcName" placeholder="Фамилия Имя"></div>
+        <div class="form-group"><label class="form-label">Телефон *</label><input class="form-input" id="svcPhone" placeholder="+7 (7__) ___-__-__"></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="svcEmail" placeholder="email@example.com"></div>
+        <div class="form-group"><label class="form-label">Комментарий</label><textarea class="form-input" id="svcComment" rows="3" placeholder="Опишите вашу ситуацию..."></textarea></div>
+      </div>
+      <div class="svc-pay-methods">
+        <div class="svc-pay-title">Способ оплаты</div>
+        <div class="svc-pay-options">
+          <button class="svc-pay-opt active" onclick="selectPay(this)">💳 Карта</button>
+          <button class="svc-pay-opt" onclick="selectPay(this)">📱 SBP</button>
+          <button class="svc-pay-opt" onclick="selectPay(this)">🏦 Счёт</button>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-lg" style="width:100%;margin-top:16px" onclick="submitService()">Оплатить и заказать</button>
+      <div class="svc-secure">🔒 Безопасная оплата · SSL · 3-D Secure</div>
+    </div>
+  </div>
+</div>
+
 <script src="js/common.js"></script>
 <script>
 const STAGES=['Заявка','Анализ','Претензия','Чарджбэк','Суд','Возврат','Завершено'];
@@ -303,6 +336,17 @@ function closeModal(){
 }
 function copyCase(n){navigator.clipboard.writeText(n);showToast('Скопировано');}
 
+function getRecommended(c){
+  const st=c.stage, pr=c.progress, amt=c.amount;
+  if(st==='Заявка') return {icon:'📋',title:'Первичная консультация',desc:'Бесплатный разбор ситуации за 15 минут',price:'Бесплатно',action:'Записаться бесплатно'};
+  if(st==='Анализ') return {icon:'🔍',title:'Аналитический отчёт',desc:'Письменный анализ шансов на возврат',price:'от 35 000 ₸',action:'Заказать отчёт'};
+  if(st==='Претензия') return {icon:'⚖️',title:'Претензия в банк',desc:'Жалоба на действия банка при блокировке',price:'от 25 000 ₸',action:'Подать претензию'};
+  if(st==='Чарджбэк') return {icon:'💰',title:'Сопровождение чарджбэк',desc:'Полное ведение процедуры чарджбэк',price:'от 70 000 ₸',action:'Заказать сопровождение'};
+  if(st==='Суд') return {icon:'⚖️',title:'Судебное сопровождение',desc:'Представительство в суде',price:'от 150 000 ₸',action:'Заказать представительство'};
+  if(st==='Возврат'||st==='Завершено') return {icon:'🛡️',title:'Полное сопровождение дела',desc:'Ведение дела от заявки до возврата',price:'Гонорар успеха',action:'Обсудить'};
+  return {icon:'💬',title:'Юридическая консультация',desc:'Детальный разбор дела с юристом',price:'от 20 000 ₸',action:'Записаться'};
+}
+
 function switchTab(tab,btn){
   document.querySelectorAll('.ck-mtab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
@@ -334,6 +378,20 @@ function switchTab(tab,btn){
           <div class="ck-field"><span>Город</span><strong>${c.city||'—'}</strong></div>
           <div class="ck-field"><span>Сумма</span><strong style="color:var(--gold)">${c.amount.toLocaleString()} ₸</strong></div>
           <div class="ck-field"><span>Этап</span><strong>${c.stage}</strong></div>
+        </div>
+      </div>`;
+    const rec=getRecommended(c);
+    body.innerHTML+=`
+      <div class="ck-section">
+        <h3>💡 Рекомендуемая услуга</h3>
+        <div class="ck-rec" onclick="openServiceOrder('${rec.title.replace(/'/g,"\\'")}','${rec.price}','${rec.action.replace(/'/g,"\\'")}')">
+          <div class="ck-rec-icon">${rec.icon}</div>
+          <div class="ck-rec-info">
+            <div class="ck-rec-title">${rec.title}</div>
+            <div class="ck-rec-desc">${rec.desc}</div>
+            <div class="ck-rec-price">${rec.price}</div>
+          </div>
+          <div class="ck-rec-btn">${rec.action} →</div>
         </div>
       </div>`;
   }
@@ -397,6 +455,30 @@ function addCmt(){
   curCase.comments.push({date:new Date().toLocaleString('ru-RU'),text:t});
   switchTab('comments',document.querySelector('[data-tab="comments"]'));
   inp.value='';
+}
+
+// SERVICE ORDER
+function openServiceOrder(title,price,action){
+  document.getElementById('svcTitle').textContent=title;
+  document.getElementById('svcPrice').textContent=price;
+  document.getElementById('serviceModal').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+  gsap.set('#serviceModal .ck-modal',{y:'100%'});
+  gsap.to('#serviceModal .ck-modal',{y:0,duration:0.4,ease:'power3.out'});
+}
+function closeServiceModal(){
+  gsap.to('#serviceModal .ck-modal',{y:'100%',duration:0.3,ease:'power3.in',onComplete:()=>{
+    document.getElementById('serviceModal').classList.add('hidden');
+    document.body.style.overflow='';
+  }});
+}
+function selectPay(btn){document.querySelectorAll('.svc-pay-opt').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function submitService(){
+  const name=document.getElementById('svcName').value.trim();
+  const phone=document.getElementById('svcPhone').value.trim();
+  if(!name||!phone){showToast('Заполните имя и телефон','error');return;}
+  showToast('Заявка на услугу отправлена!');
+  closeServiceModal();
 }
 
 // CONFETTI

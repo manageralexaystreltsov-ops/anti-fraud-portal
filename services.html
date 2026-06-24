@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
 
@@ -33,6 +34,42 @@
     </div>
   </div>
 </section>
+
+<!-- ORDER MODAL -->
+<div class="ck-modal-overlay hidden" id="orderModal" onclick="closeOrderModal()">
+  <div class="ck-modal" onclick="event.stopPropagation()" style="max-height:85vh">
+    <div class="ck-modal-handle"></div>
+    <div class="ck-smodal-head">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span id="orderIcon" style="font-size:24px"></span>
+        <h2 id="orderTitle"></h2>
+      </div>
+      <button class="ck-mclose" onclick="closeOrderModal()">✕</button>
+    </div>
+    <div class="ck-smodal-body">
+      <div class="svc-price-block">
+        <div class="svc-price" id="orderPrice"></div>
+        <div class="svc-note">Оплата после оказания услуги</div>
+      </div>
+      <div class="svc-form">
+        <div class="form-group"><label class="form-label">Ваше имя *</label><input class="form-input" id="orderName" placeholder="Фамилия Имя"></div>
+        <div class="form-group"><label class="form-label">Телефон *</label><input class="form-input" id="orderPhone" placeholder="+7 (7__) ___-__-__"></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="orderEmail" placeholder="email@example.com"></div>
+        <div class="form-group"><label class="form-label">Комментарий</label><textarea class="form-input" id="orderComment" rows="3" placeholder="Опишите вашу ситуацию..."></textarea></div>
+      </div>
+      <div class="svc-pay-methods">
+        <div class="svc-pay-title">Способ оплаты</div>
+        <div class="svc-pay-options">
+          <button class="svc-pay-opt active" onclick="selectPayOpt(this)">💳 Карта</button>
+          <button class="svc-pay-opt" onclick="selectPayOpt(this)">📱 SBP</button>
+          <button class="svc-pay-opt" onclick="selectPayOpt(this)">🏦 Счёт</button>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-lg" style="width:100%;margin-top:16px" onclick="submitOrder()">Оплатить и заказать</button>
+      <div class="svc-secure">🔒 Безопасная оплата · SSL · 3-D Secure</div>
+    </div>
+  </div>
+</div>
 
 <script src="js/common.js"></script>
 <script>
@@ -165,8 +202,8 @@ let allServices = SERVICES;
 
 function renderServices(list) {
   document.getElementById('serviceCount').textContent = `Показано: ${list.length} из ${SERVICES.length} услуг`;
-  document.getElementById('servicesList').innerHTML = list.map(s => `
-    <div class="service-item">
+  document.getElementById('servicesList').innerHTML = list.map((s,i) => `
+    <div class="service-item svc-clickable" onclick="orderService('${s.title.replace(/'/g,"\\'")}','${s.price}','${s.icon}')">
       <div class="service-icon">${s.icon}</div>
       <div class="service-info">
         <div class="service-title">${s.title}</div>
@@ -184,6 +221,31 @@ function filterServices() {
 }
 
 renderServices(allServices);
+
+// ORDER
+function orderService(title,price,icon){
+  document.getElementById('orderTitle').textContent=title;
+  document.getElementById('orderPrice').textContent=price;
+  document.getElementById('orderIcon').textContent=icon;
+  document.getElementById('orderModal').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+  gsap.set('#orderModal .ck-modal',{y:'100%'});
+  gsap.to('#orderModal .ck-modal',{y:0,duration:0.4,ease:'power3.out'});
+}
+function closeOrderModal(){
+  gsap.to('#orderModal .ck-modal',{y:'100%',duration:0.3,ease:'power3.in',onComplete:()=>{
+    document.getElementById('orderModal').classList.add('hidden');
+    document.body.style.overflow='';
+  }});
+}
+function selectPayOpt(btn){document.querySelectorAll('.svc-pay-opt').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function submitOrder(){
+  const name=document.getElementById('orderName').value.trim();
+  const phone=document.getElementById('orderPhone').value.trim();
+  if(!name||!phone){showToast('Заполните имя и телефон','error');return;}
+  showToast('Заявка на услугу отправлена!');
+  closeOrderModal();
+}
 </script>
 </body>
 </html>
